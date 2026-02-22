@@ -218,7 +218,9 @@ function tiltCards(): void {
     const STRENGTH = 7; // max degrees
     const LIFT     = 6; // px
 
-    card.addEventListener('mousemove', (e: MouseEvent) => {
+    // Use pointer events so mouse tilt works on desktop; skip on touch/pen
+    card.addEventListener('pointermove', (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return;
       const rect = card.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width  - 0.5;
       const y = (e.clientY - rect.top)  / rect.height - 0.5;
@@ -227,12 +229,13 @@ function tiltCards(): void {
       card.style.transition = 'transform 80ms linear';
     });
 
-    card.addEventListener('mouseleave', () => {
+    card.addEventListener('pointerleave', () => {
       card.style.transition = 'transform 500ms cubic-bezier(0.16,1,0.3,1), box-shadow 500ms ease';
       card.style.transform  = '';
     });
 
-    card.addEventListener('mouseenter', () => {
+    card.addEventListener('pointerenter', (e: PointerEvent) => {
+      if (e.pointerType !== 'mouse') return;
       card.style.transition = 'transform 80ms linear';
     });
   });
