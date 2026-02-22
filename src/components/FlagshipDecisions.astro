@@ -11,8 +11,8 @@ const { decisions } = Astro.props;
 
 const panels = [
   {
-    title:    'What I chose',
-    sub:      'Deliberate decisions',
+    title:    'Was ich gewählt habe',
+    sub:      'Bewusste Entscheidungen',
     items:    decisions.chose,
     mod:      'blue',
     iconPath: 'M9,12 L11,14 L15,10', // checkmark
@@ -20,15 +20,15 @@ const panels = [
   },
   {
     title:    'Trade-offs',
-    sub:      'Known compromises',
+    sub:      'Bekannte Kompromisse',
     items:    decisions.tradeoffs,
     mod:      'amber',
     iconPath: 'M6,15 L3,12 L6,9 M18,9 L21,12 L18,15', // two-way arrows
     circlePath: false,
   },
   {
-    title:    "What's next",
-    sub:      'Future improvements',
+    title:    'Nächste Schritte',
+    sub:      'Geplante Verbesserungen',
     items:    decisions.next,
     mod:      'green',
     iconPath: 'M10,8.5 L14.5,12 L10,15.5', // forward arrow

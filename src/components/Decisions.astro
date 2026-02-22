@@ -12,17 +12,17 @@ const { decisions, class: className = '' } = Astro.props;
 
 const columns = [
   {
-    label:  'What I chose',
+    label:  'Was ich gewählt habe',
     marker: '—',
     items:  decisions.chose,
   },
   {
-    label:  'Tradeoffs',
+    label:  'Kompromisse',
     marker: '↔',
     items:  decisions.tradeoffs,
   },
   {
-    label:  "What I'd change",
+    label:  'Was ich ändern würde',
     marker: '→',
     items:  decisions.next,
   },

@@ -17,6 +17,7 @@ import ServiceStoryBlock from '../../components/ServiceStoryBlock.astro';
 import BigStatement from '../../components/BigStatement.astro';
 import ArchitectureViz from '../../components/ArchitectureViz.astro';
 import FlagshipDecisions from '../../components/FlagshipDecisions.astro';
+import BackToTop from '../../components/BackToTop.astro';
 
 export async function getStaticPaths() {
   const devices = await getCollection('devices');
@@ -53,20 +54,20 @@ const sharedTags = [...new Set(related.flatMap(d => d.tags).filter(t => data.tag
 
 // Feature highlight stat — fallback when no showcase data
 const featureStat = data.services.length > 0
-  ? { number: String(data.services.length), label: 'services', sub: 'Running locally, around the clock.' }
+  ? { number: String(data.services.length), label: 'Dienste',      sub: 'Laufen lokal, rund um die Uhr.' }
   : data.stack.length > 0
-  ? { number: String(data.stack.length),    label: 'technologies', sub: 'In the stack.' }
+  ? { number: String(data.stack.length),    label: 'Technologien', sub: 'Im Stack.' }
   : data.outcomes.length > 0
-  ? { number: String(data.outcomes.length), label: 'outcomes', sub: 'Documented.' }
+  ? { number: String(data.outcomes.length), label: 'Ergebnisse',   sub: 'Dokumentiert.' }
   : null;
 
 const tocLinks = [
-  { href: '#outcomes',     label: 'What I built'  },
-  ...(hasServiceStories || data.services.length > 0 ? [{ href: '#services', label: 'Services' }] : []),
-  { href: '#architecture', label: 'Architecture'  },
-  ...(data.decisions.chose.length > 0 ? [{ href: '#decisions', label: 'Decisions' }] : []),
-  { href: '#specs',        label: 'Specs'         },
-  ...(data.photos.length > 1 ? [{ href: '#gallery', label: 'Gallery' }] : []),
+  { href: '#outcomes',     label: 'Was ich gebaut habe' },
+  ...(hasServiceStories || data.services.length > 0 ? [{ href: '#services', label: 'Dienste' }] : []),
+  { href: '#architecture', label: 'Architektur'         },
+  ...(data.decisions.chose.length > 0 ? [{ href: '#decisions', label: 'Entscheidungen' }] : []),
+  { href: '#specs',        label: 'Technische Daten'    },
+  ...(data.photos.length > 1 ? [{ href: '#gallery', label: 'Galerie' }] : []),
   ...((data.links.dashboard || data.links.admin || data.links.docs || data.links.repo)
     ? [{ href: '#links', label: 'Links' }] : []),
 ];
@@ -117,7 +118,7 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
           <div class="pt-10 pb-0 container-wide">
             <Reveal class="mb-6">
               <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)]">
-                Feature deep dive
+                Funktionen im Detail
               </p>
             </Reveal>
           </div>
@@ -131,10 +132,10 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
           <div class="container-wide">
             <Reveal class="mb-10">
               <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
-                Services
+                Dienste
               </p>
               <h2 id="fl-services-h" class="text-display-sm text-[var(--color-ink-1)]">
-                What runs on it
+                Dienste auf diesem Gerät
               </h2>
             </Reveal>
             <ServiceStoryBlock services={showcase!.serviceStories} />
@@ -151,10 +152,10 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
           <div class="container-content">
             <Reveal class="mb-12 text-center">
               <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
-                Config &amp; Decisions
+                Konfiguration &amp; Entscheidungen
               </p>
               <h2 id="fl-decisions-h" class="text-display-sm text-[var(--color-ink-1)]">
-                What I chose &amp; why
+                Was ich gewählt habe – und warum
               </h2>
             </Reveal>
             <FlagshipDecisions decisions={data.decisions} />
@@ -170,7 +171,7 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
               Hardware
             </p>
             <h2 id="fl-specs-h" class="text-display-sm text-[var(--color-ink-1)]">
-              Specifications
+              Technische Daten
             </h2>
           </Reveal>
           <Reveal delay={60}>
@@ -223,7 +224,7 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
               <div class="pt-10 pb-0 container-wide">
                 <Reveal class="mb-6">
                   <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)]">
-                    Feature deep dive
+                    Funktionen im Detail
                   </p>
                 </Reveal>
               </div>
@@ -297,10 +298,10 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
             <section id="outcomes" class="py-16 section-divider" aria-labelledby="outcomes-h">
               <Reveal>
                 <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
-                  Outcomes
+                  Ergebnisse
                 </p>
                 <h2 id="outcomes-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
-                  What I built
+                  Was ich gebaut habe
                 </h2>
               </Reveal>
               <Outcomes items={data.outcomes} />
@@ -314,7 +315,7 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
                     Software
                   </p>
                   <h2 id="services-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
-                    What runs on it
+                    Dienste auf diesem Gerät
                   </h2>
                 </Reveal>
 
@@ -324,7 +325,7 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
                   <div class="space-y-8">
                     {data.services.length > 0 && (
                       <div>
-                        <p class="text-[0.8125rem] text-[var(--color-ink-3)] mb-3 font-medium">Applications</p>
+                        <p class="text-[0.8125rem] text-[var(--color-ink-3)] mb-3 font-medium">Anwendungen</p>
                         <div class="flex flex-wrap gap-2 stagger-children">
                           {data.services.map(svc => (
                             <span class="chip">{svc}</span>
@@ -358,10 +359,10 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
             <section id="architecture" class="py-16 section-divider" aria-labelledby="arch-h">
               <Reveal>
                 <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
-                  Deep dive
+                  Einblick
                 </p>
                 <h2 id="arch-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
-                  Architecture &amp; notes
+                  Architektur &amp; Hinweise
                 </h2>
               </Reveal>
               <Reveal delay={80}>
@@ -376,10 +377,10 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
               <section id="decisions" class="py-16 section-divider" aria-labelledby="decisions-h">
                 <Reveal>
                   <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
-                    Config &amp; Decisions
+                    Konfiguration &amp; Entscheidungen
                   </p>
                   <h2 id="decisions-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
-                    What I chose &amp; why
+                    Was ich gewählt habe – und warum
                   </h2>
                 </Reveal>
                 <Reveal delay={80}>
@@ -395,7 +396,7 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
                   Hardware
                 </p>
                 <h2 id="specs-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
-                  Specifications
+                  Technische Daten
                 </h2>
               </Reveal>
               <Reveal delay={60}>
@@ -408,10 +409,10 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
               <section id="gallery" class="py-16 section-divider" aria-labelledby="gallery-h">
                 <Reveal>
                   <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
-                    Photos
+                    Fotos
                   </p>
                   <h2 id="gallery-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
-                    Gallery
+                    Galerie
                   </h2>
                 </Reveal>
                 <Reveal delay={60}>
@@ -425,7 +426,7 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
               <section id="links" class="py-16 section-divider" aria-labelledby="links-h">
                 <Reveal>
                   <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
-                    Resources
+                    Ressourcen
                   </p>
                   <h2 id="links-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
                     Links
@@ -467,7 +468,7 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
                 aria-label="Sections"
               >
                 <p class="text-[0.7rem] font-semibold tracking-[0.1em] uppercase text-[var(--color-ink-4)] mb-4">
-                  On this page
+                  Auf dieser Seite
                 </p>
                 <ul class="space-y-1" role="list">
                   {tocLinks.map(({ href, label }) => (
@@ -498,7 +499,7 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
                   {data.location && (
                     <p class="text-[0.75rem] text-[var(--color-ink-3)]">{data.location}</p>
                   )}
-                  <p class="text-[0.75rem] text-[var(--color-ink-4)]">Updated {formattedUpdated}</p>
+                  <p class="text-[0.75rem] text-[var(--color-ink-4)]">Aktualisiert {formattedUpdated}</p>
                 </div>
                 {data.tags.length > 0 && (
                   <div class="flex flex-wrap gap-1.5 mt-4 pt-4 border-t border-[rgba(255,255,255,0.055)]">
@@ -535,7 +536,9 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
 
   <!-- ─── BACK ──────────────────────────────────────────────── -->
   <div class="py-12 text-center">
-    <a href="/lineup" class="btn-secondary">← Back to lineup</a>
+    <a href="/lineup" class="btn-secondary">← Zur Geräteübersicht</a>
   </div>
+
+  <BackToTop />
 
 </Layout>
