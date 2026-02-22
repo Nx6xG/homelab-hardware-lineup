@@ -29,7 +29,7 @@ const scrollHeight = `${(features.length + 1) * 100}vh`;
   <section aria-label={sectionLabel} data-scroll-stage-section>
 
     <!-- ── MOBILE: stacked list (no scroll stage) ─────────────────── -->
-    <div class="block lg:hidden px-6 py-16 space-y-16">
+    <div class="block lg:hidden px-6 pt-6 pb-12 space-y-12">
       {features.map((f, i) => (
         <div class="flex gap-5 reveal">
           <span class="flex-shrink-0 text-[1.75rem] sm:text-[2.5rem] font-black tabular-nums leading-none text-[var(--color-surface-4)] pt-1">
@@ -43,7 +43,7 @@ const scrollHeight = `${(features.length + 1) * 100}vh`;
               {f.description}
             </p>
             <!-- Inline preview on mobile — capped height so nothing overflows -->
-            <div class="rounded-[14px] overflow-hidden border border-[rgba(255,255,255,0.065)] max-h-[200px]">
+            <div class="rounded-[14px] overflow-hidden border border-[rgba(255,255,255,0.065)] max-h-[140px]">
               {f.scene === 'dashboard' && <DashboardPreview />}
               {f.scene === 'terminal'  && <TerminalPreview  />}
               {f.scene === 'plex'      && <PlexPreview      />}

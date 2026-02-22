@@ -96,7 +96,7 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
 
       <!-- Showcase headline -->
       {(showcase.headline || showcase.subheadline) && (
-        <section class="py-24 section-divider text-center">
+        <section class="py-14 lg:py-24 section-divider text-center">
           <div class="container-content">
             <Reveal>
               {showcase.headline && (
@@ -122,7 +122,7 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
       <!-- Scroll-driven feature stage -->
       {hasScrollStage && (
         <div class="section-divider">
-          <div class="py-10 container-wide">
+          <div class="pt-10 pb-0 container-wide">
             <Reveal class="mb-6">
               <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)]">
                 Feature deep dive
