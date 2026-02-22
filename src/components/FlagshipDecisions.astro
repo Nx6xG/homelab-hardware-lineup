@@ -1,0 +1,172 @@
+---
+interface Props {
+  decisions: {
+    chose:     string[];
+    tradeoffs: string[];
+    next:      string[];
+  };
+}
+
+const { decisions } = Astro.props;
+
+const panels = [
+  {
+    title:    'What I chose',
+    sub:      'Deliberate decisions',
+    items:    decisions.chose,
+    mod:      'blue',
+    iconPath: 'M9,12 L11,14 L15,10', // checkmark
+    circlePath: true,
+  },
+  {
+    title:    'Trade-offs',
+    sub:      'Known compromises',
+    items:    decisions.tradeoffs,
+    mod:      'amber',
+    iconPath: 'M6,15 L3,12 L6,9 M18,9 L21,12 L18,15', // two-way arrows
+    circlePath: false,
+  },
+  {
+    title:    "What's next",
+    sub:      'Future improvements',
+    items:    decisions.next,
+    mod:      'green',
+    iconPath: 'M10,8.5 L14.5,12 L10,15.5', // forward arrow
+    circlePath: true,
+  },
+] as const;
+---
+
+<div class="fd">
+  {panels.map((panel, i) => (
+    <div
+      class={`fd-panel fd-panel--${panel.mod} reveal`}
+      style={`transition-delay: ${i * 80}ms`}
+    >
+      <!-- Header -->
+      <div class="fd-head">
+        <div class={`fd-icon fd-icon--${panel.mod}`}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            {panel.circlePath && <circle cx="12" cy="12" r="9" stroke-opacity="0.3"/>}
+            {panel.iconPath.split(' M').map((seg, j) => (
+              <path d={j === 0 ? seg : `M${seg}`} />
+            ))}
+          </svg>
+        </div>
+        <div>
+          <p class="fd-title">{panel.title}</p>
+          <p class="fd-sub">{panel.sub}</p>
+        </div>
+      </div>
+
+      <!-- Items -->
+      {panel.items.length > 0 ? (
+        <ul class="fd-list">
+          {panel.items.map(item => (
+            <li class="fd-item">
+              <span class={`fd-bullet fd-bullet--${panel.mod}`} aria-hidden="true">—</span>
+              <span class="fd-text">{item}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="fd-empty">Keine Einträge.</p>
+      )}
+    </div>
+  ))}
+</div>
+
+<style>
+  .fd {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 768px) {
+    .fd { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .fd-panel {
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .fd-panel--blue  { background: rgba(79,142,247,0.05);  border: 1px solid rgba(79,142,247,0.16);  }
+  .fd-panel--amber { background: rgba(245,158,11,0.05);  border: 1px solid rgba(245,158,11,0.16);  }
+  .fd-panel--green { background: rgba(34,197,94,0.05);   border: 1px solid rgba(34,197,94,0.16);   }
+
+  .fd-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+  }
+
+  .fd-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .fd-icon--blue  { background: rgba(79,142,247,0.12);  color: rgba(79,142,247,0.9);  }
+  .fd-icon--amber { background: rgba(245,158,11,0.12);  color: rgba(245,158,11,0.9);  }
+  .fd-icon--green { background: rgba(34,197,94,0.12);   color: rgba(34,197,94,0.9);   }
+
+  .fd-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--color-ink-1);
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  .fd-sub {
+    font-size: 0.72rem;
+    color: var(--color-ink-4);
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+
+  .fd-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .fd-item {
+    display: flex;
+    gap: 0.625rem;
+    align-items: baseline;
+  }
+
+  .fd-bullet {
+    flex-shrink: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    opacity: 0.7;
+  }
+  .fd-bullet--blue  { color: rgba(79,142,247,1);  }
+  .fd-bullet--amber { color: rgba(245,158,11,1);  }
+  .fd-bullet--green { color: rgba(34,197,94,1);   }
+
+  .fd-text {
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--color-ink-3);
+  }
+
+  .fd-empty {
+    font-size: 0.8125rem;
+    color: var(--color-ink-4);
+    font-style: italic;
+  }
+</style>

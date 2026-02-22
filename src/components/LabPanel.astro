@@ -1,0 +1,204 @@
+---
+interface Props {
+  eyebrow: string;
+  title:    string;
+  subtitle: string;
+  meta:     string;
+  cta:      string;
+  href:     string;
+  accent?:  'blue' | 'amber' | 'purple';
+}
+
+const {
+  eyebrow,
+  title,
+  subtitle,
+  meta,
+  cta,
+  href,
+  accent = 'blue',
+} = Astro.props;
+---
+
+<a href={href} class="lp" data-accent={accent}>
+  <!-- Geometric orb accent — purely decorative -->
+  <div class="lp-orb" aria-hidden="true"></div>
+
+  <p class="lp-eyebrow">{eyebrow}</p>
+  <h2 class="lp-title">{title}</h2>
+  <p class="lp-subtitle">{subtitle}</p>
+  <p class="lp-meta">{meta}</p>
+
+  <div class="lp-spacer"></div>
+
+  <p class="lp-cta">
+    <span>{cta}</span>
+    <span class="lp-arrow" aria-hidden="true">→</span>
+  </p>
+</a>
+
+<!--
+  is:global is required so the :has() sibling-dimming rule
+  (.lab-trio:has(.lp:hover) .lp:not(:hover)) can reach across
+  component boundaries without Astro's scope hash interfering.
+  Class names are unique enough (.lp, .lp-*) to avoid collisions.
+-->
+<style is:global>
+  /* ── Accent token map ──────────────────────────────── */
+  .lp[data-accent="blue"]   { --lp-accent: #4f8ef7; --lp-rgb: 79,142,247;  }
+  .lp[data-accent="amber"]  { --lp-accent: #f59e0b; --lp-rgb: 245,158,11;  }
+  .lp[data-accent="purple"] { --lp-accent: #a855f7; --lp-rgb: 168,85,247;  }
+
+  /* ── Panel shell ───────────────────────────────────── */
+  .lp {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 2rem;
+    border-radius: 20px;
+    background:
+      radial-gradient(ellipse 120% 55% at 100% 0%, rgba(var(--lp-rgb), 0.05) 0%, transparent 55%),
+      var(--color-surface-1);
+    border: 1px solid rgba(255,255,255,0.07);
+    text-decoration: none;
+    overflow: hidden;
+    outline: none;
+    transition:
+      transform    300ms ease-out,
+      opacity      300ms ease-out,
+      border-color 300ms ease-out,
+      box-shadow   300ms ease-out;
+  }
+
+  @media (min-width: 640px) {
+    .lp { padding: 2.5rem; min-height: 380px; }
+  }
+
+  /* ── Hover / focus-visible state ───────────────────── */
+  .lp:is(:hover, :focus-visible) {
+    transform: translateY(-4px) scale(1.02);
+    border-color: rgba(var(--lp-rgb), 0.28);
+    box-shadow:
+      0 16px 48px rgba(0,0,0,0.45),
+      0 0 0 1px rgba(var(--lp-rgb), 0.12),
+      0 0 64px rgba(var(--lp-rgb), 0.06);
+    background:
+      radial-gradient(ellipse 120% 55% at 100% 0%, rgba(var(--lp-rgb), 0.10) 0%, transparent 55%),
+      var(--color-surface-1);
+  }
+
+  /* Explicit keyboard focus ring */
+  .lp:focus-visible {
+    box-shadow:
+      0 16px 48px rgba(0,0,0,0.45),
+      0 0 0 2px rgba(var(--lp-rgb), 0.6),
+      0 0 64px rgba(var(--lp-rgb), 0.06);
+  }
+
+  /* ── Sibling dimming via CSS :has() ────────────────── */
+  /* Pointer devices only — touch doesn't persist :hover */
+  @media (hover: hover) {
+    .lab-trio:has(.lp:hover) .lp:not(:hover) {
+      opacity: 0.68;
+      transform: scale(0.985);
+    }
+  }
+  /* Keyboard nav — always active */
+  .lab-trio:has(.lp:focus-visible) .lp:not(:focus-visible) {
+    opacity: 0.68;
+    transform: scale(0.985);
+  }
+
+  /* ── Geometric orb ─────────────────────────────────── */
+  .lp-orb {
+    position: absolute;
+    top: -28px;
+    right: -28px;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    border: 1px solid rgba(var(--lp-rgb), 0.08);
+    pointer-events: none;
+    transition: border-color 300ms ease-out, transform 300ms ease-out;
+  }
+  .lp:is(:hover, :focus-visible) .lp-orb {
+    border-color: rgba(var(--lp-rgb), 0.22);
+    transform: scale(1.1);
+  }
+
+  /* ── Typography ────────────────────────────────────── */
+  .lp-eyebrow {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: rgba(var(--lp-rgb), 0.75);
+    margin-bottom: 1.125rem;
+  }
+
+  .lp-title {
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: var(--color-ink-1);
+    line-height: 0.95;
+    margin-bottom: 1rem;
+  }
+
+  .lp-subtitle {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-ink-3);
+    font-weight: 300;
+  }
+
+  .lp-meta {
+    font-size: 0.72rem;
+    color: var(--color-ink-4);
+    margin-top: 0.5rem;
+    font-family: 'SF Mono', 'Fira Code', ui-monospace, monospace;
+    letter-spacing: 0.03em;
+  }
+
+  .lp-spacer { flex: 1; }
+
+  /* ── CTA ───────────────────────────────────────────── */
+  .lp-cta {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(var(--lp-rgb), 0.8);
+    margin-top: 2.5rem;
+    transition: gap 200ms ease-out, color 200ms ease-out;
+  }
+  .lp:is(:hover, :focus-visible) .lp-cta {
+    gap: 0.625rem;
+    color: rgba(var(--lp-rgb), 1);
+  }
+
+  .lp-arrow {
+    display: inline-block;
+    transition: transform 200ms ease-out;
+  }
+  .lp:is(:hover, :focus-visible) .lp-arrow {
+    transform: translateX(4px);
+  }
+
+  /* ── Reduced motion ────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .lp {
+      transition: opacity 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+    }
+    .lp:is(:hover, :focus-visible)     { transform: none; }
+    .lp-orb                            { transition: border-color 150ms ease; }
+    .lp:is(:hover, :focus-visible) .lp-orb   { transform: none; }
+    .lp-arrow                          { transition: none; }
+    .lp:is(:hover, :focus-visible) .lp-arrow { transform: none; }
+    .lab-trio:has(.lp:is(:hover, :focus-visible)) .lp:not(:is(:hover, :focus-visible)) {
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,231 @@
+---
+import Layout   from '../components/Layout.astro';
+import LabPanel from '../components/LabPanel.astro';
+---
+
+<Layout
+  title="The Lab — Homelab"
+  description="Hardware, software, and architecture. An overview of the entire homelab infrastructure."
+>
+
+  <!-- ══════════════════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════════════════ -->
+  <section class="lab-hero">
+    <!-- Ambient radial glow -->
+    <div class="lab-hero-glow" aria-hidden="true"></div>
+    <!-- Subtle grid -->
+    <div class="lab-hero-grid" aria-hidden="true"></div>
+
+    <div class="lab-hero-inner">
+      <p class="lab-eyebrow reveal">Overview</p>
+      <h1 class="lab-title reveal" style="transition-delay:60ms">The Lab.</h1>
+      <p class="lab-subline reveal" style="transition-delay:120ms">
+        Hardware. Software. Architecture.
+      </p>
+      <p class="lab-desc reveal" style="transition-delay:180ms">
+        The lab is structured into three layers — physical infrastructure,
+        the services running on top, and the architecture that holds it all together.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════
+       TRIO PANELS
+  ═══════════════════════════════════════════════════ -->
+  <section class="lab-trio-section" aria-label="Lab overview">
+    <!-- Multi-tint ambient glow behind the trio -->
+    <div class="lab-trio-glow" aria-hidden="true"></div>
+
+    <div class="container-wide lab-trio-wrap">
+      <div class="lab-trio" role="list">
+
+        <!--
+          Hardware → /lineup  (existing page)
+          Change accent: 'amber' | 'blue' | 'purple'
+          Change meta:   factual description of the layer
+        -->
+        <div role="listitem">
+          <LabPanel
+            eyebrow="Layer 01"
+            title="Hardware"
+            subtitle="Physical infrastructure"
+            meta="8 devices · Raspberry Pi, NAS, servers and more"
+            cta="Explore hardware"
+            href="/lineup"
+            accent="amber"
+          />
+        </div>
+
+        <!--
+          Software → /software  (future page — update href when ready)
+        -->
+        <div role="listitem">
+          <LabPanel
+            eyebrow="Layer 02"
+            title="Software"
+            subtitle="Services running the system"
+            meta="30+ services · always on, always monitored"
+            cta="Explore software"
+            href="/software"
+            accent="blue"
+          />
+        </div>
+
+        <!--
+          Architecture → /architecture  (future page — update href when ready)
+        -->
+        <div role="listitem">
+          <LabPanel
+            eyebrow="Layer 03"
+            title="Architecture"
+            subtitle="How everything connects"
+            meta="Network · Routing · Dependencies"
+            cta="View architecture"
+            href="/architecture"
+            accent="purple"
+          />
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</Layout>
+
+<style>
+  /* ── Hero ──────────────────────────────────────────── */
+  .lab-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9rem 1.5rem 7rem;
+    text-align: center;
+    overflow: hidden;
+    background: var(--color-surface-0);
+  }
+
+  .lab-hero-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 65% 55% at 50% 42%, rgba(79,142,247,0.08) 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .lab-hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+    background-size: 64px 64px;
+    pointer-events: none;
+  }
+
+  /* Bottom fade so grid dissolves into next section */
+  .lab-hero::after {
+    content: '';
+    position: absolute;
+    inset-x: 0;
+    bottom: 0;
+    height: 120px;
+    background: linear-gradient(to top, var(--color-surface-0) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .lab-hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .lab-eyebrow {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-ink-4);
+    margin-bottom: 1.5rem;
+  }
+
+  .lab-title {
+    font-size: clamp(4rem, 12vw, 8rem);
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+    margin-bottom: 1.75rem;
+    /* Subtle depth gradient on the type */
+    background: linear-gradient(180deg, var(--color-ink-1) 0%, rgba(238,240,248,0.55) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .lab-subline {
+    font-size: clamp(0.9375rem, 2.5vw, 1.3rem);
+    font-weight: 300;
+    color: var(--color-ink-3);
+    letter-spacing: 0.01em;
+    margin-bottom: 1.75rem;
+  }
+
+  .lab-desc {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--color-ink-3);
+    font-weight: 300;
+    max-width: 42ch;
+    margin: 0 auto;
+  }
+
+  /* ── Trio section ──────────────────────────────────── */
+  .lab-trio-section {
+    position: relative;
+    padding: 2rem 0 8rem;
+    background: var(--color-surface-0);
+    overflow: hidden;
+  }
+
+  /* Three-color ambient backdrop for the trio */
+  .lab-trio-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 50% 70% at 12% 55%, rgba(245,158,11,0.04)  0%, transparent 60%),
+      radial-gradient(ellipse 50% 70% at 88% 55%, rgba(168,85,247,0.035) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 50% 45%, rgba(79,142,247,0.04)  0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .lab-trio-wrap {
+    position: relative;
+  }
+
+  /* Trio: vertical on mobile, horizontal on md+ */
+  .lab-trio {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* Panels must stretch to equal height in the row */
+  .lab-trio > [role="listitem"] {
+    display: flex;
+    flex: 1;
+  }
+
+  .lab-trio > [role="listitem"] > .lp {
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .lab-trio {
+      flex-direction: row;
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+  }
+</style>

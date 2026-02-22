@@ -1,0 +1,194 @@
+---
+// Static mock — represents a QNAP Sync Station job in progress
+---
+
+<div class="fsp">
+  <!-- Window chrome -->
+  <div class="fsp-chrome">
+    <span class="fsp-dot" style="background:#ff5f57"></span>
+    <span class="fsp-dot" style="background:#febc2e"></span>
+    <span class="fsp-dot" style="background:#28c840"></span>
+    <span class="fsp-chrome-title">Sync Station</span>
+    <span class="fsp-badge">● 1 Running</span>
+  </div>
+
+  <!-- Job path -->
+  <div class="fsp-path">
+    <code>/volume1/media/movies</code>
+    <span class="fsp-arrow">→</span>
+    <code>/backup/offsite/movies</code>
+  </div>
+
+  <!-- File list -->
+  <div class="fsp-list">
+    <div class="fsp-item fsp-done">
+      <span class="fsp-ic fsp-ic-done">✓</span>
+      <span class="fsp-name">Interstellar.mkv</span>
+      <span class="fsp-meta">20.3 GB</span>
+    </div>
+    <div class="fsp-item fsp-done">
+      <span class="fsp-ic fsp-ic-done">✓</span>
+      <span class="fsp-name">Oppenheimer.mkv</span>
+      <span class="fsp-meta">18.7 GB</span>
+    </div>
+    <div class="fsp-item fsp-active">
+      <span class="fsp-ic fsp-ic-active">▶</span>
+      <span class="fsp-name">Dune.Part2.mkv</span>
+      <div class="fsp-inline-bar"><div class="fsp-inline-fill"></div></div>
+      <span class="fsp-meta">62%</span>
+    </div>
+    <div class="fsp-item fsp-queued">
+      <span class="fsp-ic fsp-ic-queued">○</span>
+      <span class="fsp-name">Blade.Runner.2049.mkv</span>
+      <span class="fsp-meta">Queued</span>
+    </div>
+    <div class="fsp-item fsp-queued">
+      <span class="fsp-ic fsp-ic-queued">○</span>
+      <span class="fsp-name">2001.A.Space.Odyssey.mkv</span>
+      <span class="fsp-meta">Queued</span>
+    </div>
+  </div>
+
+  <!-- Footer progress -->
+  <div class="fsp-footer">
+    <div class="fsp-bar-track">
+      <div class="fsp-bar-fill"></div>
+    </div>
+    <div class="fsp-stats">
+      <span>3 of 5 files</span>
+      <span>45.0 GB transferred</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .fsp {
+    background: var(--color-surface-1);
+    border-radius: 10px;
+    overflow: hidden;
+    font-family: 'SF Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 0.72rem;
+    width: 100%;
+  }
+
+  /* Chrome */
+  .fsp-chrome {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 13px;
+    background: var(--color-surface-2);
+    border-bottom: 1px solid rgba(255,255,255,0.055);
+  }
+  .fsp-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .fsp-chrome-title {
+    flex: 1;
+    font-size: 0.68rem;
+    color: var(--color-ink-3);
+    margin-left: 4px;
+  }
+  .fsp-badge { font-size: 0.65rem; color: #22c55e; }
+
+  /* Path row */
+  .fsp-path {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    overflow: hidden;
+  }
+  .fsp-path code {
+    font-size: 0.63rem;
+    color: rgba(147,197,253,0.65);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+  }
+  .fsp-arrow { color: var(--color-ink-4); flex-shrink: 0; }
+
+  /* File list */
+  .fsp-list { display: flex; flex-direction: column; }
+  .fsp-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.025);
+  }
+  .fsp-ic { width: 12px; flex-shrink: 0; font-size: 0.6rem; }
+  .fsp-ic-done   { color: #22c55e; }
+  .fsp-ic-active { color: var(--color-accent); }
+  .fsp-ic-queued { color: var(--color-ink-4); }
+
+  .fsp-name {
+    flex: 1;
+    color: var(--color-ink-2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.68rem;
+  }
+  .fsp-done   .fsp-name { color: var(--color-ink-3); }
+  .fsp-queued .fsp-name { color: var(--color-ink-4); }
+
+  .fsp-meta { font-size: 0.62rem; color: var(--color-ink-4); flex-shrink: 0; }
+
+  /* Inline progress (active file) */
+  .fsp-inline-bar {
+    width: 44px;
+    height: 3px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .fsp-inline-fill {
+    height: 100%;
+    background: var(--color-accent);
+    border-radius: 2px;
+    animation: fsp-inline 3s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+  @keyframes fsp-inline {
+    0%,  5% { width: 0%; }
+    80%      { width: 62%; }
+    98%, 100%{ width: 62%; }
+  }
+
+  /* Footer */
+  .fsp-footer {
+    padding: 9px 13px;
+    background: rgba(255,255,255,0.016);
+    border-top: 1px solid rgba(255,255,255,0.055);
+  }
+  .fsp-bar-track {
+    height: 3px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .fsp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-accent) 0%, rgba(79,142,247,0.55) 100%);
+    border-radius: 2px;
+    animation: fsp-progress 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes fsp-progress {
+    from { width: 0%; }
+    to   { width: 60%; }
+  }
+  .fsp-stats {
+    display: flex;
+    justify-content: space-between;
+    color: var(--color-ink-4);
+    font-size: 0.6rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fsp-inline-fill, .fsp-bar-fill { animation: none; }
+    .fsp-inline-fill { width: 62%; }
+    .fsp-bar-fill    { width: 60%; }
+  }
+</style>

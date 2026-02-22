@@ -20,7 +20,7 @@ const showcaseModuleSchema = z.discriminatedUnion('type', [
 const featureSchema = z.object({
   title:       z.string(),
   description: z.string(),
-  scene:       z.enum(['dashboard', 'terminal', 'plex', 'backup', 'traefik', 'generic']),
+  scene:       z.enum(['dashboard', 'terminal', 'plex', 'backup', 'traefik', 'filesync', 'archive', 'generic']),
 });
 
 // ─── Service story schema ────────────────────────────────────────────────
@@ -28,7 +28,7 @@ const featureSchema = z.object({
 const serviceStorySchema = z.object({
   name:     z.string(),
   story:    z.string(),
-  preview:  z.enum(['dashboard', 'terminal', 'plex', 'backup', 'traefik']).optional(),
+  preview:  z.enum(['dashboard', 'terminal', 'plex', 'backup', 'traefik', 'filesync', 'archive']).optional(),
   port:     z.string().optional(),
   uptime:   z.string().optional(),
   category: z.string().optional(),
@@ -37,6 +37,12 @@ const serviceStorySchema = z.object({
 // ─── Showcase block schema ───────────────────────────────────────────────
 
 const showcaseSchema = z.object({
+  flagship:      z.boolean().optional(),
+  bigStatement:  z.object({
+    value:   z.string(),
+    label:   z.string(),
+    eyebrow: z.string().optional(),
+  }).optional(),
   headline:      z.string().optional(),
   subheadline:   z.string().optional(),
   highlight:     z.string().optional(),

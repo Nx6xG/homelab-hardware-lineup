@@ -4,11 +4,13 @@ import TerminalPreview  from './previews/TerminalPreview.astro';
 import PlexPreview      from './previews/PlexPreview.astro';
 import BackupPreview    from './previews/BackupPreview.astro';
 import TraefikPreview   from './previews/TraefikPreview.astro';
+import FileSyncPreview  from './previews/FileSyncPreview.astro';
+import ArchivePreview   from './previews/ArchivePreview.astro';
 
 interface Story {
   name:     string;
   story:    string;
-  preview?: 'dashboard' | 'terminal' | 'plex' | 'backup' | 'traefik';
+  preview?: 'dashboard' | 'terminal' | 'plex' | 'backup' | 'traefik' | 'filesync' | 'archive';
   port?:    string;
   uptime?:  string;
   category?: string;
@@ -53,6 +55,8 @@ const { services } = Astro.props;
             {svc.preview === 'plex'      && <PlexPreview      />}
             {svc.preview === 'backup'    && <BackupPreview    />}
             {svc.preview === 'traefik'   && <TraefikPreview   />}
+            {svc.preview === 'filesync'  && <FileSyncPreview  />}
+            {svc.preview === 'archive'   && <ArchivePreview   />}
           </div>
         )}
 

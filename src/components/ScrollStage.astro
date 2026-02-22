@@ -4,8 +4,10 @@ import TerminalPreview  from './previews/TerminalPreview.astro';
 import PlexPreview      from './previews/PlexPreview.astro';
 import BackupPreview    from './previews/BackupPreview.astro';
 import TraefikPreview   from './previews/TraefikPreview.astro';
+import FileSyncPreview  from './previews/FileSyncPreview.astro';
+import ArchivePreview   from './previews/ArchivePreview.astro';
 
-type Scene = 'dashboard' | 'terminal' | 'plex' | 'backup' | 'traefik' | 'generic';
+type Scene = 'dashboard' | 'terminal' | 'plex' | 'backup' | 'traefik' | 'filesync' | 'archive' | 'generic';
 
 interface Feature {
   title:       string;
@@ -49,6 +51,8 @@ const scrollHeight = `${(features.length + 1) * 100}vh`;
               {f.scene === 'plex'      && <PlexPreview      />}
               {f.scene === 'backup'    && <BackupPreview    />}
               {f.scene === 'traefik'   && <TraefikPreview   />}
+              {f.scene === 'filesync'  && <FileSyncPreview  />}
+              {f.scene === 'archive'   && <ArchivePreview   />}
               {f.scene === 'generic'   && (
                 <div class="media-placeholder aspect-[4/3] flex items-center justify-center">
                   <svg width="48" height="48" viewBox="0 0 72 72" fill="none" aria-hidden="true" class="opacity-20">
@@ -115,6 +119,8 @@ const scrollHeight = `${(features.length + 1) * 100}vh`;
                 {f.scene === 'plex'      && <PlexPreview      />}
                 {f.scene === 'backup'    && <BackupPreview    />}
                 {f.scene === 'traefik'   && <TraefikPreview   />}
+                {f.scene === 'filesync'  && <FileSyncPreview  />}
+                {f.scene === 'archive'   && <ArchivePreview   />}
                 {f.scene === 'generic'   && (
                   <div class="media-placeholder aspect-[4/3] rounded-[16px] w-full flex items-center justify-center">
                     <svg width="64" height="64" viewBox="0 0 72 72" fill="none" aria-hidden="true" class="opacity-20">

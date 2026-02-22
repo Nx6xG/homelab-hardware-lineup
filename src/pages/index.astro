@@ -3,15 +3,14 @@ import { getCollection } from 'astro:content';
 import Layout from '../components/Layout.astro';
 import Badge from '../components/Badge.astro';
 import Reveal from '../components/Reveal.astro';
+import DevicePlaceholder from '../components/DevicePlaceholder.astro';
 
 const devices = await getCollection('devices');
 const sorted  = [...devices].sort(
   (a, b) => new Date(b.data.updated).getTime() - new Date(a.data.updated).getTime()
 );
 
-const lineup      = sorted.slice(0, 6);
-const onlineCount = devices.filter(d => d.data.status === 'online').length;
-const totalSvcs   = [...new Set(devices.flatMap(d => d.data.services))].length;
+const lineup = sorted.slice(0, 6);
 
 // Per device-type: gradient bg + geometric dot color + dot border-radius
 const getAccent = (type: string) => {
@@ -28,15 +27,15 @@ const getAccent = (type: string) => {
   return map[type] ?? { bg: 'rgba(79,142,247,0.07)', dot: 'rgba(79,142,247,0.28)', r: '6px' };
 };
 
-// Hero: back to "Hardware Lineup."
-const heroLines = ['Hardware', 'Lineup.'];
+// Hero title — word-by-word entrance animation
+const heroLines = ['HomeLab.'];
 
+// Stable metrics — no runtime-computed service/uptime counts
 const sysMetrics = [
   { value: String(devices.length), label: 'Devices'     },
-  { value: String(totalSvcs),      label: 'Services'    },
-  { value: String(onlineCount),    label: 'Online now'  },
+  { value: '30+',                  label: 'Services'    },
   { value: '100%',                 label: 'Self-hosted' },
-  { value: '0€',                   label: 'Cloud costs' },
+  { value: '0€',                   label: 'Cloud cost'  },
 ];
 
 const docItems = [
@@ -49,7 +48,10 @@ const docItems = [
 ];
 ---
 
-<Layout title="Homelab Hardware Lineup">
+<Layout
+  title="HomeLab"
+  description="Hardware, software, and architecture — a personal homelab documented as a product."
+>
 
   <!-- ═══════════════════════════════════════════════════════
        HERO
@@ -80,8 +82,8 @@ const docItems = [
         Personal Homelab
       </p>
 
-      <!-- "Hardware Lineup." — two words, word-by-word entrance -->
-      <h1 class="mb-8 sm:mb-12" aria-label="Hardware Lineup.">
+      <!-- "HomeLab." — word-by-word entrance animation -->
+      <h1 class="mb-8 sm:mb-12" aria-label="HomeLab.">
         {heroLines.map((line, i) => (
           <div
             class="word-in block font-extrabold tracking-[-0.045em] text-[var(--color-ink-1)]"
@@ -97,8 +99,8 @@ const docItems = [
         class="text-[clamp(1rem,1.8vw,1.2rem)] font-light text-[var(--color-ink-3)] max-w-[38ch] mx-auto leading-[1.65] mb-10 sm:mb-14"
         style="animation:hero-fade-up 700ms 570ms cubic-bezier(0.16,1,0.3,1) both"
       >
-        Everything self-hosted, designed with intention,
-        and documented in full.
+        Hardware, software, and architecture —
+        documented like a product.
       </p>
 
       <!-- CTAs — stacked on mobile, side by side on sm+ -->
@@ -106,14 +108,14 @@ const docItems = [
         class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
         style="animation:hero-fade-up 700ms 700ms cubic-bezier(0.16,1,0.3,1) both"
       >
-        <a href="/lineup" class="btn-primary-lg w-full sm:w-auto justify-center">
-          Explore hardware
+        <a href="/lab" class="btn-primary-lg w-full sm:w-auto justify-center">
+          Explore the lab
           <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true">
             <path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </a>
-        <a href="/builds" class="btn-secondary-lg w-full sm:w-auto justify-center">
-          View documentation
+        <a href="/lineup" class="btn-secondary-lg w-full sm:w-auto justify-center">
+          View hardware
         </a>
       </div>
 
@@ -149,18 +151,9 @@ const docItems = [
           role="list"
           aria-label="System metrics"
         >
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 lg:gap-4">
-            {sysMetrics.map(({ value, label }, i) => (
-              <div
-                class:list={[
-                  'text-center',
-                  // Last item: spans full row on mobile/tablet, normal on desktop
-                  i === sysMetrics.length - 1
-                    ? 'col-span-2 sm:col-span-3 lg:col-span-1'
-                    : '',
-                ]}
-                role="listitem"
-              >
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
+            {sysMetrics.map(({ value, label }) => (
+              <div class="text-center" role="listitem">
                 <p class="text-[clamp(1.5rem,3vw,2.2rem)] font-bold text-[var(--color-ink-1)] tabular-nums leading-none mb-1.5">
                   {value}
                 </p>
@@ -189,7 +182,7 @@ const docItems = [
             Hardware
           </p>
           <h2 id="lineup-h" class="text-display-sm text-[var(--color-ink-1)]">
-            Hardware Lineup
+            Hardware
           </h2>
         </div>
         <a href="/lineup" class="btn-secondary hidden sm:inline-flex flex-shrink-0">
@@ -216,13 +209,13 @@ const docItems = [
                 style={`position:absolute; top:0; right:0; width:100px; height:100px; background:radial-gradient(ellipse at top right, ${accent.bg}, transparent 70%); pointer-events:none;`}
               ></div>
 
-              <!-- Minimal placeholder visual -->
+              <!-- Device type placeholder -->
               <div
                 aria-hidden="true"
                 class="relative w-full h-20 sm:h-24 rounded-[8px] sm:rounded-[10px] mb-3 sm:mb-4 flex items-center justify-center overflow-hidden"
-                style={`background:linear-gradient(140deg, ${accent.bg} 0%, rgba(0,0,0,0) 100%); border:1px solid rgba(255,255,255,0.05);`}
+                style={`background: radial-gradient(ellipse at 50% 40%, ${accent.bg} 0%, transparent 65%), linear-gradient(160deg, var(--color-surface-2) 0%, var(--color-surface-3) 100%); border:1px solid rgba(255,255,255,0.05);`}
               >
-                <div style={`width:24px; height:24px; border-radius:${accent.r}; background:${accent.dot};`}></div>
+                <DevicePlaceholder type={device.data.type} size={28} />
               </div>
 
               <!-- Name + role -->
@@ -302,7 +295,7 @@ const docItems = [
           Documented like a product.
         </h2>
         <p class="text-[0.9375rem] sm:text-[1rem] text-[var(--color-ink-3)] leading-[1.7] max-w-[44ch]">
-          Each device in the lineup has its own deep-dive page.
+          Each device in the lab has its own deep-dive page.
           Not just specs — the full story behind every decision.
         </p>
       </Reveal>

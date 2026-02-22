@@ -1,5 +1,6 @@
 ---
 import Badge from './Badge.astro';
+import DevicePlaceholder from './DevicePlaceholder.astro';
 
 interface Props {
   name: string;
@@ -40,6 +41,18 @@ const typeLabel: Record<string, string> = {
 
 const typeStr = typeLabel[type] ?? type;
 const eyebrow = [typeStr, location].filter(Boolean).join(' · ');
+
+const heroTint: Record<string, string> = {
+  'raspberry-pi': 'rgba(79,142,247,0.08)',
+  'nas':          'rgba(245,158,11,0.07)',
+  'server':       'rgba(99,102,241,0.08)',
+  'pc':           'rgba(99,102,241,0.07)',
+  'network':      'rgba(34,197,94,0.07)',
+  'console':      'rgba(236,72,153,0.07)',
+  'smart-home':   'rgba(168,85,247,0.08)',
+  'display':      'rgba(148,163,184,0.06)',
+};
+const tint = heroTint[type] ?? 'rgba(79,142,247,0.05)';
 ---
 
 <section
@@ -136,27 +149,11 @@ const eyebrow = [typeStr, location].filter(Boolean).join(' · ');
               decoding="async"
             />
           ) : (
-            <div class="media-placeholder w-full h-full flex items-center justify-center">
-              <!-- Clean abstract mark — no emoji -->
-              <svg
-                width="72"
-                height="72"
-                viewBox="0 0 72 72"
-                fill="none"
-                aria-hidden="true"
-                class="opacity-20"
-              >
-                <rect x="4" y="4" width="28" height="28" rx="6"
-                  fill="none" stroke="currentColor" stroke-width="1.5"/>
-                <rect x="40" y="4" width="28" height="28" rx="6"
-                  fill="none" stroke="currentColor" stroke-width="1.5"/>
-                <rect x="4" y="40" width="28" height="28" rx="6"
-                  fill="none" stroke="currentColor" stroke-width="1.5"/>
-                <rect x="40" y="40" width="28" height="28" rx="6"
-                  fill="none" stroke="currentColor" stroke-width="1.5"/>
-                <circle cx="18" cy="18" r="5" fill="currentColor" opacity="0.4"/>
-                <circle cx="54" cy="54" r="5" fill="currentColor" opacity="0.4"/>
-              </svg>
+            <div
+              class="media-placeholder w-full h-full flex items-center justify-center"
+              style={`background: radial-gradient(ellipse 65% 55% at 50% 40%, ${tint} 0%, transparent 70%), linear-gradient(160deg, var(--color-surface-2) 0%, var(--color-surface-3) 100%);`}
+            >
+              <DevicePlaceholder type={type} size={80} />
             </div>
           )}
         </div>

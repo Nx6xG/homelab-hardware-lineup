@@ -14,6 +14,9 @@ import FeatureExplorer from '../../components/FeatureExplorer.astro';
 import SnapCarousel from '../../components/SnapCarousel.astro';
 import ScrollStage from '../../components/ScrollStage.astro';
 import ServiceStoryBlock from '../../components/ServiceStoryBlock.astro';
+import BigStatement from '../../components/BigStatement.astro';
+import ArchitectureViz from '../../components/ArchitectureViz.astro';
+import FlagshipDecisions from '../../components/FlagshipDecisions.astro';
 
 export async function getStaticPaths() {
   const devices = await getCollection('devices');
@@ -30,6 +33,8 @@ const { Content } = await render(device);
 const showcase = data.showcase;
 const hasScrollStage    = (showcase?.features?.length ?? 0) > 0;
 const hasServiceStories = (showcase?.serviceStories?.length ?? 0) > 0;
+const isFlagship        = showcase?.flagship === true;
+const hasDecisions      = data.decisions.chose.length > 0 || data.decisions.tradeoffs.length > 0 || data.decisions.next.length > 0;
 
 // Related devices by shared tags
 const related = allDevices
@@ -89,37 +94,21 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
   />
 
   <!-- ═══════════════════════════════════════════════════════════
-       SHOWCASE LAYER
+       FLAGSHIP LAYOUT (when showcase.flagship = true)
   ══════════════════════════════════════════════════════════════ -->
-  {showcase && (
-    <div class="showcase-layer">
+  {isFlagship && (
+    <div>
 
-      <!-- Showcase headline -->
-      {(showcase.headline || showcase.subheadline) && (
-        <section class="py-14 lg:py-24 section-divider text-center">
-          <div class="container-content">
-            <Reveal>
-              {showcase.headline && (
-                <h2 class="text-display-md text-[var(--color-ink-1)] mb-4">
-                  {showcase.headline}
-                </h2>
-              )}
-              {showcase.subheadline && (
-                <p class="text-[1.1rem] font-light text-[var(--color-ink-3)] max-w-[50ch] mx-auto leading-[1.6]">
-                  {showcase.subheadline}
-                </p>
-              )}
-              {showcase.highlight && (
-                <p class="mt-4 text-[0.875rem] text-[var(--color-accent)] font-medium tracking-wide">
-                  {showcase.highlight}
-                </p>
-              )}
-            </Reveal>
-          </div>
-        </section>
+      {/* Big Statement */}
+      {showcase?.bigStatement && (
+        <BigStatement
+          value={showcase.bigStatement.value}
+          label={showcase.bigStatement.label}
+          eyebrow={showcase.bigStatement.eyebrow}
+        />
       )}
 
-      <!-- Scroll-driven feature stage -->
+      {/* Scroll-driven feature stage */}
       {hasScrollStage && (
         <div class="section-divider">
           <div class="pt-10 pb-0 container-wide">
@@ -129,297 +118,404 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
               </p>
             </Reveal>
           </div>
-          <ScrollStage features={showcase.features} />
+          <ScrollStage features={showcase!.features} />
         </div>
       )}
 
-      <!-- Legacy showcase modules (explorer / carousel / featureGrid) -->
-      {showcase.modules.map((mod) => (
-        <section class="py-16 section-divider">
+      {/* Service Story Blocks */}
+      {hasServiceStories && (
+        <section class="py-20 section-divider" aria-labelledby="fl-services-h">
           <div class="container-wide">
-            <Reveal>
-              {mod.type === 'explorer' && (
-                <FeatureExplorer items={mod.items} />
-              )}
-              {mod.type === 'carousel' && (
-                <SnapCarousel items={mod.items} />
-              )}
-              {mod.type === 'featureGrid' && (
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {mod.items.map((item, i) => (
-                    <FeaturePanel tone={toneList[i % toneList.length]} class="p-6">
-                      <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
-                        {item.label}
-                      </p>
-                      <h3 class="text-[1.1rem] font-semibold tracking-[-0.015em] text-[var(--color-ink-1)] mb-3 leading-[1.3]">
-                        {item.headline}
-                      </h3>
-                      <p class="text-[0.875rem] leading-[1.6] text-[var(--color-ink-3)]">
-                        {item.body}
-                      </p>
-                    </FeaturePanel>
-                  ))}
-                </div>
-              )}
-            </Reveal>
-          </div>
-        </section>
-      ))}
-
-    </div>
-  )}
-
-  <!-- ─── FEATURE HIGHLIGHT (fallback when no showcase) ─────── -->
-  {!showcase && featureStat && (
-    <section class="py-24 section-divider text-center" aria-hidden="true">
-      <div class="container-content">
-        <Reveal>
-          <div class="inline-block">
-            <p class="text-[clamp(4.5rem,12vw,10rem)] font-black leading-none tracking-[-0.04em] text-[var(--color-ink-1)] tabular-nums">
-              {featureStat.number}
-            </p>
-            <p class="text-[1.1rem] text-[var(--color-ink-3)] mt-3 font-light">
-              {featureStat.label}
-              <span class="block text-[0.875rem] mt-1 text-[var(--color-ink-4)]">{featureStat.sub}</span>
-            </p>
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  )}
-
-  <!-- ═══════════════════════════════════════════════════════════
-       DOCUMENTATION LAYER
-  ══════════════════════════════════════════════════════════════ -->
-  <div class="container-wide py-4">
-    <div class="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-16 items-start">
-
-      <!-- Left: narrative -->
-      <div>
-
-        <!-- WHAT I BUILT -->
-        <section id="outcomes" class="py-16 section-divider" aria-labelledby="outcomes-h">
-          <Reveal>
-            <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
-              Outcomes
-            </p>
-            <h2 id="outcomes-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
-              What I built
-            </h2>
-          </Reveal>
-          <Outcomes items={data.outcomes} />
-        </section>
-
-        <!-- SERVICES — story blocks if available, chips otherwise -->
-        {(data.services.length > 0 || data.stack.length > 0) && (
-          <section id="services" class="py-16 section-divider" aria-labelledby="services-h">
-            <Reveal>
+            <Reveal class="mb-10">
               <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
-                Software
+                Services
               </p>
-              <h2 id="services-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
+              <h2 id="fl-services-h" class="text-display-sm text-[var(--color-ink-1)]">
                 What runs on it
               </h2>
             </Reveal>
-
-            {hasServiceStories ? (
-              <ServiceStoryBlock services={showcase!.serviceStories} />
-            ) : (
-              <div class="space-y-8">
-                {data.services.length > 0 && (
-                  <div>
-                    <p class="text-[0.8125rem] text-[var(--color-ink-3)] mb-3 font-medium">Applications</p>
-                    <div class="flex flex-wrap gap-2 stagger-children">
-                      {data.services.map(svc => (
-                        <span class="chip">{svc}</span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {data.stack.length > 0 && (
-                  <Reveal>
-                    <div>
-                      <p class="text-[0.8125rem] text-[var(--color-ink-3)] mb-3 font-medium">Stack</p>
-                      <div class="flex flex-wrap gap-2">
-                        {data.stack.map(tech => (
-                          <span
-                            class="chip"
-                            style="background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.14); color: rgba(147,197,253,0.85);"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </Reveal>
-                )}
-              </div>
-            )}
-          </section>
-        )}
-
-        <!-- ARCHITECTURE (MDX) -->
-        <section id="architecture" class="py-16 section-divider" aria-labelledby="arch-h">
-          <Reveal>
-            <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
-              Deep dive
-            </p>
-            <h2 id="arch-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
-              Architecture &amp; notes
-            </h2>
-          </Reveal>
-          <Reveal delay={80}>
-            <article class="prose prose-invert max-w-none">
-              <Content />
-            </article>
-          </Reveal>
+            <ServiceStoryBlock services={showcase!.serviceStories} />
+          </div>
         </section>
+      )}
 
-        <!-- DECISIONS -->
-        {(data.decisions.chose.length > 0 || data.decisions.tradeoffs.length > 0 || data.decisions.next.length > 0) && (
-          <section id="decisions" class="py-16 section-divider" aria-labelledby="decisions-h">
-            <Reveal>
+      {/* Architecture Viz */}
+      <ArchitectureViz />
+
+      {/* Flagship Decisions */}
+      {hasDecisions && (
+        <section class="py-20 section-divider" aria-labelledby="fl-decisions-h">
+          <div class="container-content">
+            <Reveal class="mb-12 text-center">
               <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
                 Config &amp; Decisions
               </p>
-              <h2 id="decisions-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
+              <h2 id="fl-decisions-h" class="text-display-sm text-[var(--color-ink-1)]">
                 What I chose &amp; why
               </h2>
             </Reveal>
-            <Reveal delay={80}>
-              <Decisions decisions={data.decisions} />
-            </Reveal>
-          </section>
-        )}
+            <FlagshipDecisions decisions={data.decisions} />
+          </div>
+        </section>
+      )}
 
-        <!-- SPECS -->
-        <section id="specs" class="py-16 section-divider" aria-labelledby="specs-h">
-          <Reveal>
+      {/* Specs */}
+      <section id="specs" class="py-20 section-divider" aria-labelledby="fl-specs-h">
+        <div class="container-content">
+          <Reveal class="mb-10 text-center">
             <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
               Hardware
             </p>
-            <h2 id="specs-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
+            <h2 id="fl-specs-h" class="text-display-sm text-[var(--color-ink-1)]">
               Specifications
             </h2>
           </Reveal>
           <Reveal delay={60}>
             <SpecsTable specs={data.specs} />
           </Reveal>
-        </section>
-
-        <!-- GALLERY -->
-        {data.photos.length > 1 && (
-          <section id="gallery" class="py-16 section-divider" aria-labelledby="gallery-h">
-            <Reveal>
-              <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
-                Photos
-              </p>
-              <h2 id="gallery-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
-                Gallery
-              </h2>
-            </Reveal>
-            <Reveal delay={60}>
-              <Gallery photos={data.photos} name={data.name} />
-            </Reveal>
-          </section>
-        )}
-
-        <!-- LINKS -->
-        {(data.links.dashboard || data.links.admin || data.links.docs || data.links.repo) && (
-          <section id="links" class="py-16 section-divider" aria-labelledby="links-h">
-            <Reveal>
-              <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
-                Resources
-              </p>
-              <h2 id="links-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
-                Links
-              </h2>
-            </Reveal>
-            <Reveal delay={60} class="flex flex-wrap gap-3">
-              {data.links.dashboard && (
-                <a href={data.links.dashboard} class="btn-secondary" target="_blank" rel="noopener noreferrer">
-                  Dashboard ↗
-                </a>
-              )}
-              {data.links.admin && (
-                <a href={data.links.admin} class="btn-secondary" target="_blank" rel="noopener noreferrer">
-                  Admin ↗
-                </a>
-              )}
-              {data.links.docs && (
-                <a href={data.links.docs} class="btn-secondary" target="_blank" rel="noopener noreferrer">
-                  Docs ↗
-                </a>
-              )}
-              {data.links.repo && (
-                <a href={data.links.repo} class="btn-secondary" target="_blank" rel="noopener noreferrer">
-                  Repository ↗
-                </a>
-              )}
-            </Reveal>
-          </section>
-        )}
-
-      </div>
-
-      <!-- ─── STICKY SIDEBAR ─────────────────────────────── -->
-      <aside class="sticky-sidebar hidden lg:block" aria-label="On this page">
-        <div class="space-y-2">
-
-          <nav
-            class="rounded-[14px] bg-[var(--color-surface-1)] border border-[rgba(255,255,255,0.065)] p-5"
-            aria-label="Sections"
-          >
-            <p class="text-[0.7rem] font-semibold tracking-[0.1em] uppercase text-[var(--color-ink-4)] mb-4">
-              On this page
-            </p>
-            <ul class="space-y-1" role="list">
-              {tocLinks.map(({ href, label }) => (
-                <li>
-                  <a
-                    href={href}
-                    data-toc-link
-                    class="flex items-center gap-2.5 py-1 text-[0.8125rem] text-[var(--color-ink-3)] hover:text-[var(--color-ink-1)] transition-colors duration-150 group"
-                  >
-                    <span
-                      data-toc-dot
-                      class="w-[3px] h-[3px] rounded-full bg-[var(--color-ink-4)] transition-all duration-200 group-hover:bg-[var(--color-accent)]"
-                      aria-hidden="true"
-                    ></span>
-                    {label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div class="rounded-[14px] bg-[var(--color-surface-1)] border border-[rgba(255,255,255,0.065)] p-5">
-            <div class="flex items-center justify-between mb-4">
-              <p class="text-[0.8125rem] font-medium text-[var(--color-ink-2)]">{data.name}</p>
-              <Badge status={data.status} size="sm" />
-            </div>
-            <div class="space-y-2">
-              {data.location && (
-                <p class="text-[0.75rem] text-[var(--color-ink-3)]">{data.location}</p>
-              )}
-              <p class="text-[0.75rem] text-[var(--color-ink-4)]">Updated {formattedUpdated}</p>
-            </div>
-            {data.tags.length > 0 && (
-              <div class="flex flex-wrap gap-1.5 mt-4 pt-4 border-t border-[rgba(255,255,255,0.055)]">
-                {data.tags.map(tag => (
-                  <span class="text-[0.65rem] px-2 py-0.5 rounded-full bg-[var(--color-surface-3)] text-[var(--color-ink-4)] uppercase tracking-wider font-medium">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-
         </div>
-      </aside>
+      </section>
 
     </div>
-  </div>
+  )}
+
+  <!-- ═══════════════════════════════════════════════════════════
+       STANDARD LAYOUT (all other devices)
+  ══════════════════════════════════════════════════════════════ -->
+  {!isFlagship && (
+    <Fragment>
+
+      {/* Showcase layer */}
+      {showcase && (
+        <div class="showcase-layer">
+
+          {/* Showcase headline */}
+          {(showcase.headline || showcase.subheadline) && (
+            <section class="py-14 lg:py-24 section-divider text-center">
+              <div class="container-content">
+                <Reveal>
+                  {showcase.headline && (
+                    <h2 class="text-display-md text-[var(--color-ink-1)] mb-4">
+                      {showcase.headline}
+                    </h2>
+                  )}
+                  {showcase.subheadline && (
+                    <p class="text-[1.1rem] font-light text-[var(--color-ink-3)] max-w-[50ch] mx-auto leading-[1.6]">
+                      {showcase.subheadline}
+                    </p>
+                  )}
+                  {showcase.highlight && (
+                    <p class="mt-4 text-[0.875rem] text-[var(--color-accent)] font-medium tracking-wide">
+                      {showcase.highlight}
+                    </p>
+                  )}
+                </Reveal>
+              </div>
+            </section>
+          )}
+
+          {/* Scroll-driven feature stage */}
+          {hasScrollStage && (
+            <div class="section-divider">
+              <div class="pt-10 pb-0 container-wide">
+                <Reveal class="mb-6">
+                  <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)]">
+                    Feature deep dive
+                  </p>
+                </Reveal>
+              </div>
+              <ScrollStage features={showcase.features} />
+            </div>
+          )}
+
+          {/* Legacy showcase modules (explorer / carousel / featureGrid) */}
+          {showcase.modules.map((mod) => (
+            <section class="py-16 section-divider">
+              <div class="container-wide">
+                <Reveal>
+                  {mod.type === 'explorer' && (
+                    <FeatureExplorer items={mod.items} />
+                  )}
+                  {mod.type === 'carousel' && (
+                    <SnapCarousel items={mod.items} />
+                  )}
+                  {mod.type === 'featureGrid' && (
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {mod.items.map((item, i) => (
+                        <FeaturePanel tone={toneList[i % toneList.length]} class="p-6">
+                          <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
+                            {item.label}
+                          </p>
+                          <h3 class="text-[1.1rem] font-semibold tracking-[-0.015em] text-[var(--color-ink-1)] mb-3 leading-[1.3]">
+                            {item.headline}
+                          </h3>
+                          <p class="text-[0.875rem] leading-[1.6] text-[var(--color-ink-3)]">
+                            {item.body}
+                          </p>
+                        </FeaturePanel>
+                      ))}
+                    </div>
+                  )}
+                </Reveal>
+              </div>
+            </section>
+          ))}
+
+        </div>
+      )}
+
+      {/* Feature highlight fallback (no showcase) */}
+      {!showcase && featureStat && (
+        <section class="py-24 section-divider text-center" aria-hidden="true">
+          <div class="container-content">
+            <Reveal>
+              <div class="inline-block">
+                <p class="text-[clamp(4.5rem,12vw,10rem)] font-black leading-none tracking-[-0.04em] text-[var(--color-ink-1)] tabular-nums">
+                  {featureStat.number}
+                </p>
+                <p class="text-[1.1rem] text-[var(--color-ink-3)] mt-3 font-light">
+                  {featureStat.label}
+                  <span class="block text-[0.875rem] mt-1 text-[var(--color-ink-4)]">{featureStat.sub}</span>
+                </p>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+      )}
+
+      {/* Documentation layer with sidebar */}
+      <div class="container-wide py-4">
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-16 items-start">
+
+          {/* Left: narrative */}
+          <div>
+
+            {/* WHAT I BUILT */}
+            <section id="outcomes" class="py-16 section-divider" aria-labelledby="outcomes-h">
+              <Reveal>
+                <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
+                  Outcomes
+                </p>
+                <h2 id="outcomes-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
+                  What I built
+                </h2>
+              </Reveal>
+              <Outcomes items={data.outcomes} />
+            </section>
+
+            {/* SERVICES */}
+            {(data.services.length > 0 || data.stack.length > 0) && (
+              <section id="services" class="py-16 section-divider" aria-labelledby="services-h">
+                <Reveal>
+                  <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
+                    Software
+                  </p>
+                  <h2 id="services-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
+                    What runs on it
+                  </h2>
+                </Reveal>
+
+                {hasServiceStories ? (
+                  <ServiceStoryBlock services={showcase!.serviceStories} />
+                ) : (
+                  <div class="space-y-8">
+                    {data.services.length > 0 && (
+                      <div>
+                        <p class="text-[0.8125rem] text-[var(--color-ink-3)] mb-3 font-medium">Applications</p>
+                        <div class="flex flex-wrap gap-2 stagger-children">
+                          {data.services.map(svc => (
+                            <span class="chip">{svc}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {data.stack.length > 0 && (
+                      <Reveal>
+                        <div>
+                          <p class="text-[0.8125rem] text-[var(--color-ink-3)] mb-3 font-medium">Stack</p>
+                          <div class="flex flex-wrap gap-2">
+                            {data.stack.map(tech => (
+                              <span
+                                class="chip"
+                                style="background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.14); color: rgba(147,197,253,0.85);"
+                              >
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </Reveal>
+                    )}
+                  </div>
+                )}
+              </section>
+            )}
+
+            {/* ARCHITECTURE (MDX) */}
+            <section id="architecture" class="py-16 section-divider" aria-labelledby="arch-h">
+              <Reveal>
+                <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
+                  Deep dive
+                </p>
+                <h2 id="arch-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
+                  Architecture &amp; notes
+                </h2>
+              </Reveal>
+              <Reveal delay={80}>
+                <article class="prose prose-invert max-w-none">
+                  <Content />
+                </article>
+              </Reveal>
+            </section>
+
+            {/* DECISIONS */}
+            {hasDecisions && (
+              <section id="decisions" class="py-16 section-divider" aria-labelledby="decisions-h">
+                <Reveal>
+                  <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
+                    Config &amp; Decisions
+                  </p>
+                  <h2 id="decisions-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
+                    What I chose &amp; why
+                  </h2>
+                </Reveal>
+                <Reveal delay={80}>
+                  <Decisions decisions={data.decisions} />
+                </Reveal>
+              </section>
+            )}
+
+            {/* SPECS */}
+            <section id="specs" class="py-16 section-divider" aria-labelledby="specs-h">
+              <Reveal>
+                <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
+                  Hardware
+                </p>
+                <h2 id="specs-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
+                  Specifications
+                </h2>
+              </Reveal>
+              <Reveal delay={60}>
+                <SpecsTable specs={data.specs} />
+              </Reveal>
+            </section>
+
+            {/* GALLERY */}
+            {data.photos.length > 1 && (
+              <section id="gallery" class="py-16 section-divider" aria-labelledby="gallery-h">
+                <Reveal>
+                  <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
+                    Photos
+                  </p>
+                  <h2 id="gallery-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
+                    Gallery
+                  </h2>
+                </Reveal>
+                <Reveal delay={60}>
+                  <Gallery photos={data.photos} name={data.name} />
+                </Reveal>
+              </section>
+            )}
+
+            {/* LINKS */}
+            {(data.links.dashboard || data.links.admin || data.links.docs || data.links.repo) && (
+              <section id="links" class="py-16 section-divider" aria-labelledby="links-h">
+                <Reveal>
+                  <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
+                    Resources
+                  </p>
+                  <h2 id="links-h" class="text-display-sm text-[var(--color-ink-1)] mb-8">
+                    Links
+                  </h2>
+                </Reveal>
+                <Reveal delay={60} class="flex flex-wrap gap-3">
+                  {data.links.dashboard && (
+                    <a href={data.links.dashboard} class="btn-secondary" target="_blank" rel="noopener noreferrer">
+                      Dashboard ↗
+                    </a>
+                  )}
+                  {data.links.admin && (
+                    <a href={data.links.admin} class="btn-secondary" target="_blank" rel="noopener noreferrer">
+                      Admin ↗
+                    </a>
+                  )}
+                  {data.links.docs && (
+                    <a href={data.links.docs} class="btn-secondary" target="_blank" rel="noopener noreferrer">
+                      Docs ↗
+                    </a>
+                  )}
+                  {data.links.repo && (
+                    <a href={data.links.repo} class="btn-secondary" target="_blank" rel="noopener noreferrer">
+                      Repository ↗
+                    </a>
+                  )}
+                </Reveal>
+              </section>
+            )}
+
+          </div>
+
+          {/* Sticky sidebar */}
+          <aside class="sticky-sidebar hidden lg:block" aria-label="On this page">
+            <div class="space-y-2">
+
+              <nav
+                class="rounded-[14px] bg-[var(--color-surface-1)] border border-[rgba(255,255,255,0.065)] p-5"
+                aria-label="Sections"
+              >
+                <p class="text-[0.7rem] font-semibold tracking-[0.1em] uppercase text-[var(--color-ink-4)] mb-4">
+                  On this page
+                </p>
+                <ul class="space-y-1" role="list">
+                  {tocLinks.map(({ href, label }) => (
+                    <li>
+                      <a
+                        href={href}
+                        data-toc-link
+                        class="flex items-center gap-2.5 py-1 text-[0.8125rem] text-[var(--color-ink-3)] hover:text-[var(--color-ink-1)] transition-colors duration-150 group"
+                      >
+                        <span
+                          data-toc-dot
+                          class="w-[3px] h-[3px] rounded-full bg-[var(--color-ink-4)] transition-all duration-200 group-hover:bg-[var(--color-accent)]"
+                          aria-hidden="true"
+                        ></span>
+                        {label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+
+              <div class="rounded-[14px] bg-[var(--color-surface-1)] border border-[rgba(255,255,255,0.065)] p-5">
+                <div class="flex items-center justify-between mb-4">
+                  <p class="text-[0.8125rem] font-medium text-[var(--color-ink-2)]">{data.name}</p>
+                  <Badge status={data.status} size="sm" />
+                </div>
+                <div class="space-y-2">
+                  {data.location && (
+                    <p class="text-[0.75rem] text-[var(--color-ink-3)]">{data.location}</p>
+                  )}
+                  <p class="text-[0.75rem] text-[var(--color-ink-4)]">Updated {formattedUpdated}</p>
+                </div>
+                {data.tags.length > 0 && (
+                  <div class="flex flex-wrap gap-1.5 mt-4 pt-4 border-t border-[rgba(255,255,255,0.055)]">
+                    {data.tags.map(tag => (
+                      <span class="text-[0.65rem] px-2 py-0.5 rounded-full bg-[var(--color-surface-3)] text-[var(--color-ink-4)] uppercase tracking-wider font-medium">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+            </div>
+          </aside>
+
+        </div>
+      </div>
+
+    </Fragment>
+  )}
 
   <!-- ─── RELATED DEVICES ────────────────────────────────────── -->
   {related.length > 0 && (

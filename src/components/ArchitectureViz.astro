@@ -1,0 +1,267 @@
+---
+// ArchitectureViz — animated data-flow: Client → Reverse Proxy → NAS → Storage
+---
+
+<section class="av section-divider">
+  <div class="container-content">
+
+    <div class="av-intro reveal">
+      <p class="av-eyebrow">Infrastructure</p>
+      <h2 class="av-heading">How it connects</h2>
+      <p class="av-desc">Jede Anfrage — ob aus dem Heimnetz oder von unterwegs — läuft durch denselben Stack.</p>
+    </div>
+
+    <!-- Desktop: horizontal animated flow (hidden on mobile) -->
+    <div class="av-desktop" aria-hidden="true">
+      <div class="av-flow">
+
+        <!-- Node: Client -->
+        <div class="av-node">
+          <div class="av-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="13" rx="2"/>
+              <path d="M0 20h24M7 20l1.5-4h7L17 20"/>
+            </svg>
+          </div>
+          <p class="av-label">Client</p>
+          <p class="av-sublabel">Browser / App</p>
+        </div>
+
+        <div class="av-connector">
+          <div class="av-packet" style="animation-delay:0s"></div>
+          <div class="av-packet" style="animation-delay:1.3s"></div>
+        </div>
+
+        <!-- Node: Reverse Proxy -->
+        <div class="av-node">
+          <div class="av-icon av-icon--blue">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L4 6v6c0 5.25 3.5 9.5 8 11 4.5-1.5 8-5.75 8-11V6L12 2z"/>
+              <polyline points="9,12 11,14 15,10"/>
+            </svg>
+          </div>
+          <p class="av-label">Reverse Proxy</p>
+          <p class="av-sublabel">Traefik</p>
+        </div>
+
+        <div class="av-connector">
+          <div class="av-packet" style="animation-delay:0.45s"></div>
+          <div class="av-packet" style="animation-delay:1.75s"></div>
+        </div>
+
+        <!-- Node: NAS -->
+        <div class="av-node">
+          <div class="av-icon av-icon--amber">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="8" rx="2"/>
+              <rect x="2" y="13" width="20" height="8" rx="2"/>
+              <circle cx="19" cy="7" r="1" fill="currentColor" stroke="none"/>
+              <circle cx="19" cy="17" r="1" fill="currentColor" stroke="none"/>
+              <rect x="5" y="5.5" width="10" height="3" rx="1"/>
+              <rect x="5" y="15.5" width="10" height="3" rx="1"/>
+            </svg>
+          </div>
+          <p class="av-label">NAS</p>
+          <p class="av-sublabel">QNAP QTS</p>
+        </div>
+
+        <div class="av-connector">
+          <div class="av-packet" style="animation-delay:0.9s"></div>
+          <div class="av-packet" style="animation-delay:2.2s"></div>
+        </div>
+
+        <!-- Node: Storage -->
+        <div class="av-node">
+          <div class="av-icon av-icon--green">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="12" cy="5" rx="9" ry="3"/>
+              <path d="M3 5v5c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/>
+              <path d="M3 10v5c0 1.66 4.03 3 9 3s9-1.34 9-3v-5" stroke-opacity="0.45"/>
+            </svg>
+          </div>
+          <p class="av-label">Storage</p>
+          <p class="av-sublabel">8 TB · RAID-5</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile: static vertical list (hidden on desktop) -->
+    <div class="av-mobile">
+      <div class="av-ml-node"><span class="av-ml-name">Client</span><span class="av-ml-sub">Browser / App</span></div>
+      <div class="av-ml-arrow">↓</div>
+      <div class="av-ml-node"><span class="av-ml-name">Reverse Proxy</span><span class="av-ml-sub">Traefik</span></div>
+      <div class="av-ml-arrow">↓</div>
+      <div class="av-ml-node"><span class="av-ml-name">NAS</span><span class="av-ml-sub">QNAP QTS</span></div>
+      <div class="av-ml-arrow">↓</div>
+      <div class="av-ml-node"><span class="av-ml-name">Storage</span><span class="av-ml-sub">8 TB · RAID-5</span></div>
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .av {
+    padding: 6rem 1.5rem;
+    text-align: center;
+  }
+
+  .av-intro {
+    max-width: 44ch;
+    margin: 0 auto 4rem;
+  }
+
+  .av-eyebrow {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-ink-4);
+    margin-bottom: 1rem;
+  }
+
+  .av-heading {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--color-ink-1);
+    margin-bottom: 0.75rem;
+  }
+
+  .av-desc {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-ink-3);
+  }
+
+  /* ── Desktop flow ──────────────────────────── */
+  .av-desktop { display: none; }
+  .av-mobile  { display: flex; flex-direction: column; align-items: center; gap: 0; }
+
+  @media (min-width: 640px) {
+    .av-desktop { display: block; }
+    .av-mobile  { display: none;  }
+  }
+
+  .av-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .av-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    width: 120px;
+  }
+
+  .av-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: var(--color-surface-2);
+    border: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-ink-3);
+  }
+  .av-icon--blue  { border-color: rgba(79,142,247,0.22);  color: rgba(79,142,247,0.75);  }
+  .av-icon--amber { border-color: rgba(245,158,11,0.22);  color: rgba(245,158,11,0.75);  }
+  .av-icon--green { border-color: rgba(34,197,94,0.22);   color: rgba(34,197,94,0.75);   }
+
+  .av-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-ink-2);
+    letter-spacing: -0.01em;
+  }
+
+  .av-sublabel {
+    font-size: 0.68rem;
+    color: var(--color-ink-4);
+    font-family: 'SF Mono', 'Fira Code', ui-monospace, monospace;
+  }
+
+  /* Connector line */
+  .av-connector {
+    flex: 1;
+    position: relative;
+    height: 1px;
+    background: rgba(255,255,255,0.07);
+    min-width: 28px;
+    max-width: 96px;
+  }
+  /* Arrowhead */
+  .av-connector::after {
+    content: '';
+    position: absolute;
+    right: -4px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid rgba(255,255,255,0.16);
+    border-top: 1.5px solid rgba(255,255,255,0.16);
+    transform: translateY(-50%) rotate(45deg);
+  }
+
+  /* Traveling packet */
+  .av-packet {
+    position: absolute;
+    top: calc(50% - 2.5px);
+    left: 0;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    box-shadow: 0 0 6px var(--color-accent), 0 0 14px rgba(79,142,247,0.45);
+    animation: av-travel 2.6s linear infinite;
+    opacity: 0;
+  }
+
+  @keyframes av-travel {
+    0%   { left: 0%;   opacity: 0; }
+    6%   { opacity: 1; }
+    92%  { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+  }
+
+  /* ── Mobile list ───────────────────────────── */
+  .av-ml-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 14px 28px;
+    border-radius: 12px;
+    background: var(--color-surface-1);
+    border: 1px solid rgba(255,255,255,0.065);
+    min-width: 200px;
+  }
+
+  .av-ml-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink-2);
+  }
+
+  .av-ml-sub {
+    font-size: 0.7rem;
+    color: var(--color-ink-4);
+    font-family: 'SF Mono', 'Fira Code', ui-monospace, monospace;
+  }
+
+  .av-ml-arrow {
+    font-size: 1.125rem;
+    color: var(--color-ink-4);
+    padding: 8px 0;
+    line-height: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .av-packet { animation: none; opacity: 0; }
+  }
+</style>

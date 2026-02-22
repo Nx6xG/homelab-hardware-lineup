@@ -156,6 +156,28 @@
         "showcase": {
           "type": "object",
           "properties": {
+            "flagship": {
+              "type": "boolean"
+            },
+            "bigStatement": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "eyebrow": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "value",
+                "label"
+              ],
+              "additionalProperties": false
+            },
             "headline": {
               "type": "string"
             },
@@ -272,6 +294,8 @@
                       "plex",
                       "backup",
                       "traefik",
+                      "filesync",
+                      "archive",
                       "generic"
                     ]
                   }
@@ -303,7 +327,9 @@
                       "terminal",
                       "plex",
                       "backup",
-                      "traefik"
+                      "traefik",
+                      "filesync",
+                      "archive"
                     ]
                   },
                   "port": {

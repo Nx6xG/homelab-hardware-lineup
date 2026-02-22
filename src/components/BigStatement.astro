@@ -1,0 +1,83 @@
+---
+interface Props {
+  value:   string;
+  label:   string;
+  eyebrow?: string;
+  glowColor?: string;
+}
+
+const {
+  value,
+  label,
+  eyebrow,
+  glowColor = 'rgba(245,158,11,0.07)',
+} = Astro.props;
+---
+
+<section class="bs section-divider" aria-label="Key metric">
+  <div
+    class="bs-glow"
+    aria-hidden="true"
+    style={`background: radial-gradient(ellipse 55% 65% at 50% 50%, ${glowColor} 0%, transparent 68%);`}
+  ></div>
+
+  <div class="container-content bs-inner">
+    {eyebrow && (
+      <p class="bs-eyebrow reveal">{eyebrow}</p>
+    )}
+    <div class="bs-number reveal" style="transition-delay: 60ms" aria-label={value}>
+      {value}
+    </div>
+    <p class="bs-label reveal" style="transition-delay: 120ms">
+      {label}
+    </p>
+  </div>
+</section>
+
+<style>
+  .bs {
+    position: relative;
+    padding: 8rem 1.5rem 9rem;
+    overflow: hidden;
+    text-align: center;
+  }
+  .bs-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .bs-inner { position: relative; z-index: 1; }
+
+  .bs-eyebrow {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-ink-4);
+    margin-bottom: 1.75rem;
+  }
+
+  .bs-number {
+    font-size: clamp(5.5rem, 20vw, 17rem);
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    line-height: 0.88;
+    color: var(--color-ink-1);
+    margin-bottom: 2.25rem;
+    /* subtle text gradient for depth */
+    background: linear-gradient(180deg, var(--color-ink-1) 0%, rgba(238,240,248,0.7) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bs-label {
+    font-size: clamp(1rem, 2.2vw, 1.4rem);
+    font-weight: 300;
+    color: var(--color-ink-3);
+    letter-spacing: -0.01em;
+    max-width: 32ch;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+</style>

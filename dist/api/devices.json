@@ -1,6 +1,37 @@
 {
   "devices": [
     {
+      "slug": "meta-quest",
+      "name": "Meta Quest",
+      "type": "console",
+      "status": "online",
+      "headline": "Standalone VR-Headset für Gaming und immersive Erlebnisse. Läuft ohne PC oder Kabel — und über Virtual Desktop auch mit dem Heimnetz-PC für PCVR-Titel.",
+      "role": "VR-Gaming & immersive Erlebnisse",
+      "location": "Wohnzimmer",
+      "services": [
+        "Meta Store (native Apps)",
+        "Virtual Desktop",
+        "Plex VR",
+        "SteamVR (via Virtual Desktop)"
+      ],
+      "stack": [
+        "Meta OS",
+        "Virtual Desktop",
+        "WiFi 6",
+        "Air Link"
+      ],
+      "tags": [
+        "vr",
+        "gaming",
+        "meta",
+        "wireless",
+        "plex"
+      ],
+      "created": "2023-12-25",
+      "updated": "2025-01-05",
+      "url": "/device/meta-quest"
+    },
+    {
       "slug": "iphone-15-pro-max",
       "name": "iPhone 15 Pro Max",
       "type": "other",
@@ -33,137 +64,6 @@
       "created": "2023-09-22",
       "updated": "2025-01-10",
       "url": "/device/iphone-15-pro-max"
-    },
-    {
-      "slug": "ipad-air",
-      "name": "iPad Air",
-      "type": "display",
-      "status": "online",
-      "headline": "Vielseitiges Tablet für Konsum, Kreativarbeit und als erweitertes Display. Über Universal Control nahtlos mit dem MacBook Pro verbunden — ein gemeinsamer Cursor, zwei Bildschirme.",
-      "role": "Tablet & erweitertes Display",
-      "location": "Schreibtisch / Mobil",
-      "services": [
-        "Plex (Client)",
-        "Home Assistant Companion",
-        "Sidecar / Universal Control",
-        "Apple Pencil",
-        "Stage Manager"
-      ],
-      "stack": [
-        "iPadOS",
-        "Universal Control",
-        "Sidecar",
-        "iCloud"
-      ],
-      "tags": [
-        "ipad",
-        "apple",
-        "tablet",
-        "universal-control",
-        "plex"
-      ],
-      "created": "2024-03-01",
-      "updated": "2025-01-10",
-      "url": "/device/ipad-air"
-    },
-    {
-      "slug": "meta-quest",
-      "name": "Meta Quest",
-      "type": "console",
-      "status": "online",
-      "headline": "Standalone VR-Headset für Gaming und immersive Erlebnisse. Läuft ohne PC oder Kabel — und über Virtual Desktop auch mit dem Heimnetz-PC für PCVR-Titel.",
-      "role": "VR-Gaming & immersive Erlebnisse",
-      "location": "Wohnzimmer",
-      "services": [
-        "Meta Store (native Apps)",
-        "Virtual Desktop",
-        "Plex VR",
-        "SteamVR (via Virtual Desktop)"
-      ],
-      "stack": [
-        "Meta OS",
-        "Virtual Desktop",
-        "WiFi 6",
-        "Air Link"
-      ],
-      "tags": [
-        "vr",
-        "gaming",
-        "meta",
-        "wireless",
-        "plex"
-      ],
-      "created": "2023-12-25",
-      "updated": "2025-01-05",
-      "url": "/device/meta-quest"
-    },
-    {
-      "slug": "qnap-nas",
-      "name": "QNAP NAS — Storage & Plex",
-      "type": "nas",
-      "status": "online",
-      "headline": "Zentraler Speicher für alle Backups, Medien und Daten. Läuft Plex Media Server direkt auf der NAS — Filme und Serien auf allen Geräten im Haus.",
-      "role": "Primärer Netzwerkspeicher & Media Server",
-      "location": "Heimnetzwerk",
-      "services": [
-        "Plex Media Server",
-        "QNAP Backup Station",
-        "SMB / NFS Shares",
-        "QNAP Surveillance Station",
-        "Hyper Backup"
-      ],
-      "stack": [
-        "QTS (QNAP OS)",
-        "Plex Media Server",
-        "SMB",
-        "NFS",
-        "RAID",
-        "Hyper Backup"
-      ],
-      "tags": [
-        "nas",
-        "storage",
-        "plex",
-        "backup",
-        "smb",
-        "media"
-      ],
-      "created": "2021-09-01",
-      "updated": "2025-01-15",
-      "url": "/device/qnap-nas"
-    },
-    {
-      "slug": "mini-pc-game-server",
-      "name": "Windows Server — Game Servers",
-      "type": "server",
-      "status": "online",
-      "headline": "Dedizierter Windows Server für Multiplayer-Gaming. Läuft AMP (Application Management Panel) zum Hosten von Game Servern — mit Web-UI für einfache Verwaltung.",
-      "role": "Dedicated Game Server Host",
-      "location": "Heimnetzwerk",
-      "services": [
-        "AMP (Application Management Panel)",
-        "Minecraft Java",
-        "Valheim",
-        "Satisfactory",
-        "Palworld"
-      ],
-      "stack": [
-        "Windows Server",
-        "AMP by CubeCoders",
-        "PowerShell",
-        ".NET",
-        "Task Scheduler"
-      ],
-      "tags": [
-        "gaming",
-        "windows",
-        "game-servers",
-        "amp",
-        "server"
-      ],
-      "created": "2023-03-01",
-      "updated": "2025-01-05",
-      "url": "/device/mini-pc-game-server"
     },
     {
       "slug": "macbook-pro-m4",
@@ -202,38 +102,104 @@
       "url": "/device/macbook-pro-m4"
     },
     {
-      "slug": "rpi4-home-assistant",
-      "name": "Raspberry Pi 4 — Home Assistant",
-      "type": "raspberry-pi",
+      "slug": "qnap-nas",
+      "name": "QNAP NAS",
+      "type": "nas",
       "status": "online",
-      "headline": "Das Herzstück der Heimautomatisierung. Läuft rund um die Uhr mit Home Assistant OS, steuert alle smarten Geräte lokal — ohne Cloud-Abhängigkeit.",
-      "role": "Home Automation Core",
+      "headline": "Zentraler Speicher für Backups, Medien und Daten. Plex, Hyper Backup, Sync — läuft alles auf einem Gerät.",
+      "role": "Primärer Netzwerkspeicher & Media Server",
       "location": "Heimnetzwerk",
       "services": [
-        "Home Assistant OS",
-        "Mosquitto MQTT",
-        "ESPHome",
-        "Node-RED",
-        "Zigbee2MQTT"
+        "Plex Media Server",
+        "Hyper Backup",
+        "Sync Station",
+        "SMB / NFS Shares",
+        "Surveillance Station"
       ],
       "stack": [
-        "Home Assistant OS",
-        "MQTT",
-        "ESPHome",
-        "Zigbee2MQTT",
-        "Supervisor Add-ons"
+        "QTS (QNAP OS)",
+        "Plex Media Server",
+        "SMB",
+        "NFS",
+        "RAID-5",
+        "Hyper Backup"
       ],
       "tags": [
-        "raspberry-pi",
-        "automation",
-        "iot",
-        "local-first",
-        "zigbee",
-        "mqtt"
+        "nas",
+        "storage",
+        "plex",
+        "backup",
+        "smb",
+        "media"
       ],
-      "created": "2022-06-01",
+      "created": "2021-09-01",
+      "updated": "2025-01-15",
+      "url": "/device/qnap-nas"
+    },
+    {
+      "slug": "ipad-air",
+      "name": "iPad Air",
+      "type": "display",
+      "status": "online",
+      "headline": "Vielseitiges Tablet für Konsum, Kreativarbeit und als erweitertes Display. Über Universal Control nahtlos mit dem MacBook Pro verbunden — ein gemeinsamer Cursor, zwei Bildschirme.",
+      "role": "Tablet & erweitertes Display",
+      "location": "Schreibtisch / Mobil",
+      "services": [
+        "Plex (Client)",
+        "Home Assistant Companion",
+        "Sidecar / Universal Control",
+        "Apple Pencil",
+        "Stage Manager"
+      ],
+      "stack": [
+        "iPadOS",
+        "Universal Control",
+        "Sidecar",
+        "iCloud"
+      ],
+      "tags": [
+        "ipad",
+        "apple",
+        "tablet",
+        "universal-control",
+        "plex"
+      ],
+      "created": "2024-03-01",
       "updated": "2025-01-10",
-      "url": "/device/rpi4-home-assistant"
+      "url": "/device/ipad-air"
+    },
+    {
+      "slug": "mini-pc-game-server",
+      "name": "Windows Server — Game Servers",
+      "type": "server",
+      "status": "online",
+      "headline": "Dedizierter Windows Server für Multiplayer-Gaming. Läuft AMP (Application Management Panel) zum Hosten von Game Servern — mit Web-UI für einfache Verwaltung.",
+      "role": "Dedicated Game Server Host",
+      "location": "Heimnetzwerk",
+      "services": [
+        "AMP (Application Management Panel)",
+        "Minecraft Java",
+        "Valheim",
+        "Satisfactory",
+        "Palworld"
+      ],
+      "stack": [
+        "Windows Server",
+        "AMP by CubeCoders",
+        "PowerShell",
+        ".NET",
+        "Task Scheduler"
+      ],
+      "tags": [
+        "gaming",
+        "windows",
+        "game-servers",
+        "amp",
+        "server"
+      ],
+      "created": "2023-03-01",
+      "updated": "2025-01-05",
+      "url": "/device/mini-pc-game-server"
     },
     {
       "slug": "rpi5-portainer",
@@ -275,6 +241,40 @@
       "created": "2024-02-01",
       "updated": "2025-01-20",
       "url": "/device/rpi5-portainer"
+    },
+    {
+      "slug": "rpi4-home-assistant",
+      "name": "Raspberry Pi 4 — Home Assistant",
+      "type": "raspberry-pi",
+      "status": "online",
+      "headline": "Das Herzstück der Heimautomatisierung. Läuft rund um die Uhr mit Home Assistant OS, steuert alle smarten Geräte lokal — ohne Cloud-Abhängigkeit.",
+      "role": "Home Automation Core",
+      "location": "Heimnetzwerk",
+      "services": [
+        "Home Assistant OS",
+        "Mosquitto MQTT",
+        "ESPHome",
+        "Node-RED",
+        "Zigbee2MQTT"
+      ],
+      "stack": [
+        "Home Assistant OS",
+        "MQTT",
+        "ESPHome",
+        "Zigbee2MQTT",
+        "Supervisor Add-ons"
+      ],
+      "tags": [
+        "raspberry-pi",
+        "automation",
+        "iot",
+        "local-first",
+        "zigbee",
+        "mqtt"
+      ],
+      "created": "2022-06-01",
+      "updated": "2025-01-10",
+      "url": "/device/rpi4-home-assistant"
     }
   ],
   "total": 8

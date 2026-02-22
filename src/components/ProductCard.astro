@@ -41,6 +41,18 @@ const typeLabel: Record<string, string> = {
 };
 
 const typeStr = typeLabel[type] ?? type;
+
+const mediaTint: Record<string, string> = {
+  'raspberry-pi': 'rgba(79,142,247,0.09)',
+  'nas':          'rgba(245,158,11,0.08)',
+  'server':       'rgba(99,102,241,0.09)',
+  'pc':           'rgba(99,102,241,0.08)',
+  'network':      'rgba(34,197,94,0.08)',
+  'console':      'rgba(236,72,153,0.08)',
+  'smart-home':   'rgba(168,85,247,0.09)',
+  'display':      'rgba(148,163,184,0.07)',
+};
+const tint = mediaTint[type] ?? 'rgba(79,142,247,0.06)';
 ---
 
 <a
@@ -70,7 +82,11 @@ const typeStr = typeLabel[type] ?? type;
         decoding="async"
       />
     ) : (
-      <div class="media-placeholder w-full h-full group-hover:brightness-110 transition-all duration-500">
+      <div
+        class="media-placeholder w-full h-full flex items-center justify-center transition-all duration-500 group-hover:brightness-110"
+        style={`background: radial-gradient(ellipse 70% 60% at 50% 35%, ${tint} 0%, transparent 70%), linear-gradient(160deg, var(--color-surface-2) 0%, var(--color-surface-3) 100%);`}
+      >
+        <DevicePlaceholder type={type} size={52} />
       </div>
     )}
 
