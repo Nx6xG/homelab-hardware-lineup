@@ -42,8 +42,8 @@ const scrollHeight = `${(features.length + 1) * 100}vh`;
             <p class="text-[0.9375rem] leading-[1.65] text-[var(--color-ink-3)] mb-6">
               {f.description}
             </p>
-            <!-- Inline preview on mobile -->
-            <div class="rounded-[14px] overflow-hidden border border-[rgba(255,255,255,0.065)]">
+            <!-- Inline preview on mobile — capped height so nothing overflows -->
+            <div class="rounded-[14px] overflow-hidden border border-[rgba(255,255,255,0.065)] max-h-[200px]">
               {f.scene === 'dashboard' && <DashboardPreview />}
               {f.scene === 'terminal'  && <TerminalPreview  />}
               {f.scene === 'plex'      && <PlexPreview      />}
