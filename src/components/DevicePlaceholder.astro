@@ -1,0 +1,155 @@
+---
+/**
+ * DevicePlaceholder — type-specific SVG line-art icon.
+ * Renders only the <svg>. Caller provides the container/background.
+ */
+interface Props {
+  type: string;
+  size?: number;
+  class?: string;
+}
+
+const { type, size = 64, class: cls = '' } = Astro.props;
+
+const known = ['raspberry-pi','nas','server','pc','network','console','display','smart-home'];
+---
+
+<svg
+  width={size}
+  height={size}
+  viewBox="0 0 72 72"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  class:list={['opacity-[0.22] text-[var(--color-ink-2)]', cls]}
+>
+
+  {type === 'raspberry-pi' && (
+    <g>
+      {/* PCB board */}
+      <rect x="6" y="14" width="50" height="44" rx="4"/>
+      {/* CPU die */}
+      <rect x="21" y="22" width="20" height="20" rx="2"/>
+      {/* GPIO header pins (5) */}
+      <line x1="12" y1="14" x2="12" y2="7"/>
+      <line x1="18" y1="14" x2="18" y2="7"/>
+      <line x1="24" y1="14" x2="24" y2="7"/>
+      <line x1="30" y1="14" x2="30" y2="7"/>
+      <line x1="36" y1="14" x2="36" y2="7"/>
+      {/* USB ports right edge */}
+      <rect x="56" y="22" width="9" height="8" rx="1"/>
+      <rect x="56" y="34" width="9" height="8" rx="1"/>
+    </g>
+  )}
+
+  {type === 'nas' && (
+    <g>
+      {/* Case */}
+      <rect x="18" y="4" width="36" height="64" rx="5"/>
+      {/* Drive bays */}
+      <rect x="23" y="14" width="26" height="9" rx="2"/>
+      <rect x="23" y="28" width="26" height="9" rx="2"/>
+      <rect x="23" y="42" width="26" height="9" rx="2"/>
+      {/* Power LED */}
+      <circle cx="44" cy="59" r="2" fill="currentColor"/>
+    </g>
+  )}
+
+  {type === 'server' && (
+    <g>
+      {/* 1U chassis */}
+      <rect x="4" y="22" width="64" height="28" rx="3"/>
+      {/* Drive bays */}
+      <rect x="10" y="29" width="10" height="14" rx="1"/>
+      <rect x="24" y="29" width="10" height="14" rx="1"/>
+      <rect x="38" y="29" width="10" height="14" rx="1"/>
+      {/* Status LEDs */}
+      <circle cx="58" cy="33" r="2.5" fill="currentColor"/>
+      <circle cx="58" cy="41" r="2.5" fill="currentColor"/>
+    </g>
+  )}
+
+  {type === 'pc' && (
+    <g>
+      {/* Laptop screen */}
+      <rect x="14" y="8" width="44" height="30" rx="3"/>
+      {/* Screen inner */}
+      <rect x="18" y="12" width="36" height="22" rx="1" stroke-opacity="0.35"/>
+      {/* Keyboard base */}
+      <rect x="8" y="40" width="56" height="16" rx="4"/>
+      {/* Keyboard keys hint */}
+      <rect x="16" y="44" width="40" height="7" rx="1" stroke-opacity="0.3"/>
+    </g>
+  )}
+
+  {type === 'network' && (
+    <g>
+      {/* Router body */}
+      <rect x="10" y="30" width="52" height="20" rx="4"/>
+      {/* Antennas */}
+      <line x1="22" y1="30" x2="18" y2="12"/>
+      <line x1="36" y1="30" x2="36" y2="10"/>
+      <line x1="50" y1="30" x2="54" y2="12"/>
+      {/* LAN ports */}
+      <rect x="16" y="36" width="8" height="5" rx="1"/>
+      <rect x="28" y="36" width="8" height="5" rx="1"/>
+      <rect x="40" y="36" width="8" height="5" rx="1"/>
+      {/* Activity LED */}
+      <circle cx="56" cy="34" r="2" fill="currentColor"/>
+    </g>
+  )}
+
+  {type === 'console' && (
+    <g>
+      {/* Controller body */}
+      <rect x="10" y="26" width="52" height="30" rx="10"/>
+      {/* Left analog stick */}
+      <circle cx="22" cy="36" r="8"/>
+      {/* Right analog stick */}
+      <circle cx="50" cy="44" r="8"/>
+      {/* D-pad */}
+      <line x1="36" y1="32" x2="36" y2="44"/>
+      <line x1="30" y1="38" x2="42" y2="38"/>
+    </g>
+  )}
+
+  {type === 'display' && (
+    <g>
+      {/* Monitor bezel */}
+      <rect x="6" y="6" width="60" height="42" rx="4"/>
+      {/* Screen panel */}
+      <rect x="10" y="10" width="52" height="34" rx="2" stroke-opacity="0.35"/>
+      {/* Stand neck */}
+      <line x1="36" y1="48" x2="36" y2="60"/>
+      {/* Stand base */}
+      <line x1="24" y1="60" x2="48" y2="60"/>
+    </g>
+  )}
+
+  {type === 'smart-home' && (
+    <g>
+      {/* Roof */}
+      <polygon points="36,6 64,32 8,32"/>
+      {/* Walls */}
+      <rect x="12" y="32" width="48" height="34" rx="1"/>
+      {/* Door */}
+      <rect x="28" y="44" width="16" height="22" rx="2"/>
+      {/* WiFi arcs (signal from hub) */}
+      <path d="M30 40 Q36 32 42 40" fill="none"/>
+      <path d="M33 36 Q36 29 39 36" fill="none"/>
+    </g>
+  )}
+
+  {!known.includes(type) && (
+    <g>
+      <rect x="4"  y="4"  width="28" height="28" rx="6"/>
+      <rect x="40" y="4"  width="28" height="28" rx="6"/>
+      <rect x="4"  y="40" width="28" height="28" rx="6"/>
+      <rect x="40" y="40" width="28" height="28" rx="6"/>
+    </g>
+  )}
+
+</svg>

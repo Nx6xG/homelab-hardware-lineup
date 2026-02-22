@@ -35,7 +35,7 @@
 
   --transition-fast:   150ms var(--ease-smooth);
   --transition-base:   250ms var(--ease-smooth);
-  --transition-reveal: 500ms var(--ease-out-expo);
+  --transition-reveal: 600ms var(--ease-out-expo);
 }
 
 /* ─── View Transitions ───────────────────────────────────────────────── */
@@ -165,7 +165,7 @@
   /* ─── Reveal (scroll-triggered) ─── */
   .reveal {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(8px);
     transition:
       opacity   var(--transition-reveal),
       transform var(--transition-reveal);
@@ -176,7 +176,7 @@
   }
   .reveal-fast {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(6px);
     transition:
       opacity   380ms var(--ease-out-expo),
       transform 380ms var(--ease-out-expo);
@@ -189,7 +189,7 @@
   /* ─── Stagger grid ─── */
   .stagger-children > * {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
     transition:
       opacity   480ms var(--ease-out-expo),
       transform 480ms var(--ease-out-expo);
@@ -388,7 +388,8 @@
     background:
       radial-gradient(ellipse 90% 70% at 50% 15%, rgba(79,142,247,0.10) 0%, rgba(99,102,241,0.04) 50%, transparent 70%),
       radial-gradient(ellipse 60% 50% at 85% 85%, rgba(99,102,241,0.06) 0%, transparent 55%),
-      linear-gradient(180deg, #05070f 0%, #0b1220 100%);
+      radial-gradient(ellipse 40% 35% at 12% 68%, rgba(79,142,247,0.04) 0%, transparent 65%),
+      linear-gradient(180deg, #05070f 0%, #080e1c 100%);
   }
 
   /* ── Tilt card ── */
@@ -431,28 +432,38 @@
   /* ── Background grid (almost invisible) ── */
   .bg-grid {
     background-image:
-      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+      linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
     background-size: 64px 64px;
     background-position: center center;
   }
 
   /* ── Glass card with glow on hover ── */
   .glass-card-glow {
-    background: rgba(9,13,24,0.65);
-    backdrop-filter: blur(24px) saturate(1.5);
-    -webkit-backdrop-filter: blur(24px) saturate(1.5);
-    border: 1px solid rgba(255,255,255,0.07);
+    background: rgba(8,11,22,0.70);
+    backdrop-filter: blur(32px) saturate(1.6);
+    -webkit-backdrop-filter: blur(32px) saturate(1.6);
+    border: 1px solid rgba(255,255,255,0.075);
     border-radius: 16px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.025);
-    transition: border-color 400ms ease, box-shadow 400ms ease;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.028),
+      0 8px 24px rgba(0,0,0,0.35),
+      0 24px 64px rgba(0,0,0,0.45),
+      inset 0 1px 0 rgba(255,255,255,0.04);
+    transition:
+      border-color 350ms ease-out,
+      box-shadow   350ms ease-out,
+      transform    350ms var(--ease-out-expo);
   }
   .glass-card-glow:hover {
     border-color: rgba(79,142,247,0.18);
+    transform: translateY(-2px);
     box-shadow:
-      0 24px 80px rgba(0,0,0,0.55),
-      0 0 0 1px rgba(79,142,247,0.08),
-      0 0 80px rgba(79,142,247,0.07);
+      0 0 0 1px rgba(79,142,247,0.06),
+      0 12px 32px rgba(0,0,0,0.45),
+      0 32px 80px rgba(0,0,0,0.55),
+      0 0 60px rgba(79,142,247,0.06),
+      inset 0 1px 0 rgba(255,255,255,0.05);
   }
 
   /* ── Large CTA buttons ── */
@@ -539,4 +550,20 @@
   .tint-green   { background: rgba(34,197,94,0.04);   border-color: rgba(34,197,94,0.10);   }
   .tint-purple  { background: rgba(168,85,247,0.04);  border-color: rgba(168,85,247,0.10);  }
   .tint-amber   { background: rgba(245,158,11,0.04);  border-color: rgba(245,158,11,0.10);  }
+
+  /* ── Device lineup card: subtle hover glow ── */
+  .lineup-card {
+    transition:
+      border-color 300ms ease-out,
+      box-shadow   300ms ease-out,
+      transform    300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .lineup-card:hover {
+    border-color: rgba(255,255,255,0.10) !important;
+    transform: translateY(-3px);
+    box-shadow:
+      0 0 24px rgba(79,142,247,0.07),
+      0 8px 28px rgba(0,0,0,0.32);
+  }
+  .lineup-card:active { transform: translateY(0); }
 }

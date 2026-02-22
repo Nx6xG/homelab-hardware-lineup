@@ -55,7 +55,7 @@ const docItems = [
        HERO
   ════════════════════════════════════════════════════════════ -->
   <section
-    class="hero-ambient bg-grid relative min-h-screen flex flex-col items-center justify-center pt-24 pb-16 overflow-hidden"
+    class="hero-ambient bg-grid relative min-h-screen flex flex-col items-center justify-center pt-24 pb-28 lg:pb-40 overflow-hidden"
     aria-label="Introduction"
   >
     <!-- Soft radial glow behind headline -->
@@ -119,11 +119,11 @@ const docItems = [
 
     </div>
 
-    <!-- Fade into next section -->
+    <!-- Fade into next section — taller for more breathing room -->
     <div
       aria-hidden="true"
-      class="absolute inset-x-0 bottom-0 h-40 pointer-events-none"
-      style="background:linear-gradient(to top, var(--color-surface-0), transparent);"
+      class="absolute inset-x-0 bottom-0 h-64 pointer-events-none"
+      style="background:linear-gradient(to top, var(--color-surface-0) 0%, rgba(5,7,15,0.85) 40%, transparent 100%);"
     ></div>
   </section>
 
@@ -131,10 +131,10 @@ const docItems = [
   <!-- ═══════════════════════════════════════════════════════
        SYSTEM OVERVIEW
   ════════════════════════════════════════════════════════════ -->
-  <section class="py-16 lg:py-28 section-divider" aria-labelledby="overview-h">
+  <section class="py-20 lg:py-32 section-divider" aria-labelledby="overview-h">
     <div class="container-content">
 
-      <Reveal class="mb-10 sm:mb-12">
+      <Reveal class="mb-14 sm:mb-16">
         <p class="text-[0.68rem] font-semibold tracking-[0.22em] uppercase text-[var(--color-ink-4)] mb-3">
           Overview
         </p>
@@ -180,10 +180,10 @@ const docItems = [
   <!-- ═══════════════════════════════════════════════════════
        HARDWARE LINEUP TEASER
   ════════════════════════════════════════════════════════════ -->
-  <section class="py-16 lg:py-28 section-divider" aria-labelledby="lineup-h">
+  <section class="py-20 lg:py-32 section-divider" aria-labelledby="lineup-h">
     <div class="container-wide">
 
-      <Reveal class="flex items-end justify-between mb-10 sm:mb-12 gap-4">
+      <Reveal class="flex items-end justify-between mb-12 sm:mb-16 gap-4">
         <div>
           <p class="text-[0.68rem] font-semibold tracking-[0.22em] uppercase text-[var(--color-ink-4)] mb-3">
             Hardware
@@ -207,7 +207,7 @@ const docItems = [
           return (
             <a
               href={`/device/${device.slug}`}
-              class="group relative block p-4 sm:p-5 rounded-[14px] sm:rounded-[16px] border border-[rgba(255,255,255,0.065)] bg-[var(--color-surface-1)] hover:border-[rgba(255,255,255,0.10)] hover:-translate-y-[3px] active:translate-y-0 transition-all duration-300 overflow-hidden"
+              class="lineup-card group relative block p-4 sm:p-5 rounded-[14px] sm:rounded-[16px] border border-[rgba(255,255,255,0.065)] bg-[var(--color-surface-1)] overflow-hidden"
               aria-label={`${device.data.name} — ${device.data.role}`}
             >
               <!-- Ambient corner accent gradient -->
@@ -257,11 +257,18 @@ const docItems = [
   <!-- ═══════════════════════════════════════════════════════
        PHILOSOPHY
   ════════════════════════════════════════════════════════════ -->
-  <section class="py-20 lg:py-36 section-divider text-center relative overflow-hidden" aria-labelledby="phil-h">
+  <section class="py-32 lg:py-48 section-divider text-center relative overflow-hidden" aria-labelledby="phil-h">
+    <!-- Darker overlay for cinematic chapter-break feel -->
     <div
       aria-hidden="true"
       class="absolute inset-0 pointer-events-none"
-      style="background:radial-gradient(ellipse 55% 65% at 50% 50%, rgba(79,142,247,0.06) 0%, transparent 65%);"
+      style="background:rgba(2,4,11,0.32);"
+    ></div>
+    <!-- Radial accent glow -->
+    <div
+      aria-hidden="true"
+      class="absolute inset-0 pointer-events-none"
+      style="background:radial-gradient(ellipse 50% 60% at 50% 50%, rgba(79,142,247,0.07) 0%, transparent 65%);"
     ></div>
     <div class="container-content relative z-10">
       <Reveal>
@@ -271,7 +278,7 @@ const docItems = [
         <h2 id="phil-h" class="text-display-lg text-[var(--color-ink-1)] mb-6 sm:mb-8 leading-[0.93]">
           Everything<br/>runs locally.
         </h2>
-        <p class="text-[1rem] sm:text-[1.05rem] font-light text-[var(--color-ink-3)] max-w-[40ch] mx-auto leading-[1.72]">
+        <p class="text-[1rem] sm:text-[1.05rem] font-light text-[var(--color-ink-3)] max-w-[34ch] mx-auto leading-[1.72]">
           No cloud vendor lock-in. No subscriptions.
           Full control over data, uptime, and architecture.
           Reproducible infrastructure — designed, not improvised.
@@ -284,7 +291,7 @@ const docItems = [
   <!-- ═══════════════════════════════════════════════════════
        DOCUMENTATION TEASER
   ════════════════════════════════════════════════════════════ -->
-  <section class="py-16 lg:py-28 section-divider" aria-labelledby="docs-h">
+  <section class="py-20 lg:py-32 section-divider" aria-labelledby="docs-h">
     <div class="container-content">
 
       <Reveal class="mb-10 sm:mb-12">
