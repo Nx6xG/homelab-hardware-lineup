@@ -1,0 +1,73 @@
+---
+name: "Windows Server — Game Servers"
+type: "server"
+status: "online"
+headline: "Dedizierter Windows Server für Multiplayer-Gaming. Läuft AMP (Application Management Panel) zum Hosten von Game Servern — mit Web-UI für einfache Verwaltung."
+role: "Dedicated Game Server Host"
+location: "Heimnetzwerk"
+services:
+  - "AMP (Application Management Panel)"
+  - "Minecraft Java"
+  - "Valheim"
+  - "Satisfactory"
+  - "Palworld"
+stack:
+  - "Windows Server"
+  - "AMP by CubeCoders"
+  - "PowerShell"
+  - ".NET"
+  - "Task Scheduler"
+outcomes:
+  - "Mehrere Game Server Instanzen über eine einzige Web-Oberfläche verwaltet"
+  - "Freunde können ihre Server selbst über das AMP-Web-UI starten und stoppen"
+  - "Automatische World-Backups jede Nacht auf den QNAP NAS"
+  - "Discord-Benachrichtigungen bei Server-Start, -Stop und -Absturz"
+  - "Automatischer Neustart bei Absturz über AMP Watchdog"
+decisions:
+  chose:
+    - "AMP statt manueller Server-Verwaltung — Web-UI ist essenziell für geteilten Zugriff"
+    - "Windows für native Kompatibilität mit Game-Server-Binaries"
+    - "Nightly Backups via Robocopy auf NAS für alle World-Saves"
+  tradeoffs:
+    - "Windows-Lizenzkosten im Vergleich zu Linux"
+    - "AMP ist kostenpflichtig, spart aber erheblich Zeit bei der Verwaltung"
+    - "Einige Linux-native Server brauchen Kompatibilitätsschicht unter Windows"
+  next:
+    - "Pterodactyl als Open-Source-Alternative zu AMP evaluieren"
+    - "Automatische Spieler-Benachrichtigungen bei Wartungsfenstern"
+specs:
+  os: "Windows Server"
+  cpu: "x86-64 Prozessor"
+  ram: "32 GB+ DDR4"
+  storage: "NVMe SSD"
+  network: "Gigabit Ethernet"
+links:
+  admin: "http://gameserver.local:8080"
+photos: []
+tags:
+  - "gaming"
+  - "windows"
+  - "game-servers"
+  - "amp"
+  - "server"
+created: "2023-03-01"
+updated: "2025-01-05"
+---
+
+## Übersicht
+
+Der Windows Server ist dediziert fürs Gaming. Das Ziel: Freunde können ihre Game-Server selbst verwalten, ohne SSH oder Terminal-Kenntnisse.
+
+## AMP — Application Management Panel
+
+AMP stellt für jede Game-Server-Instanz eine eigene Web-UI bereit. Start, Stop, Konsole, Backup, Mod-Updates — alles per Browser.
+
+## Backup-Strategie
+
+Jede Nacht um 03:00 Uhr kopiert ein Robocopy-Script alle World-Saves auf den QNAP NAS:
+
+```powershell
+Robocopy "D:\AMP\Instances\*\Saves" "\\qnap\backups\gameservers" /MIR /R:3 /W:10
+```
+
+30 Tage Retention, wöchentliche Snapshots für 90 Tage.

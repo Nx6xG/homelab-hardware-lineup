@@ -1,0 +1,52 @@
+---
+interface Props {
+  specs: {
+    os?: string;
+    cpu?: string;
+    ram?: string;
+    storage?: string;
+    network?: string;
+    [key: string]: string | undefined;
+  };
+  class?: string;
+}
+
+const { specs, class: className = '' } = Astro.props;
+const rows = Object.entries(specs).filter(([, v]) => v !== undefined && v !== '');
+
+const labelMap: Record<string, string> = {
+  os:      'Operating System',
+  cpu:     'Processor',
+  ram:     'Memory',
+  storage: 'Storage',
+  network: 'Network',
+};
+---
+
+{rows.length > 0 && (
+  <div class:list={['rounded-[14px] overflow-hidden border border-[rgba(255,255,255,0.065)]', className]}>
+    <table class="w-full" role="table" aria-label="Specifications">
+      <tbody>
+        {rows.map(([key, value], i) => (
+          <tr
+            class:list={[
+              'grid grid-cols-[160px_1fr] sm:flex sm:items-start gap-4 sm:gap-8 px-6 py-4',
+              i > 0 && 'border-t border-[rgba(255,255,255,0.055)]',
+              'hover:bg-[rgba(255,255,255,0.02)] transition-colors duration-150',
+            ]}
+          >
+            <th
+              scope="row"
+              class="text-[0.8125rem] text-[var(--color-ink-3)] font-normal text-left flex-shrink-0 sm:w-40"
+            >
+              {labelMap[key] ?? key}
+            </th>
+            <td class="text-[0.9rem] text-[var(--color-ink-1)] font-mono leading-[1.5]">
+              {value}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+)}

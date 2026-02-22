@@ -1,0 +1,267 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../components/Layout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import Badge from '../components/Badge.astro';
+import Reveal from '../components/Reveal.astro';
+
+const devices = await getCollection('devices');
+const sorted  = [...devices].sort(
+  (a, b) => new Date(b.data.updated).getTime() - new Date(a.data.updated).getTime()
+);
+
+const featured     = sorted.slice(0, 4);
+const recent       = sorted.slice(0, 6);
+const onlineCount  = devices.filter(d => d.data.status === 'online').length;
+const totalSvcs    = [...new Set(devices.flatMap(d => d.data.services))].length;
+
+// Hero headline split into animated words
+const heroWords = ['Hardware', 'Lineup.'];
+---
+
+<Layout title="Homelab Hardware Pages">
+
+  <!-- ─── HERO ──────────────────────────────────────────────────── -->
+  <section
+    class="hero-ambient relative min-h-screen flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden"
+    aria-label="Introduction"
+  >
+    <!-- Ambient orbs -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+      <div
+        class="drift absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] opacity-[0.6]"
+        style="background: radial-gradient(ellipse at center, rgba(59,130,246,0.08) 0%, transparent 65%); filter: blur(80px);"
+      ></div>
+      <div
+        class="drift absolute bottom-1/4 right-1/3 w-[500px] h-[400px] opacity-[0.5]"
+        style="background: radial-gradient(ellipse at center, rgba(168,85,247,0.06) 0%, transparent 65%); filter: blur(80px); animation-delay: -5s;"
+      ></div>
+    </div>
+
+    <div class="container-content relative z-10 text-center">
+
+      <!-- Eyebrow -->
+      <p
+        class="text-[0.7rem] font-semibold tracking-[0.18em] uppercase text-[var(--color-ink-4)] mb-10"
+        style="animation: hero-fade-up 600ms 100ms cubic-bezier(0.16,1,0.3,1) both"
+      >
+        Personal Homelab Documentation
+      </p>
+
+      <!-- Big headline — word-by-word entrance -->
+      <h1 class="text-display mb-8" aria-label="Hardware Lineup.">
+        {heroWords.map((word, i) => (
+          <span
+            class="word-in block"
+            style={`animation-delay: ${180 + i * 120}ms`}
+          >
+            {word}
+          </span>
+        ))}
+      </h1>
+
+      <!-- Subhead -->
+      <p
+        class="text-[clamp(1.1rem,2vw,1.4rem)] font-light text-[var(--color-ink-3)] mb-4 max-w-lg mx-auto leading-[1.5]"
+        style="animation: hero-fade-up 700ms 500ms cubic-bezier(0.16,1,0.3,1) both"
+      >
+        Built, documented, running.
+      </p>
+      <p
+        class="text-[0.9375rem] text-[var(--color-ink-3)] max-w-md mx-auto leading-[1.65] mb-12"
+        style="animation: hero-fade-up 700ms 620ms cubic-bezier(0.16,1,0.3,1) both"
+      >
+        Technical storytelling about what I built, what runs on each device,
+        and the decisions behind the architecture.
+      </p>
+
+      <!-- CTAs -->
+      <div
+        class="flex items-center justify-center gap-3 flex-wrap mb-16"
+        style="animation: hero-fade-up 700ms 740ms cubic-bezier(0.16,1,0.3,1) both"
+      >
+        <a href="/lineup" class="btn-primary">
+          Explore hardware
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 6.5h9M7 2l4.5 4.5L7 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="/builds" class="btn-secondary">
+          Build timeline
+        </a>
+      </div>
+
+      <!-- Stats strip -->
+      <div
+        class="inline-flex items-stretch divide-x divide-[rgba(255,255,255,0.07)] rounded-[14px] overflow-hidden"
+        style="background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.07); animation: hero-fade-up 700ms 860ms cubic-bezier(0.16,1,0.3,1) both"
+      >
+        {[
+          { value: devices.length, label: 'Devices' },
+          { value: onlineCount,    label: 'Online',  green: true },
+          { value: totalSvcs,      label: 'Services' },
+        ].map(({ value, label, green }) => (
+          <div class="px-8 py-4 text-center">
+            <p
+              class:list={[
+                'text-[2rem] font-bold tabular-nums leading-none mb-1',
+                green ? 'text-status-online' : 'text-[var(--color-ink-1)]',
+              ]}
+              data-counter={String(value)}
+            >
+              {value}
+            </p>
+            <p class="text-[0.7rem] text-[var(--color-ink-4)] font-medium tracking-[0.06em] uppercase">
+              {label}
+            </p>
+          </div>
+        ))}
+      </div>
+
+    </div>
+
+    <!-- Bottom gradient fade -->
+    <div
+      class="absolute inset-x-0 bottom-0 h-32 pointer-events-none"
+      style="background: linear-gradient(to top, var(--color-surface-0), transparent);"
+      aria-hidden="true"
+    ></div>
+  </section>
+
+  <!-- ─── FEATURED DEVICES (tilt cards) ─────────────────────────── -->
+  <section class="py-20 section-divider" aria-labelledby="featured-h">
+    <div class="container-wide">
+      <Reveal class="flex items-end justify-between mb-10 gap-4">
+        <div>
+          <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-2">
+            Lineup
+          </p>
+          <h2 id="featured-h" class="text-display-sm text-[var(--color-ink-1)]">
+            Featured devices
+          </h2>
+        </div>
+        <a href="/lineup" class="btn-secondary hidden sm:inline-flex flex-shrink-0">
+          View all
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <path d="M2 6.5h9M7 2l4.5 4.5L7 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </Reveal>
+
+      <div class="scroll-row pb-4" role="list" aria-label="Featured devices">
+        {featured.map(device => (
+          <div
+            class="w-[300px] sm:w-[340px] flex-shrink-0 tilt-card card-glow rounded-[14px]"
+            data-tilt
+            role="listitem"
+          >
+            <ProductCard
+              slug={device.slug}
+              name={device.data.name}
+              headline={device.data.headline}
+              type={device.data.type}
+              status={device.data.status}
+              role={device.data.role}
+              services={device.data.services}
+              tags={device.data.tags}
+              photo={device.data.photos?.[0]}
+              featured
+            />
+          </div>
+        ))}
+
+        <!-- View all card -->
+        <div class="w-[260px] flex-shrink-0" role="listitem">
+          <a
+            href="/lineup"
+            class="h-full min-h-[300px] flex flex-col items-center justify-center gap-4 rounded-[14px] border border-[rgba(255,255,255,0.065)] bg-[var(--color-surface-1)] text-center p-8 group hover:border-[rgba(255,255,255,0.10)] transition-colors duration-300 card-glow"
+            aria-label="View all devices"
+          >
+            <div class="w-12 h-12 rounded-full border border-[rgba(255,255,255,0.09)] flex items-center justify-center group-hover:border-[rgba(59,130,246,0.3)] transition-colors duration-300">
+              <svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                  class="text-[var(--color-ink-4)] group-hover:text-[var(--color-accent)] transition-colors"/>
+              </svg>
+            </div>
+            <p class="text-[0.9375rem] font-semibold text-[var(--color-ink-2)]">
+              All {devices.length} devices
+            </p>
+            <p class="text-[0.8125rem] text-[var(--color-ink-4)] leading-[1.5]">
+              Filter by type,<br/>status, or tag
+            </p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── RECENTLY UPDATED ────────────────────────────────────────── -->
+  <section class="py-20 section-divider" aria-labelledby="recent-h">
+    <div class="container-content">
+      <Reveal class="mb-10">
+        <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-2">
+          Latest
+        </p>
+        <h2 id="recent-h" class="text-display-sm text-[var(--color-ink-1)]">
+          Recently updated
+        </h2>
+      </Reveal>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 stagger-children">
+        {recent.map(device => (
+          <a
+            href={`/device/${device.slug}`}
+            class="group flex items-center gap-4 px-4 py-3.5 rounded-[12px] border border-[rgba(255,255,255,0.065)] bg-[var(--color-surface-1)] hover:border-[rgba(255,255,255,0.10)] hover:-translate-y-[2px] transition-all duration-300"
+            aria-label={device.data.name}
+          >
+            <div class="w-10 h-10 rounded-[10px] flex-shrink-0 media-placeholder" aria-hidden="true"></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5">
+                <p class="text-[0.9rem] font-semibold text-[var(--color-ink-1)] truncate">
+                  {device.data.name}
+                </p>
+                <Badge status={device.data.status} size="sm" />
+              </div>
+              <p class="text-[0.8125rem] text-[var(--color-ink-3)] truncate">
+                {device.data.role}
+              </p>
+            </div>
+            <svg
+              width="14" height="14" viewBox="0 0 14 14" fill="none"
+              class="flex-shrink-0 text-[var(--color-ink-4)] group-hover:text-[var(--color-accent)] transition-colors duration-200"
+              aria-hidden="true"
+            >
+              <path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        ))}
+      </div>
+
+      <Reveal class="mt-10 text-center">
+        <a href="/builds" class="btn-secondary">View build timeline</a>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- ─── PHILOSOPHY ──────────────────────────────────────────────── -->
+  <section class="py-28 section-divider">
+    <div class="container-content">
+      <Reveal>
+        <div class="max-w-[50ch] mx-auto text-center">
+          <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-5">
+            Philosophy
+          </p>
+          <h2 class="text-display-sm text-[var(--color-ink-1)] mb-6 leading-[1.15]">
+            Documented like<br/>a product page.
+          </h2>
+          <p class="text-[1rem] text-[var(--color-ink-3)] leading-[1.7] mb-8">
+            Each device gets a full write-up: what I built, what runs on it,
+            the decisions made, and what I'd change. Infrastructure should be legible.
+          </p>
+          <a href="/about" class="btn-secondary">Read about the approach</a>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+
+</Layout>

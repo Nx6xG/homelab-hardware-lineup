@@ -1,0 +1,162 @@
+---
+name: "Raspberry Pi 5 — Container Host"
+type: "raspberry-pi"
+status: "online"
+headline: "Der Container-Powerhouse im Homelab. Raspberry Pi 5 mit Portainer und 19 laufenden Docker Containern — von Dokumentenverwaltung über Projektplanung bis Workflow-Automatisierung."
+role: "Docker Container Host"
+location: "Heimnetzwerk"
+services:
+  - "Portainer CE"
+  - "Paperless-ngx"
+  - "WordPress"
+  - "Vikunja"
+  - "n8n"
+  - "Traefik"
+  - "Uptime Kuma"
+  - "Watchtower"
+  - "MariaDB"
+  - "PostgreSQL"
+  - "Redis"
+  - "Nginx"
+stack:
+  - "Docker"
+  - "Portainer CE"
+  - "Traefik v3"
+  - "Docker Compose"
+  - "Raspberry Pi OS (64-bit)"
+outcomes:
+  - "19 Container laufen stabil auf einem einzigen Raspberry Pi 5"
+  - "Portainer als zentrale Management-Oberfläche für alle Container"
+  - "Paperless-ngx digitalisiert und archiviert alle Dokumente automatisch"
+  - "Vikunja als self-hosted Projektmanagement- und To-do-Tool"
+  - "n8n als Automatisierungs-Hub für Workflows zwischen Services"
+  - "Traefik als Reverse Proxy mit automatischem TLS für alle Dienste"
+  - "Uptime Kuma überwacht alle Services und sendet Benachrichtigungen"
+  - "Watchtower aktualisiert Container-Images automatisch"
+decisions:
+  chose:
+    - "Raspberry Pi 5 statt x86-Miniserver für Energieeffizienz (~5-8W idle)"
+    - "Portainer CE für einfache visuelle Container-Verwaltung"
+    - "Traefik als Reverse Proxy — automatisches TLS via Let's Encrypt ohne Config-Aufwand"
+    - "Docker Compose für alle Services — reproduzierbar und versionierbar"
+    - "Watchtower für automatische Image-Updates — kein manuelles Pulling"
+  tradeoffs:
+    - "ARM64-Architektur: manche Images nicht verfügbar oder weniger getestet als x86"
+    - "19 Container auf einem Pi teilen sich begrenzte RAM — 8 GB reichen, aber ohne viel Puffer"
+    - "Kein ECC RAM — Datenverlust bei RAM-Fehler theoretisch möglich, Backups essenziell"
+    - "Watchtower-Auto-Updates können selten Breaking Changes einbringen"
+  next:
+    - "Zweiten Pi 5 für HA-Setup mit Docker Swarm oder Portainer-Cluster"
+    - "Secrets-Management mit Vault statt .env-Dateien"
+    - "Monitoring-Stack (Prometheus + Grafana) für Container-Metriken"
+    - "NVMe-HAT für schnelleres Storage statt SD/USB"
+specs:
+  os: "Raspberry Pi OS Bookworm 64-bit"
+  cpu: "Raspberry Pi 5 — Cortex-A76 4-core @ 2.4 GHz"
+  ram: "8 GB LPDDR4X"
+  storage: "256 GB+ SSD (via USB 3.0 oder NVMe HAT)"
+  network: "Gigabit Ethernet"
+links:
+  admin: "http://rpi5.local:9000"
+photos: []
+tags:
+  - "raspberry-pi"
+  - "docker"
+  - "portainer"
+  - "self-hosted"
+  - "containers"
+  - "automation"
+created: "2024-02-01"
+updated: "2025-01-20"
+showcase:
+  headline: "19 Container. Ein Pi. 8 Watt."
+  subheadline: "Alles läuft selbst gehostet — Dokumente, Tasks, Workflows, Infrastruktur."
+  highlight: "Vom Router bis zum Browser: kein Cloud-Dienst nötig."
+  features:
+    - title: "Portainer — Visuelle Container-Kontrolle"
+      description: "Alle 19 Container auf einen Blick. Logs einsehen, Stack deployen, Container neustarten — alles per Browser. Kein SSH nötig."
+      scene: "dashboard"
+    - title: "Traefik — Automatisches HTTPS"
+      description: "Jeder Container bekommt per Docker-Label eine Subdomain und ein Let's Encrypt Zertifikat. Null manuelle nginx-Konfiguration."
+      scene: "traefik"
+    - title: "n8n — Workflow-Automatisierung"
+      description: "n8n verbindet alle Services: neues Dokument in Paperless löst iPhone-Benachrichtigung aus, GitHub-Commits erstellen Vikunja-Tasks."
+      scene: "terminal"
+  serviceStories:
+    - name: "Paperless-ngx"
+      story: "Jedes Dokument, das ins Haus kommt, wird gescannt, per OCR erkannt und indiziert. Einfach in einen Watch-Ordner auf der NAS legen — nach wenigen Minuten ist es durchsuchbar archiviert."
+      preview: "dashboard"
+      port: "8000"
+      uptime: "99.9%"
+      category: "Dokumentenverwaltung"
+    - name: "n8n"
+      story: "Der Klebstoff zwischen allen Services. Automatisiert Routineaufgaben: Dokument-Alerts, Task-Erstellung aus GitHub-Commits, eigene Webhooks für alles andere."
+      preview: "terminal"
+      port: "5678"
+      uptime: "99.7%"
+      category: "Automatisierung"
+    - name: "Traefik"
+      story: "Jeder Container bekommt automatisch eine Subdomain und ein HTTPS-Zertifikat — nur durch zwei Docker-Labels. Kein manuelles nginx, kein Zertifikat-Management."
+      preview: "traefik"
+      port: "80/443"
+      uptime: "100%"
+      category: "Reverse Proxy"
+  modules:
+    - type: "featureGrid"
+      items:
+        - label: "Energieeffizienz"
+          headline: "~5–8 W Idle"
+          body: "Der Pi 5 verbraucht unter Last kaum mehr als unter Idle. 19 Container, Gigabit-Netz, 24/7 — bei Stromkosten, die kaum messbar sind."
+        - label: "Reproduzierbarkeit"
+          headline: "Alles in Docker Compose"
+          body: "Jeder Stack liegt als Compose-Datei vor. Neues Gerät, git clone, docker compose up — fertig. Kein undokumentierter Zustand."
+        - label: "Monitoring"
+          headline: "Uptime Kuma"
+          body: "Alle Services werden überwacht. Push-Benachrichtigung auf iPhone wenn ein Container ausfällt oder langsam antwortet."
+---
+
+## Übersicht
+
+Der Pi 5 ist das Workpferd des Homelabs. 19 Container, eine Maschine, ~8W Stromverbrauch. Das Verhältnis von Leistung zu Verbrauch ist kaum zu schlagen.
+
+## Container-Übersicht
+
+| Container | Zweck | Port |
+|-----------|-------|------|
+| **Paperless-ngx** | Dokumentenarchiv mit OCR | intern |
+| **WordPress** | Persönliche Website/Blog | 80/443 |
+| **Vikunja** | Aufgaben & Projektmanagement | intern |
+| **n8n** | Workflow-Automatisierung | intern |
+| **Traefik** | Reverse Proxy + TLS | 80/443 |
+| **Uptime Kuma** | Service-Monitoring | intern |
+| **Watchtower** | Automatische Image-Updates | — |
+| **MariaDB** | Datenbank (WordPress, etc.) | intern |
+| **PostgreSQL** | Datenbank (Paperless, n8n) | intern |
+| **Redis** | Cache (Paperless) | intern |
+| + 9 weitere | Diverse Services | — |
+
+## Paperless-ngx
+
+Paperless scannt, kategorisiert und macht alle Dokumente per Volltext durchsuchbar. Eingehende Dokumente werden in einen Watch-Ordner auf dem NAS gelegt und automatisch verarbeitet.
+
+## n8n Workflows
+
+n8n verbindet die Services miteinander:
+- Neue Dokumente in Paperless → Benachrichtigung auf iPhone via Home Assistant
+- GitHub-Commits → Aufgabe in Vikunja erstellen
+- Eigene Webhooks für benutzerdefinierte Automationen
+
+## Traefik-Setup
+
+```yaml
+# docker-compose.yml (Traefik)
+traefik:
+  image: traefik:v3
+  command:
+    - --certificatesresolvers.le.acme.email=mail@example.com
+    - --certificatesresolvers.le.acme.storage=/acme.json
+  labels:
+    - traefik.enable=true
+```
+
+Jeder Container bekommt über Labels automatisch eine Subdomain und ein TLS-Zertifikat.

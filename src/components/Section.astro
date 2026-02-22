@@ -1,0 +1,51 @@
+---
+interface Props {
+  title?: string;
+  subtitle?: string;
+  tag?: string;
+  id?: string;
+  divider?: boolean;
+  class?: string;
+  innerClass?: string;
+  reveal?: boolean;
+}
+
+const {
+  title,
+  subtitle,
+  tag,
+  id,
+  divider = true,
+  class: className = '',
+  innerClass = '',
+  reveal = true,
+} = Astro.props;
+---
+
+<section
+  id={id}
+  class:list={[
+    'py-16 md:py-24',
+    divider && 'section-divider',
+    className
+  ]}
+>
+  <div class:list={['container-content', innerClass]}>
+    {(title || subtitle || tag) && (
+      <div class:list={['mb-10 md:mb-14', reveal && 'reveal']}>
+        {tag && (
+          <p class="text-label text-accent uppercase tracking-widest mb-3">
+            {tag}
+          </p>
+        )}
+        {title && (
+          <h2 class="text-display-sm text-ink-1 mb-3">{title}</h2>
+        )}
+        {subtitle && (
+          <p class="text-body-lg text-ink-2 max-w-prose">{subtitle}</p>
+        )}
+      </div>
+    )}
+    <slot />
+  </div>
+</section>

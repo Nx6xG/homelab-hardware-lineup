@@ -1,0 +1,89 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../components/Layout.astro';
+import Timeline from '../components/Timeline.astro';
+import Reveal from '../components/Reveal.astro';
+
+const devices = await getCollection('devices');
+
+// Build timeline events from created + updated dates
+const events: Array<{
+  slug: string;
+  name: string;
+  headline: string;
+  type: string;
+  status: 'online' | 'offline' | 'maintenance' | 'retired';
+  date: string;
+  event: 'created' | 'updated' | 'retired';
+  tags: string[];
+}> = [];
+
+for (const device of devices) {
+  events.push({
+    slug: device.slug,
+    name: device.data.name,
+    headline: device.data.headline,
+    type: device.data.type,
+    status: device.data.status,
+    date: device.data.created,
+    event: 'created',
+    tags: device.data.tags,
+  });
+
+  // Only add an updated event if it's different from created
+  if (device.data.updated !== device.data.created) {
+    events.push({
+      slug: device.slug,
+      name: device.data.name,
+      headline: device.data.headline,
+      type: device.data.type,
+      status: device.data.status,
+      date: device.data.updated,
+      event: 'retired' === device.data.status ? 'retired' : 'updated',
+      tags: device.data.tags,
+    });
+  }
+}
+
+// Sort descending by date
+events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+---
+
+<Layout
+  title="Build Timeline — Homelab"
+  description="Chronological history of every device added, updated, or retired in the homelab."
+>
+  <section class="pt-28 pb-12 section-divider">
+    <div class="container-content">
+      <Reveal>
+        <p class="text-label text-accent uppercase tracking-widest mb-3">History</p>
+        <h1 class="text-display-lg text-ink-1 mb-4">Build timeline.</h1>
+        <p class="text-body-lg text-ink-2 max-w-lg">
+          Every device added, updated, or changed — in chronological order.
+        </p>
+      </Reveal>
+
+      <!-- Legend -->
+      <Reveal delay={120} class="flex flex-wrap gap-4 mt-8">
+        <div class="flex items-center gap-2 text-label text-ink-3">
+          <span class="w-2.5 h-2.5 rounded-full bg-status-online" aria-hidden="true"></span>
+          Added to lab
+        </div>
+        <div class="flex items-center gap-2 text-label text-ink-3">
+          <span class="w-2.5 h-2.5 rounded-full bg-accent" aria-hidden="true"></span>
+          Updated
+        </div>
+        <div class="flex items-center gap-2 text-label text-ink-3">
+          <span class="w-2.5 h-2.5 rounded-full bg-status-retired" aria-hidden="true"></span>
+          Retired
+        </div>
+      </Reveal>
+    </div>
+  </section>
+
+  <section class="py-12">
+    <div class="container-content">
+      <Timeline items={events} />
+    </div>
+  </section>
+</Layout>

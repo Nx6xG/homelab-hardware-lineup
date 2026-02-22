@@ -1,0 +1,51 @@
+---
+import ProductCard from './ProductCard.astro';
+
+interface Device {
+  slug: string;
+  name: string;
+  headline: string;
+  type: string;
+  status: 'online' | 'offline' | 'maintenance' | 'retired';
+  role: string;
+  services?: string[];
+  tags?: string[];
+  photo?: string;
+}
+
+interface Props {
+  devices: Device[];
+  currentSlug: string;
+  sharedTags?: string[];
+  class?: string;
+}
+
+const { devices, currentSlug, sharedTags = [], class: className = '' } = Astro.props;
+
+// Filter out current device and limit to 3
+const related = devices
+  .filter(d => d.slug !== currentSlug)
+  .slice(0, 3);
+---
+
+{related.length > 0 && (
+  <div class:list={['', className]}>
+    <div class="flex items-center gap-3 mb-6">
+      <h2 class="text-display-sm text-ink-1">Related devices</h2>
+      {sharedTags.length > 0 && (
+        <div class="flex gap-1.5 flex-wrap">
+          {sharedTags.slice(0, 3).map(tag => (
+            <span class="text-[0.65rem] px-2 py-0.5 rounded-full bg-accent/10 text-accent uppercase tracking-wider font-medium">
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 stagger-children">
+      {related.map((device) => (
+        <ProductCard {...device} />
+      ))}
+    </div>
+  </div>
+)}

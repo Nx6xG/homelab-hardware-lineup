@@ -1,0 +1,152 @@
+---
+import MediaStage from './MediaStage.astro';
+
+interface Item {
+  label:    string;
+  headline: string;
+  body:     string;
+  media?:   string;
+}
+
+interface Props {
+  items: Item[];
+  id?: string;
+}
+
+const { items, id = `explorer-${Math.random().toString(36).slice(2, 7)}` } = Astro.props;
+---
+
+<div
+  class="feature-explorer grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-0 rounded-[20px] overflow-hidden border border-[rgba(255,255,255,0.065)] bg-[var(--color-surface-1)]"
+  data-explorer-id={id}
+>
+  <!-- Left: pill selector -->
+  <nav
+    class="flex flex-row lg:flex-col gap-1 p-4 lg:p-5 overflow-x-auto lg:overflow-x-visible border-b lg:border-b-0 lg:border-r border-[rgba(255,255,255,0.055)]"
+    aria-label="Feature selector"
+    role="tablist"
+    style="scrollbar-width: none;"
+  >
+    {items.map((item, i) => (
+      <button
+        role="tab"
+        aria-selected={i === 0 ? 'true' : 'false'}
+        aria-controls={`${id}-panel-${i}`}
+        id={`${id}-tab-${i}`}
+        data-explorer-tab={i}
+        class:list={[
+          'flex-shrink-0 text-left px-3.5 py-2 rounded-[10px] text-[0.8125rem] font-medium transition-all duration-200',
+          'border',
+          i === 0
+            ? 'bg-[rgba(59,130,246,0.12)] text-[var(--color-accent)] border-[rgba(59,130,246,0.2)]'
+            : 'text-[var(--color-ink-3)] border-transparent hover:text-[var(--color-ink-1)] hover:bg-[rgba(255,255,255,0.04)]',
+        ]}
+      >
+        {item.label}
+      </button>
+    ))}
+  </nav>
+
+  <!-- Right: content stage -->
+  <div class="relative min-h-[320px] lg:min-h-[360px]">
+    {items.map((item, i) => (
+      <div
+        role="tabpanel"
+        id={`${id}-panel-${i}`}
+        aria-labelledby={`${id}-tab-${i}`}
+        data-explorer-panel={i}
+        class:list={[
+          'absolute inset-0 p-7 lg:p-10 flex flex-col lg:flex-row gap-8 items-start transition-none',
+          i === 0 ? '' : 'opacity-0 pointer-events-none',
+        ]}
+      >
+        <!-- Text -->
+        <div class="flex-1 min-w-0">
+          <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
+            {item.label}
+          </p>
+          <h3 class="text-[1.3rem] font-semibold tracking-[-0.02em] text-[var(--color-ink-1)] mb-4 leading-[1.25]">
+            {item.headline}
+          </h3>
+          <p class="text-[0.9375rem] leading-[1.65] text-[var(--color-ink-3)]">
+            {item.body}
+          </p>
+        </div>
+
+        <!-- Media -->
+        <div class="w-full lg:w-[260px] flex-shrink-0">
+          <MediaStage src={item.media} alt={item.headline} aspect="aspect-[4/3]" />
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<script>
+// FeatureExplorer — Web Animations API crossfade, keyboard accessible
+document.querySelectorAll<HTMLElement>('[data-explorer-id]').forEach(explorer => {
+  const id    = explorer.dataset.explorerId!;
+  const tabs  = explorer.querySelectorAll<HTMLButtonElement>('[data-explorer-tab]');
+  const panels = explorer.querySelectorAll<HTMLElement>('[data-explorer-panel]');
+  const EASING = 'cubic-bezier(0.16, 1, 0.3, 1)';
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let current = 0;
+
+  function activate(idx: number) {
+    if (idx === current) return;
+
+    // Fade out current
+    const outPanel = panels[current];
+    if (reduced) {
+      outPanel.classList.add('opacity-0', 'pointer-events-none');
+    } else {
+      outPanel.animate(
+        [{ opacity: '1', transform: 'translateY(0)' }, { opacity: '0', transform: 'translateY(-6px)' }],
+        { duration: 160, easing: 'ease', fill: 'forwards' }
+      ).finished.then(() => {
+        outPanel.classList.add('opacity-0', 'pointer-events-none');
+        outPanel.style.animation = '';
+      });
+    }
+
+    // Fade in next
+    const inPanel = panels[idx];
+    inPanel.classList.remove('opacity-0', 'pointer-events-none');
+    if (!reduced) {
+      inPanel.animate(
+        [{ opacity: '0', transform: 'translateY(6px)' }, { opacity: '1', transform: 'translateY(0)' }],
+        { duration: 280, easing: EASING, fill: 'forwards' }
+      );
+    }
+
+    // Update tab state
+    tabs.forEach((tab, i) => {
+      const active = i === idx;
+      tab.setAttribute('aria-selected', String(active));
+      tab.classList.toggle('bg-[rgba(59,130,246,0.12)]', active);
+      tab.classList.toggle('text-[var(--color-accent)]', active);
+      tab.classList.toggle('border-[rgba(59,130,246,0.2)]', active);
+      tab.classList.toggle('text-[var(--color-ink-3)]', !active);
+      tab.classList.toggle('border-transparent', !active);
+    });
+
+    current = idx;
+  }
+
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => activate(i));
+    tab.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        activate((current + 1) % tabs.length);
+        (tabs[(current) % tabs.length] as HTMLElement).focus();
+      } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+        e.preventDefault();
+        activate((current - 1 + tabs.length) % tabs.length);
+        (tabs[current] as HTMLElement).focus();
+      }
+    });
+  });
+});
+</script>

@@ -1,0 +1,229 @@
+---
+// Portainer-like container dashboard — purely cosmetic, CSS-animated
+---
+
+<div class="dash" aria-hidden="true">
+
+  <!-- Window chrome -->
+  <div class="dash-chrome">
+    <div class="dash-traffic">
+      <span class="dash-dot dash-dot-r"></span>
+      <span class="dash-dot dash-dot-y"></span>
+      <span class="dash-dot dash-dot-g"></span>
+    </div>
+    <span class="dash-title">Portainer CE</span>
+    <div class="dash-logo-mark"></div>
+  </div>
+
+  <!-- Stat row -->
+  <div class="dash-stats">
+    <div class="dash-stat">
+      <span class="dash-stat-n">19</span>
+      <span class="dash-stat-l">Containers</span>
+    </div>
+    <div class="dash-stat dash-stat--accent">
+      <span class="dash-stat-n">17</span>
+      <span class="dash-stat-l">Running</span>
+    </div>
+    <div class="dash-stat">
+      <span class="dash-stat-n">5.4</span>
+      <span class="dash-stat-l">GB RAM</span>
+    </div>
+  </div>
+
+  <!-- Container list -->
+  <div class="dash-list">
+    {[
+      { name: 'traefik',       delay: '0ms'  },
+      { name: 'paperless-ngx', delay: '80ms' },
+      { name: 'n8n',           delay: '160ms'},
+      { name: 'wordpress',     delay: '240ms'},
+      { name: 'vikunja',       delay: '320ms'},
+      { name: 'uptime-kuma',   delay: '400ms'},
+    ].map(c => (
+      <div class="dash-row" style={`animation-delay: ${c.delay}`}>
+        <span class="dash-pulse"></span>
+        <span class="dash-name">{c.name}</span>
+        <span class="dash-badge">running</span>
+      </div>
+    ))}
+  </div>
+
+  <!-- Resource bars -->
+  <div class="dash-resources">
+    <div class="dash-res">
+      <span class="dash-res-label">CPU</span>
+      <div class="dash-bar"><div class="dash-bar-fill" style="--w: 42%"></div></div>
+      <span class="dash-res-val">42%</span>
+    </div>
+    <div class="dash-res">
+      <span class="dash-res-label">RAM</span>
+      <div class="dash-bar"><div class="dash-bar-fill dash-bar-warm" style="--w: 68%"></div></div>
+      <span class="dash-res-val">68%</span>
+    </div>
+  </div>
+
+</div>
+
+<style>
+  .dash {
+    background: #0d0d10;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    overflow: hidden;
+    font-family: -apple-system, 'SF Pro Text', system-ui, sans-serif;
+    font-size: 12px;
+    width: 100%;
+    user-select: none;
+  }
+
+  /* Chrome */
+  .dash-chrome {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.055);
+  }
+  .dash-traffic { display: flex; gap: 5px; }
+  .dash-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dash-dot-r { background: #ff5f57; }
+  .dash-dot-y { background: #febc2e; }
+  .dash-dot-g { background: #28c840; }
+  .dash-title {
+    flex: 1;
+    color: rgba(255,255,255,0.5);
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+  }
+  .dash-logo-mark {
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    opacity: 0.9;
+  }
+
+  /* Stats */
+  .dash-stats {
+    display: flex;
+    border-bottom: 1px solid rgba(255,255,255,0.055);
+  }
+  .dash-stat {
+    flex: 1;
+    padding: 10px 12px;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.04);
+  }
+  .dash-stat:last-child { border-right: none; }
+  .dash-stat-n {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+  }
+  .dash-stat--accent .dash-stat-n { color: #22c55e; }
+  .dash-stat-l {
+    display: block;
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+  }
+
+  /* Container list */
+  .dash-list { padding: 6px 0; }
+  .dash-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 5px 14px;
+    animation: row-in 0.4s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  @keyframes row-in {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .dash-pulse {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    flex-shrink: 0;
+    animation: pulse-green 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse-green {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+    50%       { box-shadow: 0 0 0 4px rgba(34,197,94,0); }
+  }
+  .dash-name {
+    flex: 1;
+    color: rgba(255,255,255,0.55);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+  }
+  .dash-badge {
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 9999px;
+    background: rgba(34,197,94,0.1);
+    color: #22c55e;
+    border: 1px solid rgba(34,197,94,0.2);
+    letter-spacing: 0.02em;
+  }
+
+  /* Resource bars */
+  .dash-resources {
+    padding: 10px 14px;
+    border-top: 1px solid rgba(255,255,255,0.055);
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .dash-res {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+  }
+  .dash-res-label {
+    width: 28px;
+    color: rgba(255,255,255,0.3);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .dash-res-val {
+    width: 34px;
+    text-align: right;
+    color: rgba(255,255,255,0.4);
+    font-variant-numeric: tabular-nums;
+  }
+  .dash-bar {
+    flex: 1;
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .dash-bar-fill {
+    height: 100%;
+    width: var(--w, 50%);
+    background: #3b82f6;
+    border-radius: 2px;
+    transform-origin: left;
+    animation: dash-bar-grow 1.4s cubic-bezier(0.16,1,0.3,1) 0.5s both;
+  }
+  .dash-bar-warm { background: linear-gradient(90deg, #3b82f6, #f59e0b); }
+  @keyframes dash-bar-grow {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+</style>

@@ -1,0 +1,26 @@
+---
+interface Props {
+  items: string[];
+  label?: string;
+  accent?: boolean;
+  class?: string;
+}
+
+const { items, label, accent = false, class: className = '' } = Astro.props;
+---
+
+<div class:list={['flex flex-wrap gap-2', className]}>
+  {label && (
+    <span class="w-full text-label text-ink-3 mb-0.5">{label}</span>
+  )}
+  {items.map((item) => (
+    <span
+      class:list={[
+        'chip',
+        accent && 'bg-[rgba(59,130,246,0.08)] text-accent/80 border-accent/15'
+      ]}
+    >
+      {item}
+    </span>
+  ))}
+</div>

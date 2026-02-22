@@ -1,0 +1,84 @@
+---
+name: "iPhone 15 Pro Max"
+type: "other"
+status: "online"
+headline: "Primäres Smartphone und mobiles Homelab-Kontrollzentrum. Home Assistant Companion, Plex und Tailscale machen das iPhone zum Remote-Control für alles im Heimnetz."
+role: "Primäres Smartphone & mobiler Homelab-Client"
+location: "Mobil"
+services:
+  - "Home Assistant Companion"
+  - "Plex (Client)"
+  - "Tailscale"
+  - "Portainer (Browser)"
+  - "SSH (Prompt / Termius)"
+stack:
+  - "iOS"
+  - "Home Assistant Companion"
+  - "Tailscale"
+  - "iCloud"
+  - "Shortcuts"
+outcomes:
+  - "Home Assistant Companion mit Widgets und Live Activities für Gerätesteuerung"
+  - "Plex-Streaming vom QNAP NAS — auch unterwegs via Tailscale"
+  - "Tailscale-Client für sicheren Tunnel ins Heimnetz von überall"
+  - "iOS Shortcuts für schnelle Homelab-Aktionen (z.B. Licht aus, Server-Status)"
+  - "Push-Benachrichtigungen von Home Assistant für kritische Ereignisse"
+decisions:
+  chose:
+    - "iPhone 15 Pro Max für maximalen Akku und ProMotion-Display"
+    - "Home Assistant Companion als primäre Steuerungs-App"
+    - "Tailscale für Remote-Zugriff — zero Config, sicher, schnell"
+  tradeoffs:
+    - "iOS-Ökosystem limitiert Sideloading und tiefe System-Integration"
+    - "Tailscale benötigt Hintergrund-Berechtigung — gelegentlich manuell reaktivieren"
+  next:
+    - "Dynamic Island Live Activity für Server-Uptime und NAS-Status"
+    - "Automations mit Home Assistant bei Ankunft/Abreise ausbauen"
+specs:
+  os: "iOS (aktuell)"
+  cpu: "Apple A17 Pro"
+  ram: "8 GB"
+  storage: "256 GB"
+  network: "5G + WiFi 6 + Bluetooth 5.3"
+links: {}
+photos: []
+tags:
+  - "iphone"
+  - "apple"
+  - "mobile"
+  - "homeassistant"
+  - "tailscale"
+  - "plex"
+created: "2023-09-22"
+updated: "2025-01-10"
+---
+
+## Übersicht
+
+Das iPhone ist der mobile Arm des Homelabs. Egal wo — über Tailscale ist der Zugriff auf alle Services möglich, als wäre man im eigenen Netz.
+
+## Home Assistant Companion
+
+Die HA Companion App ist das tägliche Interface für alle Automationen:
+- **Widgets** auf dem Homescreen für häufige Aktionen
+- **Push-Notifications** bei wichtigen Ereignissen (Türsensor, Wassersensor)
+- **Anwesenheitserkennung** via GPS-Geofencing für automatische Szenen
+
+## Tailscale — Remote-Zugriff
+
+Mit Tailscale im Hintergrund ist das iPhone immer im Heimnetz, auch im Mobilfunknetz:
+
+```
+iPhone (Tailscale) ──WireGuard Tunnel──→ Heimnetz
+                                              │
+                                        ├── QNAP NAS (Plex)
+                                        ├── Home Assistant
+                                        └── Portainer (Pi 5)
+```
+
+## iOS Shortcuts
+
+Schnellzugriff via Shortcuts und Siri:
+- "Guten Morgen" → Rollladen hoch, Kaffeemaschine an (via HA)
+- "Gute Nacht" → Alle Lichter aus, Türen prüfen
+- "Lab Status" → Uptime Kuma Dashboard öffnen

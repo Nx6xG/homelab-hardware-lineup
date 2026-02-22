@@ -1,0 +1,105 @@
+---
+const links = [
+  { href: '/',        label: 'Home'   },
+  { href: '/lineup',  label: 'Lineup' },
+  { href: '/builds',  label: 'Builds' },
+  { href: '/about',   label: 'About'  },
+];
+
+const pathname = Astro.url.pathname;
+---
+
+<header
+  id="navbar"
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+  role="banner"
+>
+  <div class="glass border-b border-[rgba(255,255,255,0.06)]">
+    <div class="container-wide">
+      <nav
+        class="flex items-center justify-between h-14"
+        aria-label="Main navigation"
+      >
+        <!-- Logo -->
+        <a
+          href="/"
+          class="flex items-center gap-2.5 group"
+          aria-label="Homelab Hardware — Home"
+        >
+          <div class="w-7 h-7 rounded-lg bg-accent flex items-center justify-center transition-transform duration-spring group-hover:scale-110">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <rect x="1" y="1" width="5" height="5" rx="1" fill="white"/>
+              <rect x="8" y="1" width="5" height="5" rx="1" fill="white" opacity="0.6"/>
+              <rect x="1" y="8" width="5" height="5" rx="1" fill="white" opacity="0.6"/>
+              <rect x="8" y="8" width="5" height="5" rx="1" fill="white"/>
+            </svg>
+          </div>
+          <span class="font-semibold text-sm tracking-tight text-ink-1 hidden sm:block">
+            Homelab
+          </span>
+        </a>
+
+        <!-- Links -->
+        <ul class="flex items-center gap-1" role="list">
+          {links.map(({ href, label }) => {
+            const isActive = href === '/'
+              ? pathname === '/'
+              : pathname.startsWith(href);
+            return (
+              <li>
+                <a
+                  href={href}
+                  class:list={[
+                    'relative px-3.5 py-1.5 rounded-full text-label transition-colors duration-200',
+                    isActive
+                      ? 'text-ink-1 bg-[rgba(255,255,255,0.08)]'
+                      : 'text-ink-3 hover:text-ink-1 hover:bg-[rgba(255,255,255,0.05)]'
+                  ]}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {label}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+
+        <!-- Right slot (optional) -->
+        <div class="w-24 flex justify-end">
+          <a
+            href="/lineup"
+            class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-label bg-accent/10 text-accent hover:bg-accent/20 transition-colors duration-200"
+            aria-label="View all hardware"
+          >
+            <span>All hardware</span>
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+              <path d="M2.5 6h7M6.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- Skip to main content (accessibility) -->
+<a
+  href="#main-content"
+  class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] btn-primary"
+>
+  Skip to main content
+</a>
+
+<script>
+  // Scroll-aware navbar opacity
+  const navbar = document.getElementById('navbar');
+  if (navbar) {
+    let lastY = 0;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      // Add extra shadow when scrolled
+      navbar.style.setProperty('--nb-opacity', String(Math.min(y / 80, 1)));
+      lastY = y;
+    }, { passive: true });
+  }
+</script>

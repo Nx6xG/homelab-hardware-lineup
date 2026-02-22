@@ -1,0 +1,94 @@
+---
+name: "MacBook Pro M4 Pro"
+type: "pc"
+status: "online"
+headline: "Primäres Arbeitsgerät. Apple Silicon M4 Pro für Entwicklung, Design und tägliche Arbeit — und gleichzeitig der Kontrollpunkt für das gesamte Homelab."
+role: "Primäres Arbeitsgerät & Homelab-Kontrollpunkt"
+location: "Schreibtisch"
+services:
+  - "Homebrew"
+  - "Docker Desktop"
+  - "VS Code"
+  - "Terminal / Zsh"
+  - "Tailscale"
+  - "SSH (zu allen Lab-Geräten)"
+  - "Plex (Client)"
+stack:
+  - "macOS Sequoia"
+  - "Homebrew"
+  - "Docker Desktop"
+  - "Zsh + Oh My Zsh"
+  - "Tailscale"
+  - "Python / Node.js"
+outcomes:
+  - "Nahtloser Zugriff auf alle Homelab-Services via SSH und Browser"
+  - "Docker Desktop für lokale Container-Entwicklung ohne VM-Overhead"
+  - "Time Machine Backup automatisch auf den QNAP NAS"
+  - "Tailscale-Client für sicheren Remote-Zugriff aufs Heimnetz von unterwegs"
+  - "Universal Control mit iPad Air für erweiterten Workspace"
+decisions:
+  chose:
+    - "MacBook Pro M4 Pro für die beste Performance/Akku-Balance im mobilen Einsatz"
+    - "Apple Silicon für nativen Arm64-Support bei Docker-Images (kein Emulations-Overhead)"
+    - "Time Machine auf NAS statt externem Laufwerk — läuft automatisch im Hintergrund"
+    - "Tailscale statt manuellem VPN für Zero-Config Remote-Zugriff"
+  tradeoffs:
+    - "macOS-Ökosystem bindet an Apple-Hardware für nahtlose Integration"
+    - "Docker Desktop auf macOS mit leichtem Overhead vs. native Linux-Container"
+    - "Weniger Konfigurationsfreiheit als ein Linux-Desktop"
+  next:
+    - "Nix/devenv für reproduzierbare Entwicklungsumgebungen"
+    - "Raycast als Alfred-Ersatz mit Homelab-Shortcuts"
+specs:
+  os: "macOS Sequoia (aktuell)"
+  cpu: "Apple M4 Pro — 12-core (8P + 4E)"
+  ram: "24 GB Unified Memory"
+  storage: "512 GB SSD"
+  network: "WiFi 6E + Thunderbolt 5"
+links: {}
+photos: []
+tags:
+  - "macos"
+  - "apple-silicon"
+  - "workstation"
+  - "development"
+  - "tailscale"
+created: "2024-11-01"
+updated: "2025-01-18"
+---
+
+## Übersicht
+
+Das MacBook Pro M4 Pro ist das primäre Arbeitsgerät und gleichzeitig die Kommandozentrale für das gesamte Homelab. Alle Konfigurations-Änderungen, SSH-Sessions und Browser-UIs laufen von hier.
+
+## Homelab-Verwaltung vom Mac
+
+Von hier aus werden gesteuert:
+- **Portainer** (Pi 5) via Browser
+- **Home Assistant** via Browser und iOS Companion App
+- **QNAP QTS** via Browser
+- **AMP Game Panel** via Browser
+- **SSH** zu allen Linux-Hosts im Netz
+
+```bash
+# ~/.ssh/config (Auszug)
+Host homeassistant
+  HostName 192.168.1.xx
+  User pi
+
+Host rpi5
+  HostName 192.168.1.xx
+  User admin
+
+Host qnap
+  HostName 192.168.1.xx
+  User admin
+```
+
+## Backups
+
+Time Machine läuft automatisch auf den QNAP-SMB-Share `timemachine` sobald das MacBook im Heimnetz ist. Stündliche Snapshots, 14-tägige Retention.
+
+## Apple-Ökosystem-Integration
+
+Durch Handoff, AirDrop und Universal Control arbeiten MacBook und iPad Air nahtlos zusammen. Clipboard, Dateien und Fenster wechseln ohne Reibung zwischen den Geräten.

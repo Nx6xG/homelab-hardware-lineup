@@ -1,0 +1,211 @@
+---
+// Hyper Backup / backup status — animated progress bars
+const jobs = [
+  { name: 'Home Assistant',   pct: 100, color: '#22c55e', delay: '0.2s'  },
+  { name: 'Docker Volumes',   pct: 87,  color: '#3b82f6', delay: '0.5s'  },
+  { name: 'WordPress Data',   pct: 72,  color: '#3b82f6', delay: '0.8s'  },
+  { name: 'Plex Metadata',    pct: 55,  color: '#f59e0b', delay: '1.1s'  },
+  { name: 'Photos Archive',   pct: 31,  color: '#8b5cf6', delay: '1.4s'  },
+];
+---
+
+<div class="bup" aria-hidden="true">
+
+  <!-- Chrome -->
+  <div class="bup-chrome">
+    <div class="bup-traffic">
+      <span class="bup-dot bup-dot-r"></span>
+      <span class="bup-dot bup-dot-y"></span>
+      <span class="bup-dot bup-dot-g"></span>
+    </div>
+    <span class="bup-title">Hyper Backup</span>
+    <span class="bup-status">
+      <span class="bup-status-dot"></span>
+      Running
+    </span>
+  </div>
+
+  <!-- Header meta -->
+  <div class="bup-meta">
+    <div class="bup-meta-item">
+      <span class="bup-meta-val">342 GB</span>
+      <span class="bup-meta-lbl">Total stored</span>
+    </div>
+    <div class="bup-meta-item">
+      <span class="bup-meta-val" style="color: #22c55e">5 / 5</span>
+      <span class="bup-meta-lbl">Jobs active</span>
+    </div>
+    <div class="bup-meta-item">
+      <span class="bup-meta-val">02:00</span>
+      <span class="bup-meta-lbl">Runs at</span>
+    </div>
+  </div>
+
+  <!-- Job list -->
+  <div class="bup-jobs">
+    {jobs.map(j => (
+      <div class="bup-job" style={`animation-delay: ${j.delay}`}>
+        <div class="bup-job-top">
+          <span class="bup-job-name">{j.name}</span>
+          <span class="bup-job-pct" style={`color: ${j.color}`}>{j.pct}%</span>
+        </div>
+        <div class="bup-bar">
+          <div
+            class="bup-bar-fill"
+            style={`--w: ${j.pct}%; background: ${j.color}; animation-delay: ${j.delay}`}
+          ></div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Footer -->
+  <div class="bup-footer">
+    <span class="bup-footer-item">
+      <span class="bup-footer-dot" style="background: #22c55e"></span>
+      Last run: Today 02:00
+    </span>
+    <span class="bup-footer-item">
+      Next: Tomorrow 02:00
+    </span>
+  </div>
+
+</div>
+
+<style>
+  .bup {
+    background: #0d0d10;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    overflow: hidden;
+    font-family: -apple-system, system-ui, sans-serif;
+    font-size: 12px;
+    width: 100%;
+    user-select: none;
+  }
+
+  .bup-chrome {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.055);
+  }
+  .bup-traffic { display: flex; gap: 5px; }
+  .bup-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+  }
+  .bup-dot-r { background: #ff5f57; }
+  .bup-dot-y { background: #febc2e; }
+  .bup-dot-g { background: #28c840; }
+  .bup-title {
+    flex: 1;
+    color: rgba(255,255,255,0.5);
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+  }
+  .bup-status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    color: #22c55e;
+  }
+  .bup-status-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #22c55e;
+    animation: bup-pulse 2s ease-in-out infinite;
+  }
+  @keyframes bup-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+  }
+
+  .bup-meta {
+    display: flex;
+    border-bottom: 1px solid rgba(255,255,255,0.055);
+  }
+  .bup-meta-item {
+    flex: 1;
+    padding: 10px 12px;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.04);
+  }
+  .bup-meta-item:last-child { border-right: none; }
+  .bup-meta-val {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.8);
+    font-variant-numeric: tabular-nums;
+  }
+  .bup-meta-lbl {
+    display: block;
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+  }
+
+  .bup-jobs {
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .bup-job {
+    animation: bup-job-in 0.4s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  @keyframes bup-job-in {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: none; }
+  }
+  .bup-job-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .bup-job-name { color: rgba(255,255,255,0.6); font-size: 11px; }
+  .bup-job-pct  { font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .bup-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .bup-bar-fill {
+    height: 100%;
+    width: var(--w, 50%);
+    border-radius: 2px;
+    transform-origin: left;
+    animation: bup-bar-grow 1.2s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  @keyframes bup-bar-grow {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+  }
+
+  .bup-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 14px;
+    border-top: 1px solid rgba(255,255,255,0.055);
+  }
+  .bup-footer-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+  }
+  .bup-footer-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+</style>

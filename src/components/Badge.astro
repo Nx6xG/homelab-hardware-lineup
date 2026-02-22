@@ -1,0 +1,39 @@
+---
+interface Props {
+  status: 'online' | 'offline' | 'maintenance' | 'retired';
+  size?: 'sm' | 'md';
+  class?: string;
+}
+
+const { status, size = 'md', class: className = '' } = Astro.props;
+
+const config = {
+  online:      { label: 'Online',      dot: 'bg-status-online',      ring: 'ring-status-online/20', text: 'text-status-online',      bg: 'bg-[rgba(34,197,94,0.1)]'  },
+  offline:     { label: 'Offline',     dot: 'bg-status-offline',     ring: 'ring-status-offline/20',text: 'text-status-offline',     bg: 'bg-[rgba(239,68,68,0.1)]'  },
+  maintenance: { label: 'Maintenance', dot: 'bg-status-maintenance', ring: 'ring-status-maintenance/20', text: 'text-status-maintenance', bg: 'bg-[rgba(245,158,11,0.1)]' },
+  retired:     { label: 'Retired',     dot: 'bg-status-retired',     ring: 'ring-status-retired/20',text: 'text-status-retired',     bg: 'bg-[rgba(107,114,128,0.1)]'},
+};
+
+const { label, dot, ring, text, bg } = config[status];
+---
+
+<span
+  class:list={[
+    'inline-flex items-center gap-1.5 rounded-full font-medium',
+    size === 'sm' ? 'px-2 py-0.5 text-[0.7rem]' : 'px-3 py-1 text-label',
+    bg, text, className
+  ]}
+  aria-label={`Status: ${label}`}
+>
+  <!-- Dot with pulse for online -->
+  <span
+    class:list={[
+      'rounded-full flex-shrink-0',
+      size === 'sm' ? 'w-1.5 h-1.5' : 'w-2 h-2',
+      dot,
+      status === 'online' ? 'animate-pulse' : ''
+    ]}
+    aria-hidden="true"
+  ></span>
+  {label}
+</span>

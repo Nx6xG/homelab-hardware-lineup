@@ -1,0 +1,105 @@
+---
+// Terminal with typewriter-style line animation — purely CSS
+---
+
+<div class="term" aria-hidden="true">
+
+  <!-- Window chrome -->
+  <div class="term-chrome">
+    <div class="term-traffic">
+      <span class="term-dot term-dot-r"></span>
+      <span class="term-dot term-dot-y"></span>
+      <span class="term-dot term-dot-g"></span>
+    </div>
+    <span class="term-title">bash — rpi5</span>
+  </div>
+
+  <!-- Content -->
+  <div class="term-body">
+    <div class="term-line term-cmd"    style="animation-delay: 0.2s">{'$ docker ps --format "table {{.Names}}\\t{{.Status}}"'}</div>
+    <div class="term-line term-header" style="animation-delay: 0.6s">{'NAME             STATUS'}</div>
+    <div class="term-line term-out"    style="animation-delay: 0.9s"><span class="term-green">traefik</span>{'        '}Up 3 days</div>
+    <div class="term-line term-out"    style="animation-delay: 1.1s"><span class="term-green">paperless-ngx</span>{'  '}Up 3 days</div>
+    <div class="term-line term-out"    style="animation-delay: 1.3s"><span class="term-green">n8n</span>{'            '}Up 3 days</div>
+    <div class="term-line term-out"    style="animation-delay: 1.5s"><span class="term-green">wordpress</span>{'     '}Up 3 days</div>
+    <div class="term-line term-blank"  style="animation-delay: 1.7s">{' '}</div>
+    <div class="term-line term-cmd"    style="animation-delay: 2.0s">{'$ docker compose up -d paperless-ngx'}</div>
+    <div class="term-line term-out"    style="animation-delay: 2.5s"><span class="term-blue">✓</span>{' paperless-ngx   Started'}</div>
+    <div class="term-line term-out"    style="animation-delay: 2.8s"><span class="term-blue">✓</span>{' redis           Started'}</div>
+    <div class="term-line term-out"    style="animation-delay: 3.1s"><span class="term-blue">✓</span>{' postgresql      Started'}</div>
+    <div class="term-line term-blank"  style="animation-delay: 3.4s">{' '}</div>
+    <div class="term-line term-cmd"    style="animation-delay: 3.6s">{'$ '}<span class="term-cursor">_</span></div>
+  </div>
+
+</div>
+
+<style>
+  .term {
+    background: #0a0a0c;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    overflow: hidden;
+    font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 11.5px;
+    line-height: 1.5;
+    width: 100%;
+    user-select: none;
+  }
+
+  .term-chrome {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .term-traffic { display: flex; gap: 5px; }
+  .term-dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+  }
+  .term-dot-r { background: #ff5f57; }
+  .term-dot-y { background: #febc2e; }
+  .term-dot-g { background: #28c840; }
+  .term-title {
+    flex: 1;
+    color: rgba(255,255,255,0.35);
+    font-size: 11px;
+    text-align: center;
+  }
+
+  .term-body {
+    padding: 14px 16px;
+    min-height: 200px;
+  }
+
+  .term-line {
+    opacity: 0;
+    animation: term-line-in 0.25s ease both;
+    white-space: pre;
+    overflow: hidden;
+  }
+  @keyframes term-line-in {
+    from { opacity: 0; transform: translateY(3px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .term-cmd    { color: rgba(255,255,255,0.85); }
+  .term-header { color: rgba(255,255,255,0.3); font-size: 10px; letter-spacing: 0.04em; }
+  .term-out    { color: rgba(255,255,255,0.55); }
+  .term-blank  { opacity: 1 !important; }
+
+  .term-green { color: #4ade80; }
+  .term-blue  { color: #60a5fa; }
+
+  .term-cursor {
+    display: inline-block;
+    color: rgba(255,255,255,0.8);
+    animation: term-blink 1s step-end infinite;
+  }
+  @keyframes term-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+</style>

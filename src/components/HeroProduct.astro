@@ -1,0 +1,170 @@
+---
+import Badge from './Badge.astro';
+
+interface Props {
+  name: string;
+  headline: string;
+  role: string;
+  status: 'online' | 'offline' | 'maintenance' | 'retired';
+  type: string;
+  location?: string;
+  services?: string[];
+  stack?: string[];
+  photo?: string;
+  slug: string;
+}
+
+const {
+  name,
+  headline,
+  role,
+  status,
+  type,
+  location,
+  services = [],
+  photo,
+  slug,
+} = Astro.props;
+
+const typeLabel: Record<string, string> = {
+  'raspberry-pi': 'Raspberry Pi',
+  'server':       'Server',
+  'nas':          'NAS',
+  'network':      'Network',
+  'pc':           'PC',
+  'display':      'Display',
+  'console':      'Console',
+  'smart-home':   'Smart Home',
+  'other':        'Device',
+};
+
+const typeStr = typeLabel[type] ?? type;
+const eyebrow = [typeStr, location].filter(Boolean).join(' · ');
+---
+
+<section
+  class="relative pt-28 pb-0 overflow-hidden"
+  aria-label="Device hero"
+>
+  <!-- Ambient background — very subtle, no glow spam -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div class="absolute inset-0 bg-[var(--color-surface-0)]"></div>
+    <div
+      class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px]"
+      style="background: radial-gradient(ellipse at center, rgba(59,130,246,0.04) 0%, transparent 70%);"
+    ></div>
+  </div>
+
+  <div class="container-content relative z-10">
+
+    <!-- Top metadata row -->
+    <div class="flex items-center gap-3 mb-8 reveal-fast">
+      <p class="text-[0.75rem] font-medium tracking-[0.1em] uppercase text-[var(--color-ink-3)]">
+        {eyebrow}
+      </p>
+      <span class="text-[var(--color-ink-4)]" aria-hidden="true">/</span>
+      <Badge status={status} size="sm" />
+    </div>
+
+    <!-- Two-column layout: text left, media right (desktop) -->
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_440px] gap-16 lg:gap-24 items-center pb-20">
+
+      <!-- Left: Identity -->
+      <div>
+        <h1
+          class="text-[clamp(2.75rem,6vw,5.5rem)] font-bold leading-[1.02] tracking-[-0.03em] text-[var(--color-ink-1)] mb-5 reveal"
+          style={`view-transition-name: device-name-${slug}`}
+        >
+          {name}
+        </h1>
+
+        <p
+          class="text-[clamp(1.2rem,2.5vw,1.65rem)] font-light leading-[1.3] tracking-[-0.01em] text-[var(--color-ink-2)] mb-6 reveal"
+          style="transition-delay: 80ms"
+        >
+          {role}
+        </p>
+
+        <p
+          class="text-[1rem] leading-[1.65] text-[var(--color-ink-3)] max-w-[42ch] mb-10 reveal"
+          style="transition-delay: 140ms"
+        >
+          {headline}
+        </p>
+
+        <!-- Quick service count stat -->
+        {services.length > 0 && (
+          <div class="flex items-baseline gap-3 mb-10 reveal" style="transition-delay: 180ms">
+            <span class="text-[2rem] font-semibold tabular-nums text-[var(--color-ink-1)]">
+              {services.length}
+            </span>
+            <span class="text-[0.875rem] text-[var(--color-ink-3)]">
+              services running
+            </span>
+          </div>
+        )}
+
+        <!-- CTAs -->
+        <div class="flex flex-wrap gap-3 reveal" style="transition-delay: 220ms">
+          <a href="#outcomes" class="btn-secondary">
+            What I built
+          </a>
+          <a href="#specs" class="btn-secondary">
+            Specs
+          </a>
+          {services.length > 0 && (
+            <a href="#services" class="btn-secondary">
+              Services
+            </a>
+          )}
+        </div>
+      </div>
+
+      <!-- Right: Media -->
+      <div
+        class="reveal w-full"
+        style={`transition-delay: 100ms; view-transition-name: device-media-${slug}`}
+        data-parallax
+      >
+        <div class="w-full aspect-[4/3] rounded-[20px] overflow-hidden">
+          {photo ? (
+            <img
+              src={photo}
+              alt={`${name}`}
+              class="w-full h-full object-cover"
+              loading="eager"
+              decoding="async"
+            />
+          ) : (
+            <div class="media-placeholder w-full h-full flex items-center justify-center">
+              <!-- Clean abstract mark — no emoji -->
+              <svg
+                width="72"
+                height="72"
+                viewBox="0 0 72 72"
+                fill="none"
+                aria-hidden="true"
+                class="opacity-20"
+              >
+                <rect x="4" y="4" width="28" height="28" rx="6"
+                  fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <rect x="40" y="4" width="28" height="28" rx="6"
+                  fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <rect x="4" y="40" width="28" height="28" rx="6"
+                  fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <rect x="40" y="40" width="28" height="28" rx="6"
+                  fill="none" stroke="currentColor" stroke-width="1.5"/>
+                <circle cx="18" cy="18" r="5" fill="currentColor" opacity="0.4"/>
+                <circle cx="54" cy="54" r="5" fill="currentColor" opacity="0.4"/>
+              </svg>
+            </div>
+          )}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Thin bottom separator -->
+  <div class="sep"></div>
+</section>

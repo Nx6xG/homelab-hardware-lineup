@@ -1,0 +1,191 @@
+---
+import DashboardPreview from './previews/DashboardPreview.astro';
+import TerminalPreview  from './previews/TerminalPreview.astro';
+import PlexPreview      from './previews/PlexPreview.astro';
+import BackupPreview    from './previews/BackupPreview.astro';
+import TraefikPreview   from './previews/TraefikPreview.astro';
+
+interface Story {
+  name:     string;
+  story:    string;
+  preview?: 'dashboard' | 'terminal' | 'plex' | 'backup' | 'traefik';
+  port?:    string;
+  uptime?:  string;
+  category?: string;
+}
+
+interface Props {
+  services: Story[];
+}
+
+const { services } = Astro.props;
+---
+
+{services.length > 0 && (
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    {services.map((svc, i) => (
+      <div
+        class="ssb-card reveal"
+        style={`transition-delay: ${i * 60}ms`}
+      >
+        <!-- Header -->
+        <div class="ssb-header">
+          {svc.category && (
+            <span class="ssb-cat">{svc.category}</span>
+          )}
+          <div class="ssb-live">
+            <span class="ssb-live-dot"></span>
+            {svc.uptime ?? 'online'}
+          </div>
+        </div>
+
+        <!-- Service name -->
+        <h3 class="ssb-name">{svc.name}</h3>
+
+        <!-- Story -->
+        <p class="ssb-story">{svc.story}</p>
+
+        <!-- Animated preview -->
+        {svc.preview && (
+          <div class="ssb-preview">
+            {svc.preview === 'dashboard' && <DashboardPreview />}
+            {svc.preview === 'terminal'  && <TerminalPreview  />}
+            {svc.preview === 'plex'      && <PlexPreview      />}
+            {svc.preview === 'backup'    && <BackupPreview    />}
+            {svc.preview === 'traefik'   && <TraefikPreview   />}
+          </div>
+        )}
+
+        <!-- Meta row -->
+        <div class="ssb-meta">
+          {svc.port && (
+            <span class="ssb-meta-item">
+              <span class="ssb-meta-label">Port</span>
+              <code class="ssb-meta-val">{svc.port}</code>
+            </span>
+          )}
+          {svc.uptime && (
+            <span class="ssb-meta-item">
+              <span class="ssb-meta-label">Uptime</span>
+              <span class="ssb-meta-val ssb-uptime">{svc.uptime}</span>
+            </span>
+          )}
+          {svc.category && (
+            <span class="ssb-meta-item">
+              <span class="ssb-meta-label">Category</span>
+              <span class="ssb-meta-val">{svc.category}</span>
+            </span>
+          )}
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
+<style>
+  .ssb-card {
+    background: var(--color-surface-1);
+    border: 1px solid rgba(255,255,255,0.065);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition:
+      border-color 300ms ease,
+      box-shadow   300ms ease;
+  }
+  .ssb-card:hover {
+    border-color: rgba(255,255,255,0.10);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  }
+
+  .ssb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .ssb-cat {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: var(--color-accent);
+    background: rgba(59,130,246,0.08);
+    border: 1px solid rgba(59,130,246,0.14);
+    padding: 3px 8px;
+    border-radius: 9999px;
+  }
+  .ssb-live {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.75rem;
+    color: var(--color-ink-4);
+  }
+  .ssb-live-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #22c55e;
+    animation: ssb-pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes ssb-pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+    50%       { opacity: 0.7; box-shadow: 0 0 0 3px rgba(34,197,94,0); }
+  }
+
+  .ssb-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    tracking: -0.02em;
+    color: var(--color-ink-1);
+    line-height: 1.2;
+  }
+
+  .ssb-story {
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--color-ink-3);
+    flex-grow: 1;
+  }
+
+  .ssb-preview {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.055);
+  }
+
+  .ssb-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,0.055);
+  }
+  .ssb-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .ssb-meta-label {
+    font-size: 0.7rem;
+    color: var(--color-ink-4);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .ssb-meta-val {
+    font-size: 0.8rem;
+    color: var(--color-ink-2);
+    font-weight: 500;
+  }
+  code.ssb-meta-val {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.75rem;
+    background: rgba(255,255,255,0.05);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: rgba(147,197,253,0.8);
+  }
+  .ssb-uptime { color: #22c55e; }
+</style>

@@ -1,0 +1,52 @@
+---
+const year = new Date().getFullYear();
+
+const links = [
+  { href: '/',        label: 'Home'   },
+  { href: '/lineup',  label: 'Lineup' },
+  { href: '/builds',  label: 'Builds' },
+  { href: '/about',   label: 'About'  },
+];
+---
+
+<footer class="mt-auto border-t border-[rgba(255,255,255,0.06)] py-12 text-ink-3">
+  <div class="container-content">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+      <!-- Brand -->
+      <div class="flex items-center gap-2.5">
+        <div class="w-6 h-6 rounded-md bg-surface-3 flex items-center justify-center">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <rect x="1" y="1" width="5" height="5" rx="1" fill="currentColor"/>
+            <rect x="8" y="1" width="5" height="5" rx="1" fill="currentColor" opacity="0.5"/>
+            <rect x="1" y="8" width="5" height="5" rx="1" fill="currentColor" opacity="0.5"/>
+            <rect x="8" y="8" width="5" height="5" rx="1" fill="currentColor"/>
+          </svg>
+        </div>
+        <span class="text-label">Homelab Hardware Pages</span>
+      </div>
+
+      <!-- Navigation -->
+      <nav aria-label="Footer navigation">
+        <ul class="flex items-center gap-5 flex-wrap" role="list">
+          {links.map(({ href, label }) => (
+            <li>
+              <a
+                href={href}
+                class="text-label text-ink-3 hover:text-ink-1 transition-colors duration-200"
+              >
+                {label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+
+    <div class="sep mt-8 mb-6" aria-hidden="true"></div>
+
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 text-label text-ink-4">
+      <p>&copy; {year} Homelab Hardware Pages. Built with Astro.</p>
+      <p>Personal documentation. Not affiliated with any product vendors.</p>
+    </div>
+  </div>
+</footer>

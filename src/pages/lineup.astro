@@ -1,0 +1,138 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../components/Layout.astro';
+import ProductCard from '../components/ProductCard.astro';
+import Reveal from '../components/Reveal.astro';
+
+const devices = await getCollection('devices');
+const sorted  = [...devices].sort(
+  (a, b) => new Date(b.data.updated).getTime() - new Date(a.data.updated).getTime()
+);
+
+const types = ['all', ...new Set(sorted.map(d => d.data.type))];
+
+const typeLabels: Record<string, string> = {
+  all:           'All',
+  'raspberry-pi':'Raspberry Pi',
+  server:        'Server',
+  nas:           'NAS',
+  network:       'Network',
+  pc:            'PC',
+  display:       'Display',
+  console:       'Console',
+  'smart-home':  'Smart Home',
+  other:         'Other',
+};
+
+const statusColors: Record<string, string> = {
+  online:      'text-status-online bg-[rgba(34,197,94,0.07)] border-[rgba(34,197,94,0.12)]',
+  offline:     'text-status-offline bg-[rgba(239,68,68,0.07)] border-[rgba(239,68,68,0.12)]',
+  maintenance: 'text-status-maintenance bg-[rgba(245,158,11,0.07)] border-[rgba(245,158,11,0.12)]',
+  retired:     'text-status-retired bg-[rgba(107,114,128,0.07)] border-[rgba(107,114,128,0.12)]',
+};
+
+const statuses = ['online', 'offline', 'maintenance', 'retired'] as const;
+const statusCounts = Object.fromEntries(
+  statuses.map(s => [s, sorted.filter(d => d.data.status === s).length])
+);
+---
+
+<Layout
+  title="Hardware Lineup — Homelab"
+  description="Every device in the homelab, documented."
+>
+  <!-- Hero -->
+  <section class="pt-28 pb-10">
+    <div class="container-content">
+      <Reveal>
+        <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-4">
+          Hardware
+        </p>
+        <h1 class="text-[clamp(2.5rem,6vw,4.5rem)] font-bold tracking-[-0.03em] text-[var(--color-ink-1)] leading-[1.05] mb-5">
+          The lineup.
+        </h1>
+        <p class="text-[1rem] text-[var(--color-ink-3)] max-w-md leading-[1.65]">
+          Every device, documented. Filter by type or status.
+        </p>
+      </Reveal>
+
+      <!-- Status pills -->
+      <Reveal delay={100} class="flex flex-wrap gap-2 mt-7">
+        {statuses.map(status => {
+          const count = statusCounts[status];
+          if (!count) return null;
+          return (
+            <span class:list={['inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.75rem] font-medium border', statusColors[status]]}>
+              <span class="w-1.5 h-1.5 rounded-full bg-current" aria-hidden="true"></span>
+              {count} {status}
+            </span>
+          );
+        })}
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- Sticky filter bar -->
+  <div class="sticky top-14 z-40 py-2.5 glass border-b border-[rgba(255,255,255,0.055)]">
+    <div class="container-wide">
+      <div
+        class="flex items-center gap-1.5 overflow-x-auto pb-0.5"
+        role="group"
+        aria-label="Filter by device type"
+        style="scrollbar-width: none;"
+      >
+        {types.map(type => (
+          <button
+            data-filter={type}
+            class:list={[
+              'flex-shrink-0 px-3.5 py-1.5 rounded-full text-[0.8125rem] border transition-all duration-200',
+              type === 'all'
+                ? 'bg-[rgba(59,130,246,0.12)] text-[var(--color-accent)] border-[rgba(59,130,246,0.2)]'
+                : 'chip',
+            ]}
+            aria-pressed={type === 'all' ? 'true' : 'false'}
+          >
+            {typeLabels[type] ?? type}
+            <span class="ml-1.5 text-[var(--color-ink-4)] text-[0.65rem]">
+              {type === 'all'
+                ? sorted.length
+                : sorted.filter(d => d.data.type === type).length}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid -->
+  <section class="py-10">
+    <div class="container-wide">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
+        role="list"
+        aria-label="All devices"
+      >
+        {sorted.map(device => (
+          <div
+            data-device-type={device.data.type}
+            data-status={device.data.status}
+            data-tags={device.data.tags.join(',')}
+            role="listitem"
+          >
+            <ProductCard
+              slug={device.slug}
+              name={device.data.name}
+              headline={device.data.headline}
+              type={device.data.type}
+              status={device.data.status}
+              role={device.data.role}
+              services={device.data.services}
+              tags={device.data.tags}
+              photo={device.data.photos?.[0]}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

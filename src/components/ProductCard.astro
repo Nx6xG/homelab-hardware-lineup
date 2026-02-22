@@ -1,0 +1,125 @@
+---
+import Badge from './Badge.astro';
+
+interface Props {
+  slug: string;
+  name: string;
+  headline: string;
+  type: string;
+  status: 'online' | 'offline' | 'maintenance' | 'retired';
+  role: string;
+  services?: string[];
+  tags?: string[];
+  photo?: string;
+  featured?: boolean;
+}
+
+const {
+  slug,
+  name,
+  headline,
+  type,
+  status,
+  role,
+  services = [],
+  tags = [],
+  photo,
+  featured = false,
+} = Astro.props;
+
+const typeLabel: Record<string, string> = {
+  'raspberry-pi': 'Raspberry Pi',
+  'server':       'Server',
+  'nas':          'NAS',
+  'network':      'Network',
+  'pc':           'PC',
+  'display':      'Display',
+  'console':      'Console',
+  'smart-home':   'Smart Home',
+  'other':        'Device',
+};
+
+const typeStr = typeLabel[type] ?? type;
+---
+
+<a
+  href={`/device/${slug}`}
+  class:list={[
+    'group block overflow-hidden rounded-[14px]',
+    'border transition-all duration-[350ms]',
+    'bg-[var(--color-surface-1)]',
+    featured
+      ? 'border-[rgba(59,130,246,0.2)] shadow-[0_0_0_1px_rgba(59,130,246,0.1),0_2px_8px_rgba(0,0,0,0.4)]'
+      : 'border-[rgba(255,255,255,0.065)] shadow-[var(--shadow-card)]',
+  ]}
+  style={`view-transition-name: card-${slug}`}
+  aria-label={`${name} — ${headline}`}
+>
+  <!-- Media area -->
+  <div
+    class="relative overflow-hidden"
+    style={`aspect-ratio: 16/10; view-transition-name: device-media-${slug}`}
+  >
+    {photo ? (
+      <img
+        src={photo}
+        alt={name}
+        class="w-full h-full object-cover transition-transform duration-[500ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <div class="media-placeholder w-full h-full group-hover:brightness-110 transition-all duration-500">
+      </div>
+    )}
+
+    <!-- Status -->
+    <div class="absolute top-3 right-3 z-10">
+      <Badge status={status} size="sm" />
+    </div>
+
+    <!-- Bottom fade -->
+    <div
+      class="absolute inset-x-0 bottom-0 h-16 pointer-events-none"
+      style="background: linear-gradient(to top, var(--color-surface-1), transparent);"
+    ></div>
+  </div>
+
+  <!-- Content -->
+  <div class="px-5 pt-4 pb-5">
+
+    <!-- Type label -->
+    <p class="text-[0.7rem] font-medium tracking-[0.08em] uppercase text-[var(--color-ink-4)] mb-2">
+      {typeStr}
+    </p>
+
+    <!-- Name -->
+    <h3
+      class="text-[1.0625rem] font-semibold leading-[1.25] tracking-[-0.01em] text-[var(--color-ink-1)] mb-2 line-clamp-2"
+      style={`view-transition-name: device-name-${slug}`}
+    >
+      {name}
+    </h3>
+
+    <!-- Headline -->
+    <p class="text-[0.875rem] leading-[1.5] text-[var(--color-ink-3)] line-clamp-2 mb-4">
+      {headline}
+    </p>
+
+    <!-- Services -->
+    {services.length > 0 && (
+      <div class="flex flex-wrap gap-1.5 pt-3 border-t border-[rgba(255,255,255,0.055)]">
+        {services.slice(0, 3).map(svc => (
+          <span class="text-[0.7rem] px-2 py-0.5 rounded-full bg-[var(--color-surface-3)] text-[var(--color-ink-3)] font-medium">
+            {svc}
+          </span>
+        ))}
+        {services.length > 3 && (
+          <span class="text-[0.7rem] px-2 py-0.5 rounded-full bg-[var(--color-surface-3)] text-[var(--color-ink-4)] font-medium">
+            +{services.length - 3}
+          </span>
+        )}
+      </div>
+    )}
+  </div>
+</a>

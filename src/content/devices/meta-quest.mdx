@@ -1,0 +1,72 @@
+---
+name: "Meta Quest"
+type: "console"
+status: "online"
+headline: "Standalone VR-Headset für Gaming und immersive Erlebnisse. Läuft ohne PC oder Kabel — und über Virtual Desktop auch mit dem Heimnetz-PC für PCVR-Titel."
+role: "VR-Gaming & immersive Erlebnisse"
+location: "Wohnzimmer"
+services:
+  - "Meta Store (native Apps)"
+  - "Virtual Desktop"
+  - "Plex VR"
+  - "SteamVR (via Virtual Desktop)"
+stack:
+  - "Meta OS"
+  - "Virtual Desktop"
+  - "WiFi 6"
+  - "Air Link"
+outcomes:
+  - "Standalone VR ohne PC oder Kabel — sofortiger Einsatz im Wohnzimmer"
+  - "PCVR via Virtual Desktop über WiFi 6 mit sehr geringer Latenz"
+  - "Plex VR für immersives Film-Schauen vom QNAP-Medienserver"
+  - "Guardian-System für sicheren Play-Space im Wohnzimmer"
+decisions:
+  chose:
+    - "Meta Quest für die beste Standalone-VR-Balance aus Preis und Performance"
+    - "Virtual Desktop statt Air Link für bessere Streaming-Qualität und Latenz"
+    - "WiFi 6 im 5 GHz-Band für niedrige Latenz beim PCVR-Streaming"
+  tradeoffs:
+    - "Meta-Konto erforderlich — keine vollständige Hardware-Kontrolle"
+    - "PCVR-Streaming qualitativ unter nativer kabelgebundener Verbindung"
+    - "Akkulaufzeit begrenzt auf ~2-3 Stunden aktives Gaming"
+  next:
+    - "Halteschlaufen und Face-Interface für längere Sessions upgraden"
+    - "Dedizierten WiFi-Access-Point in Wohnzimmer-Nähe für optimales PCVR"
+specs:
+  os: "Meta OS (aktuell)"
+  cpu: "Snapdragon XR2 Gen 2"
+  ram: "8 GB"
+  storage: "128 GB"
+  network: "WiFi 6 (802.11ax)"
+links: {}
+photos: []
+tags:
+  - "vr"
+  - "gaming"
+  - "meta"
+  - "wireless"
+  - "plex"
+created: "2023-12-25"
+updated: "2025-01-05"
+---
+
+## Übersicht
+
+Die Meta Quest ist die einfachste Art, VR zu erleben — einfach aufsetzen, spielen. Keine Kabel, keine externe Hardware nötig. Für anspruchsvollere PCVR-Titel kommt Virtual Desktop zum Einsatz.
+
+## Virtual Desktop — PCVR übers Netz
+
+Virtual Desktop streamt den PC-Desktop (Windows Server im Heimnetz) drahtlos ins Headset. Mit WiFi 6 und aktiviertem Game-Streaming-Modus ist die Latenz kaum spürbar.
+
+```
+Meta Quest ──WiFi 6──→ Router ──LAN──→ Windows Server
+               Latenz ~10-15ms (5GHz, kurze Distanz)
+```
+
+## Plex VR
+
+Über die Plex-App auf der Quest können Filme und Serien vom QNAP NAS in einem virtuellen Kino angeschaut werden — ideal für lange Flüge oder wenn der TV belegt ist.
+
+## Play Space
+
+Das Guardian-System merkt sich die Raumgrenzen im Wohnzimmer. Einmal eingerichtet, erscheint das virtuelle Gitter automatisch sobald man sich einer Wand nähert.

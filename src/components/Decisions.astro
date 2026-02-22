@@ -1,0 +1,59 @@
+---
+interface Props {
+  decisions: {
+    chose: string[];
+    tradeoffs: string[];
+    next: string[];
+  };
+  class?: string;
+}
+
+const { decisions, class: className = '' } = Astro.props;
+
+const columns = [
+  {
+    label:  'What I chose',
+    marker: '—',
+    items:  decisions.chose,
+  },
+  {
+    label:  'Tradeoffs',
+    marker: '↔',
+    items:  decisions.tradeoffs,
+  },
+  {
+    label:  "What I'd change",
+    marker: '→',
+    items:  decisions.next,
+  },
+];
+---
+
+<div class:list={['grid grid-cols-1 md:grid-cols-3 gap-px bg-[rgba(255,255,255,0.055)] rounded-[14px] overflow-hidden', className]}>
+  {columns.map(({ label, marker, items }) => (
+    <div class="bg-[var(--color-surface-1)] p-6">
+      <div class="flex items-center gap-2.5 mb-5">
+        <span
+          class="text-[0.7rem] font-mono text-[var(--color-ink-4)]"
+          aria-hidden="true"
+        >
+          {marker}
+        </span>
+        <h4 class="text-[0.8125rem] font-semibold tracking-[0.04em] uppercase text-[var(--color-ink-3)]">
+          {label}
+        </h4>
+      </div>
+      <ul class="space-y-3" role="list">
+        {items.map(item => (
+          <li class="flex items-start gap-3">
+            <span
+              class="mt-[0.35rem] flex-shrink-0 w-[3px] h-[3px] rounded-full bg-[var(--color-ink-4)]"
+              aria-hidden="true"
+            ></span>
+            <span class="text-[0.9rem] leading-[1.6] text-[var(--color-ink-2)]">{item}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</div>

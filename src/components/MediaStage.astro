@@ -1,0 +1,51 @@
+---
+interface Props {
+  src?: string;
+  alt?: string;
+  /** aspect ratio class, e.g. 'aspect-[4/3]' or 'aspect-video' */
+  aspect?: string;
+  class?: string;
+}
+
+const {
+  src,
+  alt = '',
+  aspect = 'aspect-[4/3]',
+  class: cls = '',
+} = Astro.props;
+---
+
+<div class:list={['relative overflow-hidden rounded-[16px]', aspect, cls]}>
+  {src ? (
+    <img
+      src={src}
+      alt={alt}
+      class="w-full h-full object-cover"
+      loading="lazy"
+      decoding="async"
+    />
+  ) : (
+    <div class="media-placeholder w-full h-full flex items-center justify-center">
+      <!-- Abstract mark — no emoji -->
+      <svg
+        width="64"
+        height="64"
+        viewBox="0 0 72 72"
+        fill="none"
+        aria-hidden="true"
+        class="opacity-[0.18]"
+      >
+        <rect x="4"  y="4"  width="28" height="28" rx="6"
+          fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="40" y="4"  width="28" height="28" rx="6"
+          fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="4"  y="40" width="28" height="28" rx="6"
+          fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="40" y="40" width="28" height="28" rx="6"
+          fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="18" cy="18" r="5" fill="currentColor" opacity="0.4"/>
+        <circle cx="54" cy="54" r="5" fill="currentColor" opacity="0.4"/>
+      </svg>
+    </div>
+  )}
+</div>

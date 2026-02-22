@@ -1,0 +1,100 @@
+---
+interface TimelineItem {
+  slug: string;
+  name: string;
+  headline: string;
+  type: string;
+  status: 'online' | 'offline' | 'maintenance' | 'retired';
+  date: string;
+  event: 'created' | 'updated' | 'retired';
+  tags?: string[];
+}
+
+interface Props {
+  items: TimelineItem[];
+  class?: string;
+}
+
+const { items, class: className = '' } = Astro.props;
+
+const typeIcons: Record<string, string> = {
+  'raspberry-pi': '🥧',
+  'server':       '🖥',
+  'nas':          '💾',
+  'network':      '🔀',
+  'pc':           '💻',
+  'display':      '🖥',
+  'console':      '🎮',
+  'smart-home':   '🏠',
+  'other':        '📦',
+};
+
+const eventConfig = {
+  created: { label: 'Added to lab',  color: 'text-status-online',  dot: 'bg-status-online'      },
+  updated: { label: 'Updated',       color: 'text-accent',          dot: 'bg-accent'             },
+  retired: { label: 'Retired',       color: 'text-status-retired',  dot: 'bg-status-retired'     },
+};
+
+// Group by month/year
+const grouped = items.reduce<Record<string, TimelineItem[]>>((acc, item) => {
+  const d = new Date(item.date);
+  const key = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  if (!acc[key]) acc[key] = [];
+  acc[key].push(item);
+  return acc;
+}, {});
+---
+
+<div class:list={['relative', className]}>
+  {Object.entries(grouped).map(([period, events]) => (
+    <div class="mb-12 reveal">
+      <!-- Period label -->
+      <div class="flex items-center gap-4 mb-6">
+        <span class="text-label text-ink-3 uppercase tracking-widest whitespace-nowrap">
+          {period}
+        </span>
+        <div class="sep flex-1"></div>
+      </div>
+
+      <!-- Events -->
+      <div class="space-y-4 ml-4 border-l border-[rgba(255,255,255,0.08)] pl-6">
+        {events.map((item) => {
+          const { label, color, dot } = eventConfig[item.event];
+          const icon = typeIcons[item.type] ?? '📦';
+          const date = new Date(item.date);
+          const dateStr = date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+
+          return (
+            <div class="relative">
+              <!-- Timeline dot -->
+              <span
+                class:list={[
+                  'absolute -left-[1.875rem] top-3 w-3 h-3 rounded-full border-2 border-surface-0 flex-shrink-0',
+                  dot
+                ]}
+                aria-hidden="true"
+              ></span>
+
+              <a
+                href={`/device/${item.slug}`}
+                class="card block p-4 hover:border-accent/20 transition-all duration-300"
+              >
+                <div class="flex items-start justify-between gap-4 mb-1">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xl" role="img" aria-hidden="true">{icon}</span>
+                    <span class="text-body-md font-semibold text-ink-1">{item.name}</span>
+                  </div>
+                  <div class="flex items-center gap-2 flex-shrink-0">
+                    <span class:list={['text-label', color]}>{label}</span>
+                    <span class="text-label text-ink-4">{dateStr}</span>
+                  </div>
+                </div>
+                <p class="text-body-sm text-ink-2 ml-8 line-clamp-2">{item.headline}</p>
+              </a>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  ))}
+</div>

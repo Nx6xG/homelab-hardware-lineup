@@ -1,0 +1,85 @@
+---
+name: "Raspberry Pi 4 — Home Assistant"
+type: "raspberry-pi"
+status: "online"
+headline: "Das Herzstück der Heimautomatisierung. Läuft rund um die Uhr mit Home Assistant OS, steuert alle smarten Geräte lokal — ohne Cloud-Abhängigkeit."
+role: "Home Automation Core"
+location: "Heimnetzwerk"
+services:
+  - "Home Assistant OS"
+  - "Mosquitto MQTT"
+  - "ESPHome"
+  - "Node-RED"
+  - "Zigbee2MQTT"
+stack:
+  - "Home Assistant OS"
+  - "MQTT"
+  - "ESPHome"
+  - "Zigbee2MQTT"
+  - "Supervisor Add-ons"
+outcomes:
+  - "Zentrale Steuerung aller smarten Geräte im Haus über eine einzige Oberfläche"
+  - "Vollständig lokale Ausführung — kein Internet nötig für Automationen"
+  - "Automatische Backups auf den QNAP NAS"
+  - "Integration mit Zigbee-Geräten über Zigbee2MQTT"
+  - "iOS Companion App für Remote-Zugriff und Mobile-Benachrichtigungen"
+decisions:
+  chose:
+    - "Home Assistant OS (HAOS) für einfache Add-on-Verwaltung und Updates"
+    - "Raspberry Pi 4 als dedizierte Hardware — kein Mischbetrieb mit anderen Services"
+    - "Lokaler Zigbee-Koordinator statt Cloud-abhängiger Bridges"
+    - "Automatische Backups zum NAS für Wiederherstellbarkeit"
+  tradeoffs:
+    - "HAOS schränkt direkten Shell-Zugriff ein — SSH Add-on nötig"
+    - "Pi 4 hat keine ECC-RAM, bei SD-Karten-Defekt droht Datenverlust"
+    - "Microcontroller-Updates bei ESPHome-Geräten müssen manuell angestoßen werden"
+  next:
+    - "Migration auf Raspberry Pi 5 für mehr Performance bei komplexen Automationen"
+    - "Matter/Thread-Koordinator hinzufügen"
+    - "Energiemonitoring pro Steckdose ausbauen"
+specs:
+  os: "Home Assistant OS (aktuell)"
+  cpu: "Raspberry Pi 4 Model B — Cortex-A72 4-core @ 1.8 GHz"
+  ram: "4 GB LPDDR4"
+  storage: "64 GB microSD"
+  network: "Gigabit Ethernet"
+links:
+  dashboard: "http://homeassistant.local:8123"
+photos: []
+tags:
+  - "raspberry-pi"
+  - "automation"
+  - "iot"
+  - "local-first"
+  - "zigbee"
+  - "mqtt"
+created: "2022-06-01"
+updated: "2025-01-10"
+---
+
+## Übersicht
+
+Der Pi 4 läuft dediziert mit Home Assistant OS und übernimmt die komplette Hausautomatisierung. Das Ziel: alles lokal, kein Single Point of Failure durch Cloud-Services.
+
+## Automationen
+
+Die wichtigsten laufenden Automationen:
+
+- **Präsenzsteuerung**: Lichter und Heizung reagieren auf Anwesenheit via Handy-GPS
+- **Tageszeit-abhängige Szenen**: Warmweiß abends, Tageslicht tagsüber
+- **Benachrichtigungen**: Wassermelder, Türsensoren → Push auf iPhone
+
+## Backup-Strategie
+
+Tägliche automatische Backups werden direkt auf den QNAP NAS geschrieben, 7 Tage Rotation.
+
+```yaml
+# configuration.yaml (Backup-Automation)
+automation:
+  - alias: "Nightly Backup to NAS"
+    trigger:
+      platform: time
+      at: "03:00:00"
+    action:
+      service: backup.create
+```

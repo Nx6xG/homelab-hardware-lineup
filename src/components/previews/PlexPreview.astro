@@ -1,0 +1,213 @@
+---
+// Plex-like media browser — animated CSS poster tiles
+const posters = [
+  { hue: '220', title: 'Film A' },
+  { hue: '280', title: 'Film B' },
+  { hue: '160', title: 'Film C' },
+  { hue: '30',  title: 'Film D' },
+  { hue: '340', title: 'Film E' },
+  { hue: '200', title: 'Film F' },
+  { hue: '60',  title: 'Film G' },
+  { hue: '120', title: 'Film H' },
+];
+---
+
+<div class="plex" aria-hidden="true">
+
+  <!-- Topbar -->
+  <div class="plex-bar">
+    <div class="plex-logo">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <rect width="18" height="18" rx="4" fill="#e5a00d"/>
+        <path d="M9 4L14 9L9 14L4 9L9 4Z" fill="white"/>
+      </svg>
+      <span>Plex</span>
+    </div>
+    <nav class="plex-nav">
+      <span class="plex-nav-item plex-nav-active">Home</span>
+      <span class="plex-nav-item">Movies</span>
+      <span class="plex-nav-item">TV Shows</span>
+    </nav>
+    <div class="plex-avatar"></div>
+  </div>
+
+  <!-- Content area -->
+  <div class="plex-content">
+
+    <!-- Recently Added -->
+    <div class="plex-section">
+      <h4 class="plex-section-h">Recently Added</h4>
+      <div class="plex-row-wrap">
+        <div class="plex-row">
+          {[...posters, ...posters].map((p, i) => (
+            <div
+              class="plex-poster"
+              style={`background: linear-gradient(160deg, hsl(${p.hue},60%,18%) 0%, hsl(${p.hue},40%,10%) 100%); animation-delay: ${i * 0.4}s`}
+            >
+              <div class="plex-poster-bar" style={`background: hsl(${p.hue},70%,50%)`}></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Now Playing -->
+    <div class="plex-now">
+      <div class="plex-now-thumb" style="background: linear-gradient(160deg, hsl(280,60%,18%), hsl(220,40%,10%))"></div>
+      <div class="plex-now-info">
+        <p class="plex-now-title">Now Playing</p>
+        <p class="plex-now-meta">Direct Play · 1080p · AC3</p>
+        <div class="plex-progress">
+          <div class="plex-progress-fill"></div>
+        </div>
+        <p class="plex-now-time">1:07:23 / 1:52:00</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  .plex {
+    background: #1a1a1f;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    overflow: hidden;
+    font-family: -apple-system, system-ui, sans-serif;
+    font-size: 12px;
+    width: 100%;
+    user-select: none;
+  }
+
+  /* Top bar */
+  .plex-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 10px 14px;
+    background: rgba(0,0,0,0.4);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .plex-logo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #e5a00d;
+    font-weight: 700;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .plex-nav {
+    display: flex;
+    gap: 14px;
+    flex: 1;
+  }
+  .plex-nav-item {
+    color: rgba(255,255,255,0.35);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: default;
+  }
+  .plex-nav-active { color: rgba(255,255,255,0.85); }
+  .plex-avatar {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e5a00d, #f59e0b);
+    flex-shrink: 0;
+  }
+
+  /* Content */
+  .plex-content { padding: 12px 14px; }
+
+  .plex-section-h {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  /* Scrolling row */
+  .plex-row-wrap {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, black 5%, black 95%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 5%, black 95%, transparent);
+  }
+  .plex-row {
+    display: flex;
+    gap: 8px;
+    animation: plex-scroll 20s linear infinite;
+    width: max-content;
+  }
+  @keyframes plex-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .plex-poster {
+    width: 60px;
+    height: 90px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .plex-poster-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    opacity: 0.7;
+  }
+
+  /* Now playing */
+  .plex-now {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 12px;
+    padding: 10px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+  }
+  .plex-now-thumb {
+    width: 40px; height: 40px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .plex-now-info { flex: 1; min-width: 0; }
+  .plex-now-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 2px;
+  }
+  .plex-now-meta {
+    font-size: 10px;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 6px;
+  }
+  .plex-progress {
+    height: 3px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+  .plex-progress-fill {
+    height: 100%;
+    width: 60%;
+    background: #e5a00d;
+    border-radius: 2px;
+    animation: plex-progress-pulse 4s ease-in-out infinite alternate;
+  }
+  @keyframes plex-progress-pulse {
+    from { width: 58%; }
+    to   { width: 65%; }
+  }
+  .plex-now-time {
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    font-variant-numeric: tabular-nums;
+  }
+</style>
