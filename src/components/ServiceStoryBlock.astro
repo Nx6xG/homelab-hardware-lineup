@@ -87,7 +87,7 @@ const { services } = Astro.props;
     background: var(--color-surface-1);
     border: 1px solid rgba(255,255,255,0.065);
     border-radius: 16px;
-    padding: 24px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -98,6 +98,9 @@ const { services } = Astro.props;
   .ssb-card:hover {
     border-color: rgba(255,255,255,0.10);
     box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  }
+  @media (min-width: 640px) {
+    .ssb-card { padding: 24px; }
   }
 
   .ssb-header {

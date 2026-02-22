@@ -4,16 +4,16 @@
 
 /* ─── CSS Custom Properties ──────────────────────────────────────────── */
 :root {
-  --color-surface-0:  #08080a;
-  --color-surface-1:  #0f0f12;
-  --color-surface-2:  #161619;
-  --color-surface-3:  #1e1e23;
-  --color-surface-4:  #2a2a31;
-  --color-ink-1:      #f2f2f4;
-  --color-ink-2:      #98989f;
-  --color-ink-3:      #5a5a62;
-  --color-ink-4:      #38383f;
-  --color-accent:     #3b82f6;
+  --color-surface-0:  #05070f;
+  --color-surface-1:  #090d18;
+  --color-surface-2:  #0e1422;
+  --color-surface-3:  #141c2e;
+  --color-surface-4:  #1c273d;
+  --color-ink-1:      #eef0f8;
+  --color-ink-2:      #7e8baa;
+  --color-ink-3:      #46536a;
+  --color-ink-4:      #2b3248;
+  --color-accent:     #4f8ef7;
 
   --color-status-online:      #22c55e;
   --color-status-offline:     #ef4444;
@@ -331,6 +331,14 @@
   from { transform: translateX(-10px); opacity: 0; }
   to   { transform: none; opacity: 1; }
 }
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1);    }
+  50%       { opacity: 0.9; transform: scale(1.04); }
+}
+@keyframes number-rise {
+  from { opacity: 0; transform: translateY(40px) scale(0.96); filter: blur(4px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}
 
 /* ─── Utilities ──────────────────────────────────────────────────────── */
 @layer utilities {
@@ -378,10 +386,9 @@
   /* ── Hero background ── */
   .hero-ambient {
     background:
-      radial-gradient(ellipse 80% 50% at 20% 60%, rgba(59,130,246,0.07) 0%, transparent 55%),
-      radial-gradient(ellipse 60% 40% at 80% 20%, rgba(168,85,247,0.05) 0%, transparent 55%),
-      radial-gradient(ellipse 50% 40% at 60% 90%, rgba(34,197,94,0.04) 0%, transparent 55%),
-      var(--color-surface-0);
+      radial-gradient(ellipse 90% 70% at 50% 15%, rgba(79,142,247,0.10) 0%, rgba(99,102,241,0.04) 50%, transparent 70%),
+      radial-gradient(ellipse 60% 50% at 85% 85%, rgba(99,102,241,0.06) 0%, transparent 55%),
+      linear-gradient(180deg, #05070f 0%, #0b1220 100%);
   }
 
   /* ── Tilt card ── */
@@ -420,6 +427,76 @@
   .drift {
     animation: drift-slow 14s ease-in-out infinite;
   }
+
+  /* ── Background grid (almost invisible) ── */
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+    background-size: 64px 64px;
+    background-position: center center;
+  }
+
+  /* ── Glass card with glow on hover ── */
+  .glass-card-glow {
+    background: rgba(9,13,24,0.65);
+    backdrop-filter: blur(24px) saturate(1.5);
+    -webkit-backdrop-filter: blur(24px) saturate(1.5);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.025);
+    transition: border-color 400ms ease, box-shadow 400ms ease;
+  }
+  .glass-card-glow:hover {
+    border-color: rgba(79,142,247,0.18);
+    box-shadow:
+      0 24px 80px rgba(0,0,0,0.55),
+      0 0 0 1px rgba(79,142,247,0.08),
+      0 0 80px rgba(79,142,247,0.07);
+  }
+
+  /* ── Large CTA buttons ── */
+  .btn-primary-lg {
+    @apply inline-flex items-center gap-2 px-6 py-3.5 sm:gap-2.5 sm:px-8 sm:py-4 rounded-full font-semibold;
+    font-size: 1rem;
+    background: var(--color-accent);
+    color: #fff;
+    transition:
+      background   var(--transition-fast),
+      transform    300ms var(--ease-out-expo),
+      box-shadow   var(--transition-base);
+    box-shadow: 0 2px 12px rgba(79,142,247,0.30), 0 0 60px rgba(79,142,247,0.08);
+  }
+  @media (min-width: 640px) {
+    .btn-primary-lg { font-size: 1.0625rem; }
+  }
+  .btn-primary-lg:hover {
+    background: #3d7be8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 28px rgba(79,142,247,0.42), 0 0 80px rgba(79,142,247,0.14);
+  }
+  .btn-primary-lg:active { transform: translateY(0) scale(0.97); }
+
+  .btn-secondary-lg {
+    @apply inline-flex items-center gap-2 px-6 py-3.5 sm:gap-2.5 sm:px-8 sm:py-4 rounded-full font-semibold;
+    font-size: 1rem;
+    background: rgba(255,255,255,0.055);
+    color: var(--color-ink-1);
+    border: 1px solid rgba(255,255,255,0.10);
+    transition:
+      background   var(--transition-fast),
+      transform    300ms var(--ease-out-expo),
+      border-color var(--transition-fast);
+  }
+  @media (min-width: 640px) {
+    .btn-secondary-lg { font-size: 1.0625rem; }
+  }
+  .btn-secondary-lg:hover {
+    background: rgba(255,255,255,0.09);
+    border-color: rgba(255,255,255,0.16);
+    transform: translateY(-2px);
+  }
+  .btn-secondary-lg:active { transform: translateY(0) scale(0.97); }
 
   /* Horizontal scroll row */
   .scroll-row {
