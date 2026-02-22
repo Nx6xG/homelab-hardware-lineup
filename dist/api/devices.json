@@ -1,69 +1,71 @@
 {
   "devices": [
     {
-      "slug": "meta-quest",
-      "name": "Meta Quest",
-      "type": "console",
+      "slug": "ipad-air",
+      "name": "iPad Air",
+      "type": "display",
       "status": "online",
-      "headline": "Standalone VR-Headset für Gaming und immersive Erlebnisse. Läuft ohne PC oder Kabel — und über Virtual Desktop auch mit dem Heimnetz-PC für PCVR-Titel.",
-      "role": "VR-Gaming & immersive Erlebnisse",
-      "location": "Wohnzimmer",
+      "headline": "Vielseitiges Tablet für Konsum, Kreativarbeit und als erweitertes Display. Über Universal Control nahtlos mit dem MacBook Pro verbunden — ein gemeinsamer Cursor, zwei Bildschirme.",
+      "role": "Tablet & erweitertes Display",
+      "location": "Schreibtisch / Mobil",
       "services": [
-        "Meta Store (native Apps)",
-        "Virtual Desktop",
-        "Plex VR",
-        "SteamVR (via Virtual Desktop)"
+        "Plex (Client)",
+        "Home Assistant Companion",
+        "Sidecar / Universal Control",
+        "Apple Pencil",
+        "Stage Manager"
       ],
       "stack": [
-        "Meta OS",
-        "Virtual Desktop",
-        "WiFi 6",
-        "Air Link"
+        "iPadOS",
+        "Universal Control",
+        "Sidecar",
+        "iCloud"
       ],
       "tags": [
-        "vr",
-        "gaming",
-        "meta",
-        "wireless",
+        "ipad",
+        "apple",
+        "tablet",
+        "universal-control",
         "plex"
       ],
-      "created": "2023-12-25",
-      "updated": "2025-01-05",
-      "url": "/device/meta-quest"
+      "created": "2024-03-01",
+      "updated": "2025-01-10",
+      "url": "/device/ipad-air"
     },
     {
-      "slug": "iphone-15-pro-max",
-      "name": "iPhone 15 Pro Max",
-      "type": "other",
+      "slug": "qnap-nas",
+      "name": "QNAP NAS",
+      "type": "nas",
       "status": "online",
-      "headline": "Primäres Smartphone und mobiles Homelab-Kontrollzentrum. Home Assistant Companion, Plex und Tailscale machen das iPhone zum Remote-Control für alles im Heimnetz.",
-      "role": "Primäres Smartphone & mobiler Homelab-Client",
-      "location": "Mobil",
+      "headline": "Zentraler Speicher für Backups, Medien und Daten. Plex, Hyper Backup, Sync — läuft alles auf einem Gerät.",
+      "role": "Primärer Netzwerkspeicher & Media Server",
+      "location": "Heimnetzwerk",
       "services": [
-        "Home Assistant Companion",
-        "Plex (Client)",
-        "Tailscale",
-        "Portainer (Browser)",
-        "SSH (Prompt / Termius)"
+        "Plex Media Server",
+        "Hyper Backup",
+        "Sync Station",
+        "SMB / NFS Shares",
+        "Surveillance Station"
       ],
       "stack": [
-        "iOS",
-        "Home Assistant Companion",
-        "Tailscale",
-        "iCloud",
-        "Shortcuts"
+        "QTS (QNAP OS)",
+        "Plex Media Server",
+        "SMB",
+        "NFS",
+        "RAID-5",
+        "Hyper Backup"
       ],
       "tags": [
-        "iphone",
-        "apple",
-        "mobile",
-        "homeassistant",
-        "tailscale",
-        "plex"
+        "nas",
+        "storage",
+        "plex",
+        "backup",
+        "smb",
+        "media"
       ],
-      "created": "2023-09-22",
-      "updated": "2025-01-10",
-      "url": "/device/iphone-15-pro-max"
+      "created": "2021-09-01",
+      "updated": "2025-01-15",
+      "url": "/device/qnap-nas"
     },
     {
       "slug": "macbook-pro-m4",
@@ -102,71 +104,69 @@
       "url": "/device/macbook-pro-m4"
     },
     {
-      "slug": "qnap-nas",
-      "name": "QNAP NAS",
-      "type": "nas",
+      "slug": "iphone-15-pro-max",
+      "name": "iPhone 15 Pro Max",
+      "type": "other",
       "status": "online",
-      "headline": "Zentraler Speicher für Backups, Medien und Daten. Plex, Hyper Backup, Sync — läuft alles auf einem Gerät.",
-      "role": "Primärer Netzwerkspeicher & Media Server",
-      "location": "Heimnetzwerk",
+      "headline": "Primäres Smartphone und mobiles Homelab-Kontrollzentrum. Home Assistant Companion, Plex und Tailscale machen das iPhone zum Remote-Control für alles im Heimnetz.",
+      "role": "Primäres Smartphone & mobiler Homelab-Client",
+      "location": "Mobil",
       "services": [
-        "Plex Media Server",
-        "Hyper Backup",
-        "Sync Station",
-        "SMB / NFS Shares",
-        "Surveillance Station"
-      ],
-      "stack": [
-        "QTS (QNAP OS)",
-        "Plex Media Server",
-        "SMB",
-        "NFS",
-        "RAID-5",
-        "Hyper Backup"
-      ],
-      "tags": [
-        "nas",
-        "storage",
-        "plex",
-        "backup",
-        "smb",
-        "media"
-      ],
-      "created": "2021-09-01",
-      "updated": "2025-01-15",
-      "url": "/device/qnap-nas"
-    },
-    {
-      "slug": "ipad-air",
-      "name": "iPad Air",
-      "type": "display",
-      "status": "online",
-      "headline": "Vielseitiges Tablet für Konsum, Kreativarbeit und als erweitertes Display. Über Universal Control nahtlos mit dem MacBook Pro verbunden — ein gemeinsamer Cursor, zwei Bildschirme.",
-      "role": "Tablet & erweitertes Display",
-      "location": "Schreibtisch / Mobil",
-      "services": [
-        "Plex (Client)",
         "Home Assistant Companion",
-        "Sidecar / Universal Control",
-        "Apple Pencil",
-        "Stage Manager"
+        "Plex (Client)",
+        "Tailscale",
+        "Portainer (Browser)",
+        "SSH (Prompt / Termius)"
       ],
       "stack": [
-        "iPadOS",
-        "Universal Control",
-        "Sidecar",
-        "iCloud"
+        "iOS",
+        "Home Assistant Companion",
+        "Tailscale",
+        "iCloud",
+        "Shortcuts"
       ],
       "tags": [
-        "ipad",
+        "iphone",
         "apple",
-        "tablet",
-        "universal-control",
+        "mobile",
+        "homeassistant",
+        "tailscale",
         "plex"
       ],
-      "created": "2024-03-01",
+      "created": "2023-09-22",
       "updated": "2025-01-10",
-      "url": "/device/ipad-air"
+      "url": "/device/iphone-15-pro-max"
+    },
+    {
+      "slug": "meta-quest",
+      "name": "Meta Quest",
+      "type": "console",
+      "status": "online",
+      "headline": "Standalone VR-Headset für Gaming und immersive Erlebnisse. Läuft ohne PC oder Kabel — und über Virtual Desktop auch mit dem Heimnetz-PC für PCVR-Titel.",
+      "role": "VR-Gaming & immersive Erlebnisse",
+      "location": "Wohnzimmer",
+      "services": [
+        "Meta Store (native Apps)",
+        "Virtual Desktop",
+        "Plex VR",
+        "SteamVR (via Virtual Desktop)"
+      ],
+      "stack": [
+        "Meta OS",
+        "Virtual Desktop",
+        "WiFi 6",
+        "Air Link"
+      ],
+      "tags": [
+        "vr",
+        "gaming",
+        "meta",
+        "wireless",
+        "plex"
+      ],
+      "created": "2023-12-25",
+      "updated": "2025-01-05",
+      "url": "/device/meta-quest"
     },
     {
       "slug": "mini-pc-game-server",

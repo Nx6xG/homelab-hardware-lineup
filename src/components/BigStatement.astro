@@ -1,9 +1,15 @@
 ---
-interface Props {
+interface Fact {
   value:   string;
-  label:   string;
-  eyebrow?: string;
+  subtext: string;
+}
+
+interface Props {
+  value:      string;
+  label:      string;
+  eyebrow?:   string;
   glowColor?: string;
+  facts?:     Fact[];
 }
 
 const {
@@ -11,28 +17,177 @@ const {
   label,
   eyebrow,
   glowColor = 'rgba(245,158,11,0.07)',
+  facts,
 } = Astro.props;
+
+const isRotating = (facts?.length ?? 0) > 1;
 ---
 
-<section class="bs section-divider" aria-label="Key metric">
-  <div
-    class="bs-glow"
-    aria-hidden="true"
-    style={`background: radial-gradient(ellipse 55% 65% at 50% 50%, ${glowColor} 0%, transparent 68%);`}
-  ></div>
+{isRotating ? (
+  <section
+    class="bs section-divider"
+    aria-label="Key metric"
+    data-rotating-statement
+    data-facts={JSON.stringify(facts)}
+  >
+    <div
+      class="bs-glow"
+      aria-hidden="true"
+      style={`background: radial-gradient(ellipse 55% 65% at 50% 50%, ${glowColor} 0%, transparent 68%);`}
+    ></div>
 
-  <div class="container-content bs-inner">
-    {eyebrow && (
-      <p class="bs-eyebrow reveal">{eyebrow}</p>
-    )}
-    <div class="bs-number reveal" style="transition-delay: 60ms" aria-label={value}>
-      {value}
+    <div class="container-content bs-inner">
+      {eyebrow && (
+        <p class="bs-eyebrow reveal">{eyebrow}</p>
+      )}
+
+      <div aria-live="polite">
+        <div
+          class="bs-number reveal"
+          style="transition-delay: 60ms"
+          aria-label={facts![0].value}
+        >
+          {facts![0].value}
+        </div>
+        <p class="bs-subtext reveal" style="transition-delay: 90ms">
+          {facts![0].subtext}
+        </p>
+      </div>
+
+      <div class="bs-dots" aria-hidden="true">
+        {facts!.map((_, i) => (
+          <button
+            class={`bs-dot${i === 0 ? ' bs-dot--active' : ''}`}
+            type="button"
+            aria-label={`Show fact ${i + 1}`}
+          ></button>
+        ))}
+      </div>
+
+      <p class="bs-label reveal" style="transition-delay: 150ms">
+        {label}
+      </p>
     </div>
-    <p class="bs-label reveal" style="transition-delay: 120ms">
-      {label}
-    </p>
-  </div>
-</section>
+  </section>
+) : (
+  <section class="bs section-divider" aria-label="Key metric">
+    <div
+      class="bs-glow"
+      aria-hidden="true"
+      style={`background: radial-gradient(ellipse 55% 65% at 50% 50%, ${glowColor} 0%, transparent 68%);`}
+    ></div>
+
+    <div class="container-content bs-inner">
+      {eyebrow && (
+        <p class="bs-eyebrow reveal">{eyebrow}</p>
+      )}
+      <div class="bs-number reveal" style="transition-delay: 60ms" aria-label={value}>
+        {value}
+      </div>
+      <p class="bs-label reveal" style="transition-delay: 120ms">
+        {label}
+      </p>
+    </div>
+  </section>
+)}
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-rotating-statement]').forEach(section => {
+    if (section.dataset.rsInit) return;
+    section.dataset.rsInit = '1';
+
+    const raw = section.dataset.facts;
+    if (!raw) return;
+    const facts: Array<{ value: string; subtext: string }> = JSON.parse(raw);
+    if (facts.length < 2) return;
+
+    const numEl     = section.querySelector<HTMLElement>('.bs-number');
+    const subtextEl = section.querySelector<HTMLElement>('.bs-subtext');
+    const dotsEl    = section.querySelectorAll<HTMLElement>('.bs-dot');
+    if (!numEl || !subtextEl) return;
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let idx      = 0;
+    let timer: ReturnType<typeof setInterval> | null = null;
+    let isPaused = false;
+
+    function goto(next: number) {
+      idx = next;
+      dotsEl.forEach((d, i) => d.classList.toggle('bs-dot--active', i === idx));
+
+      if (reduced) {
+        numEl!.textContent = facts[idx].value;
+        numEl!.setAttribute('aria-label', facts[idx].value);
+        subtextEl!.textContent = facts[idx].subtext;
+        return;
+      }
+
+      // Exit animation
+      numEl!.style.opacity   = '0';
+      numEl!.style.transform = 'translateY(8px)';
+      subtextEl!.style.opacity   = '0';
+      subtextEl!.style.transform = 'translateY(6px)';
+
+      setTimeout(() => {
+        // Swap content
+        numEl!.textContent = facts[idx].value;
+        numEl!.setAttribute('aria-label', facts[idx].value);
+        subtextEl!.textContent = facts[idx].subtext;
+
+        // Jump to enter position without transition
+        numEl!.style.transition    = 'none';
+        subtextEl!.style.transition = 'none';
+        numEl!.style.transform    = 'translateY(-8px)';
+        subtextEl!.style.transform = 'translateY(-6px)';
+
+        // Force reflow
+        void numEl!.offsetWidth;
+
+        // Restore CSS transitions and animate in
+        numEl!.style.transition    = '';
+        subtextEl!.style.transition = '';
+        numEl!.style.opacity   = '1';
+        numEl!.style.transform = 'translateY(0)';
+        subtextEl!.style.opacity   = '1';
+        subtextEl!.style.transform = 'translateY(0)';
+      }, 350);
+    }
+
+    function advance() {
+      if (!isPaused) goto((idx + 1) % facts.length);
+    }
+
+    // Dot clicks
+    dotsEl.forEach((d, i) => {
+      d.addEventListener('click', () => {
+        if (i !== idx) {
+          goto(i);
+          if (timer) { clearInterval(timer); timer = setInterval(advance, 2500); }
+        }
+      });
+    });
+
+    // Pause on hover
+    section.addEventListener('mouseenter', () => { isPaused = true; });
+    section.addEventListener('mouseleave', () => { isPaused = false; });
+
+    // Start when in view, stop when out
+    let started = false;
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && !started) {
+        started = true;
+        setTimeout(() => { timer = setInterval(advance, 2500); }, 1200);
+      } else if (!entries[0].isIntersecting && timer) {
+        clearInterval(timer);
+        timer   = null;
+        started = false;
+      }
+    }, { threshold: 0.3 });
+
+    observer.observe(section);
+  });
+</script>
 
 <style>
   .bs {
@@ -79,5 +234,61 @@ const {
     max-width: 32ch;
     margin: 0 auto;
     line-height: 1.5;
+  }
+
+  /* ── Rotating mode ─────────────────────────────────────────── */
+  [data-rotating-statement] .bs-number {
+    /* remove bottom margin — subtext follows */
+    margin-bottom: 1.25rem;
+    transition: opacity 380ms ease-out, transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+
+  .bs-subtext {
+    font-size: clamp(0.9rem, 1.8vw, 1.15rem);
+    font-weight: 300;
+    color: var(--color-ink-3);
+    letter-spacing: -0.005em;
+    max-width: 30ch;
+    margin: 0 auto;
+    line-height: 1.45;
+    transition: opacity 380ms ease-out, transform 380ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+
+  .bs-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .bs-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-ink-4);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    transition: background 300ms ease, width 300ms cubic-bezier(0.16, 1, 0.3, 1), border-radius 300ms ease;
+  }
+
+  .bs-dot--active {
+    background: var(--color-accent);
+    width: 18px;
+    border-radius: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-rotating-statement] .bs-number,
+    .bs-subtext,
+    .bs-dot,
+    .bs-dot--active {
+      transition: none;
+    }
   }
 </style>

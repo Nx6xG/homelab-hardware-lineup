@@ -38,10 +38,13 @@ const serviceStorySchema = z.object({
 
 const showcaseSchema = z.object({
   flagship:      z.boolean().optional(),
+  heroEyebrow:   z.string().optional(),
+  heroTagline:   z.string().optional(),
   bigStatement:  z.object({
     value:   z.string(),
     label:   z.string(),
     eyebrow: z.string().optional(),
+    facts:   z.array(z.object({ value: z.string(), subtext: z.string() })).optional(),
   }).optional(),
   headline:      z.string().optional(),
   subheadline:   z.string().optional(),

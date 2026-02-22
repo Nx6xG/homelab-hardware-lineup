@@ -159,6 +159,12 @@
             "flagship": {
               "type": "boolean"
             },
+            "heroEyebrow": {
+              "type": "string"
+            },
+            "heroTagline": {
+              "type": "string"
+            },
             "bigStatement": {
               "type": "object",
               "properties": {
@@ -170,6 +176,25 @@
                 },
                 "eyebrow": {
                   "type": "string"
+                },
+                "facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "string"
+                      },
+                      "subtext": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "value",
+                      "subtext"
+                    ],
+                    "additionalProperties": false
+                  }
                 }
               },
               "required": [

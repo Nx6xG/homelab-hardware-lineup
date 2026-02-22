@@ -91,6 +91,8 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
     services={data.services}
     photo={data.photos?.[0]}
     slug={device.slug}
+    eyebrowOverride={showcase?.heroEyebrow}
+    tagline={showcase?.heroTagline}
   />
 
   <!-- ═══════════════════════════════════════════════════════════
@@ -105,6 +107,7 @@ const toneList = ['blue', 'green', 'purple', 'amber', 'neutral'] as const;
           value={showcase.bigStatement.value}
           label={showcase.bigStatement.label}
           eyebrow={showcase.bigStatement.eyebrow}
+          facts={showcase.bigStatement.facts}
         />
       )}
 
