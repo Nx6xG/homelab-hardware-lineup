@@ -1,0 +1,205 @@
+---
+import type { Service } from '../data/services';
+
+interface Props {
+  service: Service;
+}
+
+const { service } = Astro.props;
+const { name, description, deviceName, deviceSlug, tags, serviceSlug } = service;
+
+const hasFooter = serviceSlug || deviceSlug;
+---
+
+<article class="sc" aria-label={name}>
+  <!-- Name + description -->
+  <div class="sc-main">
+    <h3 class="sc-name">{name}</h3>
+    <p class="sc-desc">{description}</p>
+  </div>
+
+  <!-- Device -->
+  <div class="sc-device">
+    <span class="sc-on">Läuft auf</span>
+    {deviceSlug
+      ? <a href={`/device/${deviceSlug}`} class="sc-device-link">{deviceName}</a>
+      : <span class="sc-device-plain">{deviceName}</span>
+    }
+  </div>
+
+  <!-- Tags -->
+  {tags.length > 0 && (
+    <ul class="sc-tags" role="list" aria-label="Tags">
+      {tags.map(tag => <li class="sc-tag">{tag}</li>)}
+    </ul>
+  )}
+
+  <!-- Links -->
+  {hasFooter && (
+    <div class="sc-foot">
+      {serviceSlug && (
+        <a href={`/software/${serviceSlug}`} class="sc-act sc-act--primary">
+          Details →
+        </a>
+      )}
+      {deviceSlug && (
+        <a href={`/device/${deviceSlug}`} class="sc-act sc-act--ghost">
+          Gerät ansehen →
+        </a>
+      )}
+    </div>
+  )}
+</article>
+
+<style>
+  /* ── Card surface ── */
+  .sc {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.375rem;
+    /* Glass surface: semi-transparent + inset highlight */
+    background: rgba(9, 13, 24, 0.72);
+    backdrop-filter: blur(16px) saturate(1.3);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-card);
+    box-shadow:
+      0 1px 3px rgba(0, 0, 0, 0.45),
+      inset 0 1px 0 rgba(255, 255, 255, 0.045);
+    height: 100%;
+    transition:
+      transform    300ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 300ms ease-out,
+      box-shadow   300ms ease-out;
+  }
+
+  /* ── Hover: subtle lift + accent border tint ── */
+  .sc:hover {
+    transform: translateY(-2px);
+    border-color: rgba(79, 142, 247, 0.16);
+    box-shadow:
+      0 0 0 1px rgba(79, 142, 247, 0.05),
+      0 8px 28px rgba(0, 0, 0, 0.28),
+      0 0 40px rgba(79, 142, 247, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  /* ── Focus ── */
+  .sc:focus-within {
+    outline: 2px solid rgba(79, 142, 247, 0.5);
+    outline-offset: 3px;
+  }
+
+  /* ── Main block ── */
+  .sc-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+  }
+
+  .sc-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-ink-1);
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+
+  .sc-desc {
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.52);
+    line-height: 1.65;
+  }
+
+  /* ── Device row ── */
+  .sc-device {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+  }
+
+  .sc-on {
+    color: var(--color-ink-4);
+  }
+
+  .sc-device-link {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 200ms ease;
+  }
+
+  .sc-device-link:hover {
+    opacity: 0.72;
+  }
+
+  .sc-device-plain {
+    color: var(--color-ink-3);
+    font-weight: 500;
+  }
+
+  /* ── Tags ── */
+  .sc-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sc-tag {
+    padding: 0.18rem 0.55rem;
+    border-radius: 9999px;
+    font-size: 0.67rem;
+    font-weight: 500;
+    color: var(--color-ink-3);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.055);
+  }
+
+  /* ── Footer ── */
+  .sc-foot {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.042);
+    margin-top: auto;
+  }
+
+  .sc-act {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 200ms ease, opacity 200ms ease;
+    white-space: nowrap;
+  }
+
+  .sc-act--primary {
+    color: var(--color-accent);
+  }
+
+  .sc-act--primary:hover {
+    opacity: 0.72;
+  }
+
+  .sc-act--ghost {
+    color: var(--color-ink-3);
+    margin-left: auto;
+  }
+
+  .sc-act--ghost:hover {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sc {
+      transition: border-color 300ms ease-out, box-shadow 300ms ease-out;
+    }
+    .sc:hover { transform: none; }
+  }
+</style>

@@ -1,97 +1,89 @@
 ---
 import Layout from '../components/Layout.astro';
 import Reveal from '../components/Reveal.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import { services, CATEGORIES } from '../data/services';
 
-const items = [
-  'Dienstekatalog mit Rollen und Abhängigkeiten',
-  'Workflows: Backups, Monitoring, Automatisierung',
-  'Technische Entscheidungen & Begründungen',
-];
+const grouped = CATEGORIES.map((cat, i) => ({
+  num: String(i + 1).padStart(2, '0'),
+  category: cat,
+  items: services.filter(s => s.category === cat),
+})).filter(g => g.items.length > 0);
 ---
 
 <Layout
   title="Software — Homelab"
-  description="Dienste, Workflows und Automatisierungen — dokumentiert wie ein Produkt."
+  description="Dienste, die mein Lab betreiben – organisiert nach Funktion und Infrastruktur."
 >
 
-  <!-- ── Hero ─────────────────────────────────────────────── -->
-  <section class="pt-28 pb-16 section-divider">
+  <!-- ── Hero ─────────────────────────────────────────────────── -->
+  <section class="pt-32 pb-20 section-divider">
     <div class="container-content max-w-[680px]">
       <Reveal>
-        <p class="text-label text-accent uppercase tracking-widest mb-4">Layer 02</p>
-        <h1 class="text-display-lg text-ink-1 mb-6 tracking-[-0.03em]">
+        <p class="text-[0.68rem] font-semibold tracking-[0.22em] uppercase text-[var(--color-ink-4)] mb-4">
+          LAYER 02
+        </p>
+        <h1 class="text-display-lg text-ink-1 leading-[0.94] mb-6">
           Software.
         </h1>
-        <p class="text-body-lg text-ink-2 leading-[1.65]">
-          Dienste, Workflows und Automatisierungen —
-          dokumentiert wie ein Produkt.
+        <p class="text-body-lg leading-[1.7] max-w-[52ch] text-[rgba(255,255,255,0.55)]">
+          Dienste, die mein Lab betreiben – organisiert nach Funktion und Infrastruktur.
         </p>
+      </Reveal>
+
+      <!-- Quick stats -->
+      <Reveal delay={80} class="flex items-center gap-3 mt-7">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.75rem] font-medium border border-[rgba(79,142,247,0.2)] bg-[rgba(79,142,247,0.07)] text-[var(--color-accent)]">
+          {services.length} Dienste
+        </span>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.75rem] font-medium border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.03)] text-[var(--color-ink-3)]">
+          {CATEGORIES.length} Kategorien
+        </span>
       </Reveal>
     </div>
   </section>
 
-  <!-- ── Content ──────────────────────────────────────────── -->
-  <section class="py-16">
-    <div class="container-content max-w-[680px]">
-      <div class="space-y-16">
+  <!-- ── Categories ───────────────────────────────────────────── -->
+  {grouped.map(({ num, category, items }) => (
+    <section class="py-20 section-divider">
+      <div class="container-wide">
 
-        <!-- 01 Prinzip -->
-        <Reveal>
-          <div class="space-y-4">
-            <p class="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-[var(--color-ink-4)]">
-              01 — Prinzip
-            </p>
-            <h2 class="text-display-sm text-ink-1">Selbst betrieben. Vollständig dokumentiert.</h2>
-            <p class="text-body-md text-ink-2 leading-[1.7]">
-              Kein Cloud-Dienst übernimmt hier die Kontrolle. Jeder Dienst läuft lokal,
-              auf eigener Hardware, mit bekannten Abhängigkeiten. Dokumentation ist kein
-              Anhang — sie ist Teil der Infrastruktur. Was nicht dokumentiert ist,
-              existiert nur bis zum nächsten Ausfall.
-            </p>
+        <!-- Section header -->
+        <Reveal class="mb-10">
+          <p class="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-[var(--color-ink-4)] mb-2">
+            {num}
+          </p>
+          <div class="flex items-baseline gap-4">
+            <h2 class="text-display-sm text-ink-1 tracking-[-0.025em]" style="font-weight: 500;">
+              {category}
+            </h2>
+            <span class="text-[0.75rem] text-[var(--color-ink-4)]">
+              {items.length} {items.length === 1 ? 'Dienst' : 'Dienste'}
+            </span>
           </div>
         </Reveal>
 
-        <!-- 02 In Vorbereitung -->
-        <Reveal>
-          <div class="space-y-5">
-            <p class="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-[var(--color-ink-4)]">
-              02 — Inhalt
-            </p>
-            <h2 class="text-display-sm text-ink-1">In Vorbereitung.</h2>
-            <div class="rounded-[16px] border border-[rgba(255,255,255,0.07)] bg-[var(--color-surface-1)] p-6 sm:p-8">
-              <div class="flex items-center gap-2.5 mb-6">
-                <span
-                  class="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                  style="background: rgba(245,158,11,0.65);"
-                  aria-hidden="true"
-                ></span>
-                <p class="text-[0.65rem] font-semibold tracking-[0.16em] uppercase text-[var(--color-ink-4)]">
-                  Geplant
-                </p>
-              </div>
-              <ul class="space-y-3.5" role="list">
-                {items.map(item => (
-                  <li class="flex items-baseline gap-3">
-                    <span
-                      class="text-[var(--color-ink-4)] font-mono text-[0.8rem] flex-shrink-0"
-                      aria-hidden="true"
-                    >—</span>
-                    <span class="text-[0.9375rem] leading-[1.6] text-[var(--color-ink-2)]">
-                      {item}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </Reveal>
+        <!-- Cards grid -->
+        <ul
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+          role="list"
+          aria-label={`Dienste in ${category}`}
+        >
+          {items.map((service, i) => (
+            <li role="listitem">
+              <Reveal delay={i * 50}>
+                <ServiceCard service={service} />
+              </Reveal>
+            </li>
+          ))}
+        </ul>
 
       </div>
-    </div>
-  </section>
+    </section>
+  ))}
 
-  <!-- ── Back ─────────────────────────────────────────────── -->
-  <section class="py-16 section-divider">
+  <!-- ── Back ─────────────────────────────────────────────────── -->
+  <section class="py-16">
     <div class="container-content max-w-[680px]">
       <Reveal>
         <a href="/lab" class="btn-secondary">← Zurück zum Lab</a>
