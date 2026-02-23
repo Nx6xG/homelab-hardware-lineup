@@ -32,25 +32,25 @@ const heroLines = ['HomeLab.'];
 
 // Stable metrics — no runtime-computed service/uptime counts
 const sysMetrics = [
-  { value: String(devices.length), label: 'Devices'     },
-  { value: '30+',                  label: 'Services'    },
-  { value: '100%',                 label: 'Self-hosted' },
-  { value: '0€',                   label: 'Cloud cost'  },
+  { value: String(devices.length), label: 'Geräte'       },
+  { value: '30+',                  label: 'Dienste'       },
+  { value: '100%',                 label: 'Self-hosted'   },
+  { value: '0€',                   label: 'Cloud-Kosten'  },
 ];
 
 const docItems = [
-  'What runs on it',
-  'Architecture overview',
-  'Decisions made',
-  'Trade-offs & learnings',
-  "What I'd improve next",
-  'Full specifications',
+  'Was darauf läuft',
+  'Architekturüberblick',
+  'Getroffene Entscheidungen',
+  'Kompromisse & Erkenntnisse',
+  'Was ich als Nächstes verbessern würde',
+  'Vollständige Spezifikationen',
 ];
 ---
 
 <Layout
   title="HomeLab"
-  description="Hardware, software, and architecture — a personal homelab documented as a product."
+  description="Hardware, Software und Architektur — ein persönliches Homelab, dokumentiert wie ein Produkt."
 >
 
   <!-- ═══════════════════════════════════════════════════════
@@ -79,7 +79,7 @@ const docItems = [
         class="text-[0.68rem] font-semibold tracking-[0.26em] uppercase text-[var(--color-ink-4)] mb-10 sm:mb-12"
         style="animation:hero-fade-up 600ms 80ms cubic-bezier(0.16,1,0.3,1) both"
       >
-        Personal Homelab
+        Persönliches Homelab
       </p>
 
       <!-- "HomeLab." — word-by-word entrance animation -->
@@ -99,8 +99,8 @@ const docItems = [
         class="text-[clamp(1rem,1.8vw,1.2rem)] font-light text-[var(--color-ink-3)] max-w-[38ch] mx-auto leading-[1.65] mb-10 sm:mb-14"
         style="animation:hero-fade-up 700ms 570ms cubic-bezier(0.16,1,0.3,1) both"
       >
-        Hardware, software, and architecture —
-        documented like a product.
+        Hardware, Software und Architektur —
+        dokumentiert wie ein Produkt.
       </p>
 
       <!-- CTAs — stacked on mobile, side by side on sm+ -->
@@ -109,13 +109,13 @@ const docItems = [
         style="animation:hero-fade-up 700ms 700ms cubic-bezier(0.16,1,0.3,1) both"
       >
         <a href="/lab" class="btn-primary-lg w-full sm:w-auto justify-center">
-          Explore the lab
+          Das Lab erkunden
           <svg width="15" height="15" viewBox="0 0 14 14" fill="none" aria-hidden="true">
             <path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </a>
         <a href="/lineup" class="btn-secondary-lg w-full sm:w-auto justify-center">
-          View hardware
+          Hardware ansehen
         </a>
       </div>
 
@@ -138,10 +138,10 @@ const docItems = [
 
       <Reveal class="mb-14 sm:mb-16">
         <p class="text-[0.68rem] font-semibold tracking-[0.22em] uppercase text-[var(--color-ink-4)] mb-3">
-          Overview
+          Überblick
         </p>
         <h2 id="overview-h" class="text-display-sm text-[var(--color-ink-1)]">
-          The system, at a glance.
+          Das System, auf einen Blick.
         </h2>
       </Reveal>
 
@@ -149,7 +149,7 @@ const docItems = [
         <div
           class="glass-card-glow rounded-[20px] px-5 sm:px-8 py-7 sm:py-10"
           role="list"
-          aria-label="System metrics"
+          aria-label="Systemkennzahlen"
         >
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
             {sysMetrics.map(({ value, label }) => (
@@ -186,7 +186,7 @@ const docItems = [
           </h2>
         </div>
         <a href="/lineup" class="btn-secondary hidden sm:inline-flex flex-shrink-0">
-          Explore all
+          Alle ansehen
           <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
             <path d="M2 6.5h9M7 2l4.5 4.5L7 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -230,7 +230,7 @@ const docItems = [
               <div class="flex items-center justify-between relative z-10">
                 <Badge status={device.data.status} size="sm" />
                 <span class="text-[0.68rem] sm:text-[0.72rem] text-[var(--color-ink-4)] group-hover:text-[var(--color-accent)] transition-colors duration-200">
-                  Explore →
+                  Ansehen →
                 </span>
               </div>
             </a>
@@ -240,7 +240,7 @@ const docItems = [
 
       <!-- Mobile-only CTA -->
       <Reveal class="mt-6 sm:hidden text-center">
-        <a href="/lineup" class="btn-secondary w-full justify-center">Explore all devices</a>
+        <a href="/lineup" class="btn-secondary w-full justify-center">Alle Geräte ansehen</a>
       </Reveal>
 
     </div>
@@ -266,15 +266,15 @@ const docItems = [
     <div class="container-content relative z-10">
       <Reveal>
         <p class="text-[0.68rem] font-semibold tracking-[0.22em] uppercase text-[var(--color-ink-4)] mb-5 sm:mb-6">
-          Philosophy
+          Philosophie
         </p>
         <h2 id="phil-h" class="text-display-lg text-[var(--color-ink-1)] mb-6 sm:mb-8 leading-[0.93]">
-          Everything<br/>runs locally.
+          Alles läuft<br/>lokal.
         </h2>
         <p class="text-[1rem] sm:text-[1.05rem] font-light text-[var(--color-ink-3)] max-w-[34ch] mx-auto leading-[1.72]">
-          No cloud vendor lock-in. No subscriptions.
-          Full control over data, uptime, and architecture.
-          Reproducible infrastructure — designed, not improvised.
+          Kein Cloud-Anbieter-Lock-in. Keine Abonnements.
+          Volle Kontrolle über Daten, Verfügbarkeit und Architektur.
+          Reproduzierbare Infrastruktur — geplant, nicht improvisiert.
         </p>
       </Reveal>
     </div>
@@ -289,14 +289,14 @@ const docItems = [
 
       <Reveal class="mb-10 sm:mb-12">
         <p class="text-[0.68rem] font-semibold tracking-[0.22em] uppercase text-[var(--color-ink-4)] mb-3">
-          Documentation
+          Dokumentation
         </p>
         <h2 id="docs-h" class="text-display-sm text-[var(--color-ink-1)] mb-4 sm:mb-5">
-          Documented like a product.
+          Dokumentiert wie ein Produkt.
         </h2>
         <p class="text-[0.9375rem] sm:text-[1rem] text-[var(--color-ink-3)] leading-[1.7] max-w-[44ch]">
-          Each device in the lab has its own deep-dive page.
-          Not just specs — the full story behind every decision.
+          Jedes Gerät hat seine eigene Detailseite.
+          Nicht nur Spezifikationen — die Geschichte hinter jeder Entscheidung.
         </p>
       </Reveal>
 
@@ -317,7 +317,7 @@ const docItems = [
 
       <Reveal delay={120} class="text-center">
         <a href="/lineup" class="btn-primary">
-          View all devices
+          Alle Geräte ansehen
           <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
             <path d="M2 6.5h9M7 2l4.5 4.5L7 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>

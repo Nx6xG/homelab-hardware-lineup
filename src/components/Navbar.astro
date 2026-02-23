@@ -1,9 +1,9 @@
 ---
 const links = [
-  { href: '/',       label: 'Home'   },
-  { href: '/lab',    label: 'Lab'    },
-  { href: '/builds', label: 'Builds' },
-  { href: '/about',  label: 'About'  },
+  { href: '/',       label: 'Start'   },
+  { href: '/lab',    label: 'Lab'     },
+  { href: '/builds', label: 'Verlauf' },
+  { href: '/about',  label: 'Über'    },
 ];
 
 const pathname = Astro.url.pathname;
@@ -18,13 +18,13 @@ const pathname = Astro.url.pathname;
     <div class="container-wide">
       <nav
         class="flex items-center justify-between h-14"
-        aria-label="Main navigation"
+        aria-label="Hauptnavigation"
       >
         <!-- Logo -->
         <a
           href="/"
           class="flex items-center gap-2.5 group flex-shrink-0"
-          aria-label="Homelab Hardware — Home"
+          aria-label="Homelab Hardware — Startseite"
         >
           <div class="w-7 h-7 rounded-lg bg-accent flex items-center justify-center transition-transform duration-spring group-hover:scale-110 group-active:scale-95">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -70,7 +70,7 @@ const pathname = Astro.url.pathname;
           class="sm:hidden flex items-center justify-center w-9 h-9 rounded-[10px] text-[var(--color-ink-2)] hover:text-[var(--color-ink-1)] hover:bg-[rgba(255,255,255,0.06)] transition-colors duration-200 active:scale-90 active:bg-[rgba(255,255,255,0.10)]"
           aria-expanded="false"
           aria-controls="mobile-menu"
-          aria-label="Toggle navigation"
+          aria-label="Navigation umschalten"
         >
           <!-- Hamburger icon — animated via CSS -->
           <svg id="icon-menu" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
@@ -126,7 +126,7 @@ const pathname = Astro.url.pathname;
   href="#main-content"
   class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] btn-primary"
 >
-  Skip to main content
+  Zum Hauptinhalt springen
 </a>
 
 <script>

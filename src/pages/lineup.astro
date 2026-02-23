@@ -12,16 +12,16 @@ const sorted  = [...devices].sort(
 const types = ['all', ...new Set(sorted.map(d => d.data.type))];
 
 const typeLabels: Record<string, string> = {
-  all:           'All',
+  all:           'Alle',
   'raspberry-pi':'Raspberry Pi',
   server:        'Server',
   nas:           'NAS',
-  network:       'Network',
+  network:       'Netzwerk',
   pc:            'PC',
   display:       'Display',
-  console:       'Console',
+  console:       'Konsole',
   'smart-home':  'Smart Home',
-  other:         'Other',
+  other:         'Sonstiges',
 };
 
 const statusColors: Record<string, string> = {
@@ -38,8 +38,8 @@ const statusCounts = Object.fromEntries(
 ---
 
 <Layout
-  title="Hardware Lineup — Homelab"
-  description="Every device in the homelab, documented."
+  title="Hardware-Übersicht — Homelab"
+  description="Alle Geräte im Homelab, dokumentiert."
 >
   <!-- Hero -->
   <section class="pt-28 pb-10">
@@ -49,10 +49,10 @@ const statusCounts = Object.fromEntries(
           Hardware
         </p>
         <h1 class="text-[clamp(2.5rem,6vw,4.5rem)] font-bold tracking-[-0.03em] text-[var(--color-ink-1)] leading-[1.05] mb-5">
-          The lineup.
+          Die Geräte.
         </h1>
         <p class="text-[1rem] text-[var(--color-ink-3)] max-w-md leading-[1.65]">
-          Every device, documented. Filter by type or status.
+          Alle Geräte, dokumentiert. Filter nach Typ oder Status.
         </p>
       </Reveal>
 
@@ -78,7 +78,7 @@ const statusCounts = Object.fromEntries(
       <div
         class="flex items-center gap-1.5 overflow-x-auto pb-0.5"
         role="group"
-        aria-label="Filter by device type"
+        aria-label="Nach Gerätetyp filtern"
         style="scrollbar-width: none;"
       >
         {types.map(type => (
@@ -110,7 +110,7 @@ const statusCounts = Object.fromEntries(
       <div
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
         role="list"
-        aria-label="All devices"
+        aria-label="Alle Geräte"
       >
         {sorted.map(device => (
           <div

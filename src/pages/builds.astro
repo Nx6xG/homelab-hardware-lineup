@@ -50,16 +50,16 @@ events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 ---
 
 <Layout
-  title="Build Timeline — Homelab"
-  description="Chronological history of every device added, updated, or retired in the homelab."
+  title="Verlauf — Homelab"
+  description="Chronologischer Verlauf aller Geräte — hinzugefügt, aktualisiert oder ausgemustert."
 >
   <section class="pt-28 pb-12 section-divider">
     <div class="container-content">
       <Reveal>
-        <p class="text-label text-accent uppercase tracking-widest mb-3">History</p>
-        <h1 class="text-display-lg text-ink-1 mb-4">Build timeline.</h1>
+        <p class="text-label text-accent uppercase tracking-widest mb-3">Verlauf</p>
+        <h1 class="text-display-lg text-ink-1 mb-4">Build-Verlauf.</h1>
         <p class="text-body-lg text-ink-2 max-w-lg">
-          Every device added, updated, or changed — in chronological order.
+          Alle Geräte — hinzugefügt, aktualisiert oder verändert — in chronologischer Reihenfolge.
         </p>
       </Reveal>
 
@@ -67,15 +67,15 @@ events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
       <Reveal delay={120} class="flex flex-wrap gap-4 mt-8">
         <div class="flex items-center gap-2 text-label text-ink-3">
           <span class="w-2.5 h-2.5 rounded-full bg-status-online" aria-hidden="true"></span>
-          Added to lab
+          Ins Lab aufgenommen
         </div>
         <div class="flex items-center gap-2 text-label text-ink-3">
           <span class="w-2.5 h-2.5 rounded-full bg-accent" aria-hidden="true"></span>
-          Updated
+          Aktualisiert
         </div>
         <div class="flex items-center gap-2 text-label text-ink-3">
           <span class="w-2.5 h-2.5 rounded-full bg-status-retired" aria-hidden="true"></span>
-          Retired
+          Ausgemustert
         </div>
       </Reveal>
     </div>

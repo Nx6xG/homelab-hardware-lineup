@@ -15,17 +15,17 @@ const { specs, class: className = '' } = Astro.props;
 const rows = Object.entries(specs).filter(([, v]) => v !== undefined && v !== '');
 
 const labelMap: Record<string, string> = {
-  os:      'Operating System',
-  cpu:     'Processor',
-  ram:     'Memory',
-  storage: 'Storage',
-  network: 'Network',
+  os:      'Betriebssystem',
+  cpu:     'Prozessor',
+  ram:     'Arbeitsspeicher',
+  storage: 'Speicher',
+  network: 'Netzwerk',
 };
 ---
 
 {rows.length > 0 && (
   <div class:list={['rounded-[14px] overflow-hidden border border-[rgba(255,255,255,0.065)]', className]}>
-    <table class="w-full" role="table" aria-label="Specifications">
+    <table class="w-full" role="table" aria-label="Technische Daten">
       <tbody>
         {rows.map(([key, value], i) => (
           <tr

@@ -4,21 +4,21 @@ import Reveal from '../components/Reveal.astro';
 ---
 
 <Layout
-  title="About — Homelab Hardware Pages"
-  description="The philosophy behind documenting homelab hardware like product pages."
+  title="Über das Projekt — Homelab"
+  description="Die Philosophie hinter der Dokumentation von Homelab-Hardware wie Produktseiten."
 >
   <!-- Hero -->
   <section class="pt-28 pb-16 section-divider">
     <div class="container-content max-w-[680px]">
       <Reveal>
-        <p class="text-label text-accent uppercase tracking-widest mb-4">About this project</p>
+        <p class="text-label text-accent uppercase tracking-widest mb-4">Über dieses Projekt</p>
         <h1 class="text-display-lg text-ink-1 mb-6">
-          Infrastructure deserves good documentation.
+          Infrastruktur verdient gute Dokumentation.
         </h1>
         <p class="text-body-lg text-ink-2">
-          This site is a personal record of every piece of hardware in my homelab.
-          Not tutorials. Not reviews. Technical storytelling about what I actually built, what runs on it,
-          and the decisions behind every choice.
+          Diese Seite ist eine persönliche Aufzeichnung jedes Geräts in meinem Homelab.
+          Keine Tutorials. Keine Reviews. Technisches Storytelling über das, was ich wirklich gebaut habe,
+          was darauf läuft und die Entscheidungen hinter jeder Wahl.
         </p>
       </Reveal>
     </div>
@@ -31,33 +31,33 @@ import Reveal from '../components/Reveal.astro';
 
         <Reveal>
           <div class="space-y-4">
-            <h2 class="text-display-sm text-ink-1">Why document a homelab?</h2>
+            <h2 class="text-display-sm text-ink-1">Warum ein Homelab dokumentieren?</h2>
             <p class="text-body-lg text-ink-2">
-              Homelabs accumulate complexity fast. Within a year you have a dozen services,
-              three subnets, and a NAS config you don't fully remember. The first time something
-              breaks at 2 AM is when you realize you should have written it down.
+              Homelabs werden schnell komplex. Nach einem Jahr hat man ein Dutzend Dienste,
+              drei Subnetze und eine NAS-Konfiguration, an die man sich nicht mehr vollständig erinnert.
+              Das erste Mal, wenn etwas um 2 Uhr morgens ausfällt, merkt man, dass man es hätte aufschreiben sollen.
             </p>
             <p class="text-body-md text-ink-2">
-              But most homelab documentation is a markdown file in a private git repo, a pile of
-              bookmarks, or — nothing. This is an attempt to do it properly: each device gets
-              a structured page that answers the questions I'll actually ask when debugging.
+              Aber die meiste Homelab-Dokumentation ist eine Markdown-Datei in einem privaten Git-Repo,
+              ein Haufen Lesezeichen oder — nichts. Dies ist ein Versuch, es richtig zu machen:
+              Jedes Gerät bekommt eine strukturierte Seite, die die Fragen beantwortet, die ich beim Debuggen stellen werde.
             </p>
           </div>
         </Reveal>
 
         <Reveal>
           <div class="space-y-4">
-            <h2 class="text-display-sm text-ink-1">The format</h2>
+            <h2 class="text-display-sm text-ink-1">Das Format</h2>
             <p class="text-body-md text-ink-2">
-              Each device page is structured around five questions:
+              Jede Geräteseite ist um fünf Fragen aufgebaut:
             </p>
             <ul class="space-y-3 pl-4">
               {[
-                { q: 'What did I build?', a: 'Concrete outcomes, not aspirations. What actually works and is running.' },
-                { q: 'What runs on it?', a: 'Every service and technology in use, with version context.' },
-                { q: 'How is it architected?', a: 'The actual topology, config structure, and data flows.' },
-                { q: 'Why did I choose X?', a: 'The decisions that shaped the setup, with the reasoning preserved.' },
-                { q: 'What would I change?', a: 'Honest retrospective. What works, what doesn\'t, what\'s next.' },
+                { q: 'Was habe ich gebaut?',    a: 'Konkrete Ergebnisse, keine Absichten. Was tatsächlich läuft.' },
+                { q: 'Was läuft darauf?',       a: 'Alle Dienste und Technologien im Einsatz, mit Versionskontext.' },
+                { q: 'Wie ist es aufgebaut?',   a: 'Die tatsächliche Topologie, Konfigurationsstruktur und Datenflüsse.' },
+                { q: 'Warum habe ich X gewählt?', a: 'Die Entscheidungen, die das Setup geprägt haben, mit dem Reasoning.' },
+                { q: 'Was würde ich ändern?',   a: 'Ehrliche Retrospektive. Was funktioniert, was nicht, was als Nächstes.' },
               ].map(({ q, a }) => (
                 <li class="flex gap-4">
                   <span class="flex-shrink-0 mt-1.5 w-2 h-2 rounded-full bg-accent/50" aria-hidden="true"></span>
@@ -73,47 +73,47 @@ import Reveal from '../components/Reveal.astro';
 
         <Reveal>
           <div class="space-y-4">
-            <h2 class="text-display-sm text-ink-1">The design</h2>
+            <h2 class="text-display-sm text-ink-1">Das Design</h2>
             <p class="text-body-md text-ink-2">
-              I wanted documentation that feels as considered as the hardware itself. Apple's
-              product pages set a standard for communicating technical detail without visual noise.
-              This borrows that structure — cinematic heroes, clear hierarchy, premium spacing —
-              and applies it to technical documentation instead of marketing.
+              Ich wollte eine Dokumentation, die sich so durchdacht anfühlt wie die Hardware selbst.
+              Apples Produktseiten setzen einen Standard für die Vermittlung technischer Details ohne visuelles Rauschen.
+              Diese Seite übernimmt diese Struktur — cinematische Hero-Sections, klare Hierarchie, premium Abstände —
+              und wendet sie auf technische Dokumentation statt Marketing an.
             </p>
             <p class="text-body-md text-ink-2">
-              No neon. No gradients for the sake of gradients. Just a dark, focused surface that
-              gets out of the way of the content.
+              Kein Neon. Keine Farbverläufe um ihrer selbst willen. Nur eine dunkle, fokussierte Oberfläche,
+              die dem Inhalt nicht im Weg steht.
             </p>
           </div>
         </Reveal>
 
         <Reveal>
           <div class="space-y-4">
-            <h2 class="text-display-sm text-ink-1">Adding a device</h2>
+            <h2 class="text-display-sm text-ink-1">Ein Gerät hinzufügen</h2>
             <p class="text-body-md text-ink-2">
-              Each device is an MDX file in <code class="text-accent/80 bg-accent/5 px-1.5 py-0.5 rounded text-sm font-mono">src/content/devices/</code>.
-              The schema enforces consistency: every device has a name, status, role, services list,
-              decisions, and specs. The MDX body is free-form — use it for architecture diagrams,
-              config samples, tables, anything that needs more than bullets.
+              Jedes Gerät ist eine MDX-Datei in <code class="text-accent/80 bg-accent/5 px-1.5 py-0.5 rounded text-sm font-mono">src/content/devices/</code>.
+              Das Schema erzwingt Konsistenz: Jedes Gerät hat Name, Status, Rolle, Dienste,
+              Entscheidungen und Spezifikationen. Der MDX-Body ist frei — für Architektur-Diagramme,
+              Konfigurationsbeispiele, Tabellen oder alles, was mehr als Aufzählungspunkte braucht.
             </p>
             <div class="card p-4 font-mono text-mono-sm text-ink-2 overflow-x-auto">
-              <pre class="whitespace-pre-wrap"># Create a new device
+              <pre class="whitespace-pre-wrap"># Neues Gerät anlegen
 cp src/content/devices/rpi4-home-assistant.mdx src/content/devices/my-new-device.mdx
 
-# Edit the frontmatter
-# - Set name, type, status, headline, role
-# - Add services[], stack[], outcomes[]
-# - Fill in decisions and specs
-# - Add photos to public/assets/devices/
+# Frontmatter bearbeiten
+# - Name, type, status, headline, role setzen
+# - services[], stack[], outcomes[] befüllen
+# - decisions und specs ergänzen
+# - Fotos nach public/assets/devices/ legen
 
-# The page builds automatically at /device/my-new-device</pre>
+# Die Seite wird automatisch unter /device/my-new-device gebaut</pre>
             </div>
           </div>
         </Reveal>
 
         <Reveal>
           <div class="space-y-4">
-            <h2 class="text-display-sm text-ink-1">Tech stack</h2>
+            <h2 class="text-display-sm text-ink-1">Tech-Stack</h2>
             <div class="flex flex-wrap gap-2">
               {['Astro 5', 'Tailwind CSS', 'MDX', 'Content Collections', 'View Transitions API', 'IntersectionObserver', 'Web Animations API'].map(tech => (
                 <span class="chip">{tech}</span>
@@ -131,7 +131,7 @@ cp src/content/devices/rpi4-home-assistant.mdx src/content/devices/my-new-device
     <div class="container-content text-center">
       <Reveal>
         <a href="/lineup" class="btn-primary">
-          Browse the hardware lineup
+          Hardware-Übersicht ansehen
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
             <path d="M2 7h10M7 2l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>

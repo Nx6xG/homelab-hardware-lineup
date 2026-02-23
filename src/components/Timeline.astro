@@ -30,15 +30,15 @@ const typeIcons: Record<string, string> = {
 };
 
 const eventConfig = {
-  created: { label: 'Added to lab',  color: 'text-status-online',  dot: 'bg-status-online'      },
-  updated: { label: 'Updated',       color: 'text-accent',          dot: 'bg-accent'             },
-  retired: { label: 'Retired',       color: 'text-status-retired',  dot: 'bg-status-retired'     },
+  created: { label: 'Ins Lab aufgenommen', color: 'text-status-online',  dot: 'bg-status-online'  },
+  updated: { label: 'Aktualisiert',        color: 'text-accent',          dot: 'bg-accent'         },
+  retired: { label: 'Ausgemustert',        color: 'text-status-retired',  dot: 'bg-status-retired' },
 };
 
 // Group by month/year
 const grouped = items.reduce<Record<string, TimelineItem[]>>((acc, item) => {
   const d = new Date(item.date);
-  const key = d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  const key = d.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
   if (!acc[key]) acc[key] = [];
   acc[key].push(item);
   return acc;
@@ -62,7 +62,7 @@ const grouped = items.reduce<Record<string, TimelineItem[]>>((acc, item) => {
           const { label, color, dot } = eventConfig[item.event];
           const icon = typeIcons[item.type] ?? '📦';
           const date = new Date(item.date);
-          const dateStr = date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+          const dateStr = date.toLocaleDateString('de-DE', { day: 'numeric', month: 'short' });
 
           return (
             <div class="relative">
