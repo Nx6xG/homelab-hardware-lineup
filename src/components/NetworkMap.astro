@@ -1,0 +1,332 @@
+---
+// NetworkMap.astro
+// Inline SVG network diagram — mobile-scrollable, keyboard-accessible,
+// CSS + minimal JS connected-highlight. No external libraries.
+//
+// Edge strategy: each logical Switch↔Device connection is represented as a
+// group of segments all sharing the same unique data-edge="switch:<id>".
+// Overlapping trunk segments (Switch→branch-point) are drawn twice so each
+// connection is independently highlightable. Router→Switch uses its own
+// value and is intentionally excluded from any highlight CSS rule.
+
+interface NodeDef {
+  id:    string;
+  label: string;
+  sub?:  string;          // optional role label beneath name
+  href:  string | null;   // null = non-clickable infrastructure node
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+// [x1, y1, x2, y2, data-edge]
+type EdgeDef = [number, number, number, number, string];
+
+// ── Layout constants ─────────────────────────────────────────────────────────
+const VW = 800;
+const VH = 480;
+const RX = 10;
+
+// ── Node definitions ─────────────────────────────────────────────────────────
+const nodes: NodeDef[] = [
+  // Center column
+  { id: 'router', label: 'Router',         href: null,                                        x: 320, y:  44, w: 160, h: 52 },
+  { id: 'switch', label: 'Switch',          href: null,                                        x: 320, y: 196, w: 160, h: 52 },
+  { id: 'pc',     label: 'MacBook Pro',     sub: 'Entwicklung',    href: '/device/macbook-pro-m4',       x: 320, y: 384, w: 160, h: 52 },
+  // Left cluster
+  { id: 'rpi4',   label: 'Raspberry Pi 4', sub: 'Home Assistant', href: '/device/rpi4-home-assistant',  x:  56, y: 154, w: 188, h: 52 },
+  { id: 'rpi5',   label: 'Raspberry Pi 5', sub: 'Portainer',      href: '/device/rpi5-portainer',       x:  56, y: 254, w: 188, h: 52 },
+  // Right cluster
+  { id: 'server', label: 'Mini-PC',         sub: 'Game Server',   href: '/device/mini-pc-game-server',  x: 556, y: 154, w: 188, h: 52 },
+  { id: 'nas',    label: 'QNAP NAS',        sub: 'Storage',       href: '/device/qnap-nas',             x: 556, y: 254, w: 188, h: 52 },
+];
+
+// ── Derived helpers ───────────────────────────────────────────────────────────
+const CX = (n: NodeDef) => n.x + n.w / 2;
+const CY = (n: NodeDef) => n.y + n.h / 2;
+
+const router = nodes[0];
+const sw     = nodes[1];
+const rpi4   = nodes[3];
+const rpi5   = nodes[4];
+const server = nodes[5];
+const nas    = nodes[6];
+const pc     = nodes[2];
+
+// Branch midpoints on x-axis
+const LBX = Math.round((rpi4.x + rpi4.w + sw.x) / 2);   // ≈ 282
+const RBX = Math.round((sw.x + sw.w + server.x) / 2);    // ≈ 518
+
+// ── Edges ────────────────────────────────────────────────────────────────────
+// Each logical Switch↔Device path is broken into individual line segments that
+// all share the same data-edge value. Trunk segments (e.g. Switch.left→LBX)
+// are duplicated per connection so each connection is independently targetable.
+//
+// data-edge="router:switch" — infrastructure only, intentionally excluded from
+//   any highlight CSS rule → always stays dim when any device is active.
+// data-edge="switch:<id>"   — one per device connection; CSS brightens exactly
+//   the matching value on hover/focus via [data-edge="switch:<id>"].
+
+const edges: EdgeDef[] = [
+
+  // ── Router → Switch (never highlights) ──────────────────────────────────
+  [CX(router),     router.y + router.h,  CX(sw),        sw.y,        'router:switch'],
+
+  // ── Switch → RPi4 (3 segments) ──────────────────────────────────────────
+  // trunk: Switch.left → LBX at Switch.cy
+  [sw.x,           CY(sw),               LBX,           CY(sw),      'switch:rpi4'],
+  // arm up: LBX at Switch.cy → LBX at RPi4.cy
+  [LBX,            CY(sw),               LBX,           CY(rpi4),    'switch:rpi4'],
+  // leaf: LBX → RPi4.right
+  [LBX,            CY(rpi4),             rpi4.x + rpi4.w, CY(rpi4), 'switch:rpi4'],
+
+  // ── Switch → RPi5 (3 segments) ──────────────────────────────────────────
+  // trunk: same coords as rpi4 trunk, different data-edge (overlaps visually)
+  [sw.x,           CY(sw),               LBX,           CY(sw),      'switch:rpi5'],
+  // arm down: LBX at Switch.cy → LBX at RPi5.cy
+  [LBX,            CY(sw),               LBX,           CY(rpi5),    'switch:rpi5'],
+  // leaf: LBX → RPi5.right
+  [LBX,            CY(rpi5),             rpi5.x + rpi5.w, CY(rpi5), 'switch:rpi5'],
+
+  // ── Switch → Server (3 segments) ────────────────────────────────────────
+  // trunk: Switch.right → RBX at Switch.cy
+  [sw.x + sw.w,    CY(sw),               RBX,           CY(sw),      'switch:server'],
+  // arm up: RBX at Switch.cy → RBX at Server.cy
+  [RBX,            CY(sw),               RBX,           CY(server),  'switch:server'],
+  // leaf: RBX → Server.left
+  [RBX,            CY(server),           server.x,      CY(server),  'switch:server'],
+
+  // ── Switch → NAS (3 segments) ───────────────────────────────────────────
+  // trunk: same coords as server trunk (overlaps visually)
+  [sw.x + sw.w,    CY(sw),               RBX,           CY(sw),      'switch:nas'],
+  // arm down: RBX at Switch.cy → RBX at NAS.cy
+  [RBX,            CY(sw),               RBX,           CY(nas),     'switch:nas'],
+  // leaf: RBX → NAS.left
+  [RBX,            CY(nas),              nas.x,         CY(nas),     'switch:nas'],
+
+  // ── Switch → MacBook (1 vertical segment) ───────────────────────────────
+  [CX(sw),         sw.y + sw.h,          CX(pc),        pc.y,        'switch:pc'],
+
+];
+---
+
+<div class="nm-outer">
+  <div class="nm-wrap">
+    <svg
+      viewBox={`0 0 ${VW} ${VH}`}
+      width="100%"
+      height="auto"
+      role="img"
+      aria-label="Netzwerkplan des HomeLabs — klickbare Knoten führen zur Geräteseite"
+      class="nm-svg"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+
+      <!-- ── Edges ──────────────────────────────────────────────── -->
+      <g aria-hidden="true">
+        {edges.map(([x1, y1, x2, y2, edgeId]) => (
+          <line x1={x1} y1={y1} x2={x2} y2={y2} class="nm-edge" data-edge={edgeId} />
+        ))}
+      </g>
+
+      <!-- ── Nodes ──────────────────────────────────────────────── -->
+      {nodes.map(node => {
+        const ncx    = CX(node);
+        const ncy    = CY(node);
+        const hasSub = !!node.sub;
+
+        const labelY = hasSub ? ncy - 8 : ncy + 5;
+        const subY   = ncy + 8;
+
+        const rectClass = `nm-rect${node.id === 'switch' ? ' nm-rect--switch' : ''}`;
+
+        const inner = (
+          <>
+            <rect
+              x={node.x} y={node.y}
+              width={node.w} height={node.h}
+              rx={RX}
+              class={rectClass}
+            />
+            <text x={ncx} y={labelY} class="nm-label">{node.label}</text>
+            {hasSub && (
+              <text x={ncx} y={subY} class="nm-sub">{node.sub}</text>
+            )}
+          </>
+        );
+
+        return node.href ? (
+          <a
+            href={node.href}
+            class="nm-link"
+            data-node={node.id}
+            tabindex="0"
+            aria-label={hasSub ? `${node.label} – ${node.sub}` : node.label}
+          >
+            {inner}
+          </a>
+        ) : (
+          <g role="img" aria-label={node.label} data-node={node.id}>
+            {inner}
+          </g>
+        );
+      })}
+
+    </svg>
+  </div>
+  <p class="nm-scroll-hint" aria-hidden="true">← Seitwärts scrollen</p>
+</div>
+
+<script>
+  // Set data-active="<node-id>" on the SVG root while a node is hovered or
+  // focused. CSS exact-match selectors [data-edge="switch:<id>"] do the rest.
+  document.querySelectorAll('.nm-svg').forEach(svg => {
+    const links = svg.querySelectorAll('a[data-node]');
+
+    links.forEach(link => {
+      const id = link.getAttribute('data-node');
+      if (!id) return;
+
+      link.addEventListener('mouseenter', () => svg.setAttribute('data-active', id));
+      link.addEventListener('mouseleave', () => svg.removeAttribute('data-active'));
+      link.addEventListener('focus',      () => svg.setAttribute('data-active', id));
+    });
+
+    // Clear when Tab leaves the SVG entirely
+    svg.addEventListener('focusout', e => {
+      const fe = e as FocusEvent;
+      if (!svg.contains(fe.relatedTarget as Node | null)) {
+        svg.removeAttribute('data-active');
+      }
+    });
+  });
+</script>
+
+<style>
+  /* ── Outer wrapper ──────────────────────────────────────────── */
+  .nm-outer { width: 100%; }
+
+  /* ── Scroll container ───────────────────────────────────────── */
+  .nm-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: var(--color-surface-1);
+    padding: 2rem 1.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+  }
+  .nm-wrap::-webkit-scrollbar        { height: 4px; }
+  .nm-wrap::-webkit-scrollbar-track  { background: transparent; }
+  .nm-wrap::-webkit-scrollbar-thumb  { background: rgba(255, 255, 255, 0.10); border-radius: 2px; }
+
+  /* ── SVG ─────────────────────────────────────────────────────── */
+  .nm-svg {
+    display: block;
+    min-width: 800px;
+    height: auto;
+  }
+
+  /* ── Scroll hint (mobile only) ──────────────────────────────── */
+  .nm-scroll-hint {
+    text-align: center;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    color: var(--color-ink-4);
+    margin-top: 0.625rem;
+  }
+  @media (min-width: 860px) { .nm-scroll-hint { display: none; } }
+
+  /* ── Edges ───────────────────────────────────────────────────── */
+  .nm-edge {
+    stroke: rgba(255, 255, 255, 0.10);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    transition: stroke 220ms ease;
+  }
+
+  /* ── Node rects ──────────────────────────────────────────────── */
+  .nm-rect {
+    fill: var(--color-surface-2);
+    stroke: rgba(255, 255, 255, 0.08);
+    stroke-width: 1;
+    transition: stroke 200ms ease, fill 200ms ease;
+  }
+  .nm-rect--switch {
+    fill: var(--color-surface-3);
+    stroke: rgba(255, 255, 255, 0.06);
+  }
+
+  /* ── Node text ───────────────────────────────────────────────── */
+  .nm-label {
+    fill: var(--color-ink-2);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 12.5px;
+    font-weight: 500;
+    text-anchor: middle;
+    letter-spacing: -0.01em;
+    pointer-events: none;
+    user-select: none;
+  }
+  .nm-sub {
+    fill: var(--color-ink-4);
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    text-anchor: middle;
+    letter-spacing: 0.01em;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* ── Clickable link nodes ────────────────────────────────────── */
+  .nm-link {
+    cursor: pointer;
+    text-decoration: none;
+    transition: filter 200ms ease;
+  }
+  .nm-link:hover,
+  .nm-link:focus-visible {
+    filter: drop-shadow(0 0 8px rgba(79, 142, 247, 0.28));
+  }
+  .nm-link:hover .nm-rect,
+  .nm-link:focus-visible .nm-rect {
+    stroke: rgba(79, 142, 247, 0.50);
+  }
+  .nm-link:hover .nm-label,
+  .nm-link:focus-visible .nm-label {
+    fill: var(--color-ink-1);
+  }
+  .nm-link:focus-visible { outline: none; }
+
+  /* ── Connected highlight system ──────────────────────────────── */
+
+  /* Step 1 — dim ALL edges when any node is active */
+  .nm-svg[data-active] .nm-edge {
+    stroke: rgba(255, 255, 255, 0.035);
+  }
+
+  /* Step 2 — exact-match: only the direct Switch↔Device path brightens.
+     Router→Switch (data-edge="router:switch") has no matching rule here
+     and therefore always stays dim — exactly the desired behavior. */
+  .nm-svg[data-active="rpi4"]   .nm-edge[data-edge="switch:rpi4"],
+  .nm-svg[data-active="rpi5"]   .nm-edge[data-edge="switch:rpi5"],
+  .nm-svg[data-active="server"] .nm-edge[data-edge="switch:server"],
+  .nm-svg[data-active="nas"]    .nm-edge[data-edge="switch:nas"],
+  .nm-svg[data-active="pc"]     .nm-edge[data-edge="switch:pc"] {
+    stroke: rgba(79, 142, 247, 0.65);
+  }
+
+  /* Step 3 — Switch node gets a subtle accent whenever any device is active */
+  .nm-svg[data-active] [data-node="switch"] .nm-rect {
+    stroke: rgba(79, 142, 247, 0.22);
+  }
+
+  /* ── Reduced motion ──────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .nm-link, .nm-rect, .nm-edge { transition: none; }
+  }
+</style>

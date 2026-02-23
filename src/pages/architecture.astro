@@ -1,0 +1,134 @@
+---
+import Layout      from '../components/Layout.astro';
+import Reveal      from '../components/Reveal.astro';
+import NetworkMap  from '../components/NetworkMap.astro';
+
+// Remaining planned items — Netzwerk-Übersicht is now implemented above.
+const planned = [
+  'Zugriffskonzept: intern, extern, VPN',
+  'Reverse Proxy & Routing (Traefik)',
+  'Storage-Strategie: RAID, Backups, Archivierung',
+];
+---
+
+<Layout
+  title="Architektur — Homelab"
+  description="Netzwerk, Zugriff, Routing und Speicher – als zusammenhängendes System."
+>
+
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <section class="pt-28 pb-16 section-divider">
+    <div class="container-content max-w-[680px]">
+      <Reveal>
+        <p class="text-label text-accent uppercase tracking-widest mb-4">Layer 03</p>
+        <h1 class="text-display-lg text-ink-1 mb-6 tracking-[-0.03em]">
+          Architektur.
+        </h1>
+        <p class="text-body-lg text-ink-2 leading-[1.65]">
+          Netzwerk, Zugriff, Routing und Speicher —
+          als zusammenhängendes System.
+        </p>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- ── Content ──────────────────────────────────────────── -->
+  <section class="py-16">
+    <div class="container-content max-w-[680px]">
+      <div class="space-y-16">
+
+        <!-- 01 Ziel -->
+        <Reveal>
+          <div class="space-y-4">
+            <p class="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-[var(--color-ink-4)]">
+              01 — Ziel
+            </p>
+            <h2 class="text-display-sm text-ink-1">Infrastruktur, die man versteht.</h2>
+            <p class="text-body-md text-ink-2 leading-[1.7]">
+              Ein Homelab wächst schnell in eine Richtung, die niemand mehr vollständig
+              überblickt. Ziel dieser Dokumentation ist ein klares Bild des Datenflusses —
+              von der Anfrage bis zum Speicher. Jeder Layer ist getrennt beschrieben:
+              Netzwerk, Dienste, Zugriff. Kein Wissen steckt nur in einer einzelnen Config-Datei.
+            </p>
+          </div>
+        </Reveal>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Netzwerkplan ─────────────────────────────────────── -->
+  <section class="py-16 section-divider">
+    <div class="container-wide">
+      <Reveal class="mb-8">
+        <div class="flex items-baseline gap-4 flex-wrap">
+          <p class="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-[var(--color-ink-4)]">
+            02 — Netzwerkplan
+          </p>
+          <p class="text-[0.8rem] text-[var(--color-ink-4)]">
+            Klick auf ein Gerät öffnet die Gerätseite.
+          </p>
+        </div>
+        <h2 class="text-display-sm text-ink-1 mt-3">
+          Netzwerkplan.
+        </h2>
+        <p class="text-body-sm text-ink-3 mt-2 max-w-[52ch]">
+          Übersicht der physischen und logischen Struktur.
+        </p>
+      </Reveal>
+
+      <Reveal delay={80}>
+        <NetworkMap />
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- ── In Vorbereitung ──────────────────────────────────── -->
+  <section class="py-16 section-divider">
+    <div class="container-content max-w-[680px]">
+      <Reveal>
+        <div class="space-y-5">
+          <p class="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-[var(--color-ink-4)]">
+            03 — Inhalt
+          </p>
+          <h2 class="text-display-sm text-ink-1">In Vorbereitung.</h2>
+          <div class="rounded-[16px] border border-[rgba(255,255,255,0.07)] bg-[var(--color-surface-1)] p-6 sm:p-8">
+            <div class="flex items-center gap-2.5 mb-6">
+              <span
+                class="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                style="background: rgba(245,158,11,0.65);"
+                aria-hidden="true"
+              ></span>
+              <p class="text-[0.65rem] font-semibold tracking-[0.16em] uppercase text-[var(--color-ink-4)]">
+                Geplant
+              </p>
+            </div>
+            <ul class="space-y-3.5" role="list">
+              {planned.map(item => (
+                <li class="flex items-baseline gap-3">
+                  <span
+                    class="text-[var(--color-ink-4)] font-mono text-[0.8rem] flex-shrink-0"
+                    aria-hidden="true"
+                  >—</span>
+                  <span class="text-[0.9375rem] leading-[1.6] text-[var(--color-ink-2)]">
+                    {item}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- ── Back ─────────────────────────────────────────────── -->
+  <section class="py-16 section-divider">
+    <div class="container-content max-w-[680px]">
+      <Reveal>
+        <a href="/lab" class="btn-secondary">← Zurück zum Lab</a>
+      </Reveal>
+    </div>
+  </section>
+
+</Layout>

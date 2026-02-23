@@ -1,0 +1,102 @@
+---
+import Layout from '../components/Layout.astro';
+import Reveal from '../components/Reveal.astro';
+
+const items = [
+  'Dienstekatalog mit Rollen und Abhängigkeiten',
+  'Workflows: Backups, Monitoring, Automatisierung',
+  'Technische Entscheidungen & Begründungen',
+];
+---
+
+<Layout
+  title="Software — Homelab"
+  description="Dienste, Workflows und Automatisierungen — dokumentiert wie ein Produkt."
+>
+
+  <!-- ── Hero ─────────────────────────────────────────────── -->
+  <section class="pt-28 pb-16 section-divider">
+    <div class="container-content max-w-[680px]">
+      <Reveal>
+        <p class="text-label text-accent uppercase tracking-widest mb-4">Layer 02</p>
+        <h1 class="text-display-lg text-ink-1 mb-6 tracking-[-0.03em]">
+          Software.
+        </h1>
+        <p class="text-body-lg text-ink-2 leading-[1.65]">
+          Dienste, Workflows und Automatisierungen —
+          dokumentiert wie ein Produkt.
+        </p>
+      </Reveal>
+    </div>
+  </section>
+
+  <!-- ── Content ──────────────────────────────────────────── -->
+  <section class="py-16">
+    <div class="container-content max-w-[680px]">
+      <div class="space-y-16">
+
+        <!-- 01 Prinzip -->
+        <Reveal>
+          <div class="space-y-4">
+            <p class="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-[var(--color-ink-4)]">
+              01 — Prinzip
+            </p>
+            <h2 class="text-display-sm text-ink-1">Selbst betrieben. Vollständig dokumentiert.</h2>
+            <p class="text-body-md text-ink-2 leading-[1.7]">
+              Kein Cloud-Dienst übernimmt hier die Kontrolle. Jeder Dienst läuft lokal,
+              auf eigener Hardware, mit bekannten Abhängigkeiten. Dokumentation ist kein
+              Anhang — sie ist Teil der Infrastruktur. Was nicht dokumentiert ist,
+              existiert nur bis zum nächsten Ausfall.
+            </p>
+          </div>
+        </Reveal>
+
+        <!-- 02 In Vorbereitung -->
+        <Reveal>
+          <div class="space-y-5">
+            <p class="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-[var(--color-ink-4)]">
+              02 — Inhalt
+            </p>
+            <h2 class="text-display-sm text-ink-1">In Vorbereitung.</h2>
+            <div class="rounded-[16px] border border-[rgba(255,255,255,0.07)] bg-[var(--color-surface-1)] p-6 sm:p-8">
+              <div class="flex items-center gap-2.5 mb-6">
+                <span
+                  class="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                  style="background: rgba(245,158,11,0.65);"
+                  aria-hidden="true"
+                ></span>
+                <p class="text-[0.65rem] font-semibold tracking-[0.16em] uppercase text-[var(--color-ink-4)]">
+                  Geplant
+                </p>
+              </div>
+              <ul class="space-y-3.5" role="list">
+                {items.map(item => (
+                  <li class="flex items-baseline gap-3">
+                    <span
+                      class="text-[var(--color-ink-4)] font-mono text-[0.8rem] flex-shrink-0"
+                      aria-hidden="true"
+                    >—</span>
+                    <span class="text-[0.9375rem] leading-[1.6] text-[var(--color-ink-2)]">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </Reveal>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Back ─────────────────────────────────────────────── -->
+  <section class="py-16 section-divider">
+    <div class="container-content max-w-[680px]">
+      <Reveal>
+        <a href="/lab" class="btn-secondary">← Zurück zum Lab</a>
+      </Reveal>
+    </div>
+  </section>
+
+</Layout>

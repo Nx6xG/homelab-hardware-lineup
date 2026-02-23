@@ -33,7 +33,7 @@ import LabPanel from '../components/LabPanel.astro';
   <!-- ══════════════════════════════════════════════════
        TRIO PANELS
   ═══════════════════════════════════════════════════ -->
-  <section class="lab-trio-section" aria-label="Lab overview">
+  <section class="lab-trio-section" id="layers" aria-label="Lab overview">
     <!-- Multi-tint ambient glow behind the trio -->
     <div class="lab-trio-glow" aria-hidden="true"></div>
 
@@ -92,6 +92,76 @@ import LabPanel from '../components/LabPanel.astro';
   </section>
 
 </Layout>
+
+<script>
+  let _isTraversal = false;
+  document.addEventListener('astro:before-preparation', (e) => {
+    _isTraversal = (e as any).navigationType === 'traverse';
+  });
+
+  let _pending = false;
+
+  function tryAutoScroll(isAstroNav: boolean) {
+    if (window.location.hash) return;
+    if (_pending) return;
+
+    if (isAstroNav) {
+      if (_isTraversal) return;
+    } else {
+      const type = performance.getEntriesByType('navigation')[0]?.type ?? '';
+      if (type === 'reload' || type === 'back_forward') return;
+    }
+
+    _pending = true;
+    let cancelled = false;
+
+    // Any deliberate interaction during the delay cancels the auto-scroll.
+    function cancel() {
+      cancelled = true;
+      cleanup();
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') cancel();
+    }
+    function cleanup() {
+      window.removeEventListener('wheel',      cancel);
+      window.removeEventListener('touchstart', cancel);
+      window.removeEventListener('keydown',    onKey);
+      window.removeEventListener('scroll',     cancel);
+    }
+
+    window.addEventListener('wheel',      cancel, { passive: true });
+    window.addEventListener('touchstart', cancel, { passive: true });
+    window.addEventListener('keydown',    onKey);
+    window.addEventListener('scroll',     cancel, { passive: true });
+
+    // ~1 s delay: enough for the hero to be seen; layout is always stable by then.
+    setTimeout(() => {
+      _pending = false;
+      cleanup();
+
+      if (cancelled || window.scrollY > 40) return;
+
+      const el = document.getElementById('layers');
+      if (!el) return;
+
+      // Double rAF after the delay handles any final paint before measuring.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const header = document.querySelector('header');
+          const offset = (header ? header.getBoundingClientRect().height : 72) + 24;
+          const y = window.scrollY + el.getBoundingClientRect().top - offset;
+
+          const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          window.scrollTo({ top: y, behavior: reduced ? 'auto' : 'smooth' });
+        });
+      });
+    }, 1000);
+  }
+
+  document.addEventListener('astro:page-load',  () => tryAutoScroll(true));
+  document.addEventListener('DOMContentLoaded', () => tryAutoScroll(false));
+</script>
 
 <style>
   /* ── Hero ──────────────────────────────────────────── */
