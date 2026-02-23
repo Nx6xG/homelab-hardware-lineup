@@ -20,27 +20,26 @@ const events: Array<{
 
 for (const device of devices) {
   events.push({
-    slug: device.slug,
-    name: device.data.name,
+    slug:     device.slug,
+    name:     device.data.name,
     headline: device.data.headline,
-    type: device.data.type,
-    status: device.data.status,
-    date: device.data.created,
-    event: 'created',
-    tags: device.data.tags,
+    type:     device.data.type,
+    status:   device.data.status,
+    date:     device.data.created,
+    event:    'created',
+    tags:     device.data.tags,
   });
 
-  // Only add an updated event if it's different from created
   if (device.data.updated !== device.data.created) {
     events.push({
-      slug: device.slug,
-      name: device.data.name,
+      slug:     device.slug,
+      name:     device.data.name,
       headline: device.data.headline,
-      type: device.data.type,
-      status: device.data.status,
-      date: device.data.updated,
-      event: 'retired' === device.data.status ? 'retired' : 'updated',
-      tags: device.data.tags,
+      type:     device.data.type,
+      status:   device.data.status,
+      date:     device.data.updated,
+      event:    'retired' === device.data.status ? 'retired' : 'updated',
+      tags:     device.data.tags,
     });
   }
 }
@@ -53,37 +52,117 @@ events.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   title="Verlauf — Homelab"
   description="Chronologischer Verlauf aller Geräte — hinzugefügt, aktualisiert oder ausgemustert."
 >
-  <section class="pt-28 pb-12 section-divider">
-    <div class="container-content">
+
+  <!-- ── Hero ─────────────────────────────────────────────────── -->
+  <section class="bh-section pt-32 pb-20 section-divider">
+    <!-- Ambient overlays (behind content) -->
+    <div class="bh-glow"  aria-hidden="true"></div>
+    <div class="bh-noise" aria-hidden="true"></div>
+
+    <div class="container-content relative z-10 max-w-[680px]">
       <Reveal>
-        <p class="text-label text-accent uppercase tracking-widest mb-3">Verlauf</p>
-        <h1 class="text-display-lg text-ink-1 mb-4">Build-Verlauf.</h1>
-        <p class="text-body-lg text-ink-2 max-w-lg">
+        <p class="text-[0.68rem] font-semibold tracking-[0.22em] uppercase text-[var(--color-ink-4)] mb-4">
+          Verlauf
+        </p>
+        <h1 class="text-display-lg text-ink-1 leading-[0.94] mb-6">
+          Build-Verlauf.
+        </h1>
+        <p class="text-body-lg leading-[1.7] max-w-[50ch] text-[rgba(255,255,255,0.55)]">
           Alle Geräte — hinzugefügt, aktualisiert oder verändert — in chronologischer Reihenfolge.
         </p>
       </Reveal>
 
-      <!-- Legend -->
-      <Reveal delay={120} class="flex flex-wrap gap-4 mt-8">
-        <div class="flex items-center gap-2 text-label text-ink-3">
-          <span class="w-2.5 h-2.5 rounded-full bg-status-online" aria-hidden="true"></span>
+      <!-- Legend — chip style -->
+      <Reveal delay={120} class="flex flex-wrap gap-2.5 mt-8">
+        <span class="legend-chip">
+          <span class="legend-dot" style="background: rgba(34,197,94,0.85);" aria-hidden="true"></span>
           Ins Lab aufgenommen
-        </div>
-        <div class="flex items-center gap-2 text-label text-ink-3">
-          <span class="w-2.5 h-2.5 rounded-full bg-accent" aria-hidden="true"></span>
+        </span>
+        <span class="legend-chip">
+          <span class="legend-dot" style="background: rgba(79,142,247,0.85);" aria-hidden="true"></span>
           Aktualisiert
-        </div>
-        <div class="flex items-center gap-2 text-label text-ink-3">
-          <span class="w-2.5 h-2.5 rounded-full bg-status-retired" aria-hidden="true"></span>
+        </span>
+        <span class="legend-chip">
+          <span class="legend-dot" style="background: rgba(107,114,128,0.65);" aria-hidden="true"></span>
           Ausgemustert
-        </div>
+        </span>
       </Reveal>
     </div>
   </section>
 
-  <section class="py-12">
-    <div class="container-content">
+  <!-- ── Timeline ─────────────────────────────────────────────── -->
+  <section class="bt-section py-20">
+    <!-- Soft radial behind timeline -->
+    <div class="bt-glow" aria-hidden="true"></div>
+
+    <div class="container-content relative z-10">
       <Timeline items={events} />
     </div>
   </section>
+
 </Layout>
+
+<style>
+  /* ── Hero section ── */
+  .bh-section {
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Radial ambient glow */
+  .bh-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 55% at 20% -5%,  rgba(79, 142, 247, 0.09) 0%, transparent 55%),
+      radial-gradient(ellipse 45% 35% at 85% 90%,  rgba(99, 102, 241, 0.05) 0%, transparent 55%);
+    pointer-events: none;
+  }
+
+  /* Subtle SVG noise overlay */
+  .bh-noise {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.024;
+    pointer-events: none;
+  }
+
+  /* ── Timeline section ── */
+  .bt-section {
+    position: relative;
+  }
+
+  /* Soft radial above timeline cards */
+  .bt-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 55% 35% at 50% 0%,
+      rgba(79, 142, 247, 0.04) 0%,
+      transparent 60%
+    );
+    pointer-events: none;
+  }
+
+  /* ── Legend chips ── */
+  .legend-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.75rem 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-ink-3);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.055);
+  }
+
+  .legend-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+</style>

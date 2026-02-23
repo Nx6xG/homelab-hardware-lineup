@@ -1,0 +1,9 @@
+{
+  "title": "n8n",
+  "category": "Media & Web",
+  "summary": "Workflow-Automatisierung — verbindet alle Services im Lab miteinander.",
+  "deviceName": "Raspberry Pi 5",
+  "runsOn": "rpi5-portainer",
+  "tags": ["Docker", "Automation"],
+  "status": "active"
+}

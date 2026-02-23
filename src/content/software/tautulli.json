@@ -1,0 +1,9 @@
+{
+  "title": "Tautulli",
+  "category": "Media & Web",
+  "summary": "Plex-Statistiken: Wiedergabeverlauf, Nutzeraktivität und Stream-Monitoring.",
+  "deviceName": "Raspberry Pi 5",
+  "runsOn": "rpi5-portainer",
+  "tags": ["Docker", "Monitoring"],
+  "status": "active"
+}

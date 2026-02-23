@@ -1,0 +1,9 @@
+{
+  "title": "Plex",
+  "category": "Media & Web",
+  "summary": "Medienbibliothek für Filme, Serien und Musik — streamt auf jeden Bildschirm im Haus.",
+  "deviceName": "QNAP NAS",
+  "runsOn": "qnap-nas",
+  "tags": ["Media", "Streaming"],
+  "status": "active"
+}

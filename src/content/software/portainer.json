@@ -1,0 +1,9 @@
+{
+  "title": "Portainer",
+  "category": "Infrastruktur",
+  "summary": "Visuelle Container-Verwaltung für alle Docker-Stacks auf dem Pi 5.",
+  "deviceName": "Raspberry Pi 5",
+  "runsOn": "rpi5-portainer",
+  "tags": ["Docker", "Management"],
+  "status": "active"
+}

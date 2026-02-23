@@ -5,8 +5,9 @@ import Badge from '../components/Badge.astro';
 import Reveal from '../components/Reveal.astro';
 import DevicePlaceholder from '../components/DevicePlaceholder.astro';
 
-const devices = await getCollection('devices');
-const sorted  = [...devices].sort(
+const devices  = await getCollection('devices');
+const software = await getCollection('software');
+const sorted   = [...devices].sort(
   (a, b) => new Date(b.data.updated).getTime() - new Date(a.data.updated).getTime()
 );
 
@@ -30,12 +31,11 @@ const getAccent = (type: string) => {
 // Hero title — word-by-word entrance animation
 const heroLines = ['HomeLab.'];
 
-// Stable metrics — no runtime-computed service/uptime counts
 const sysMetrics = [
-  { value: String(devices.length), label: 'Geräte'       },
-  { value: '30+',                  label: 'Dienste'       },
-  { value: '100%',                 label: 'Self-hosted'   },
-  { value: '0€',                   label: 'Cloud-Kosten'  },
+  { value: String(devices.length),  label: 'Geräte'      },
+  { value: String(software.length), label: 'Dienste'      },
+  { value: '100%',                  label: 'Self-hosted'  },
+  { value: '0€',                    label: 'Cloud-Kosten' },
 ];
 
 const docItems = [

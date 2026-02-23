@@ -20,7 +20,7 @@ interface Props {
   sectionLabel?: string;
 }
 
-const { features, sectionLabel = 'Feature deep dive' } = Astro.props;
+const { features, sectionLabel = 'Funktionsübersicht' } = Astro.props;
 
 // Height = (N+1) × 100vh → N feature panels + 1 viewport for entry
 const scrollHeight = `${(features.length + 1) * 100}vh`;

@@ -1,0 +1,9 @@
+{
+  "title": "Paperless-ngx",
+  "category": "Organisation",
+  "summary": "Dokumente scannen, per OCR erkennen und volltext-durchsuchbar archivieren.",
+  "deviceName": "Raspberry Pi 5",
+  "runsOn": "rpi5-portainer",
+  "tags": ["Docker", "Dokumente"],
+  "status": "active"
+}

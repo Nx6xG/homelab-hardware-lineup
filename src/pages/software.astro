@@ -1,13 +1,27 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../components/Layout.astro';
 import Reveal from '../components/Reveal.astro';
 import ServiceCard from '../components/ServiceCard.astro';
-import { services, CATEGORIES } from '../data/services';
+import { CATEGORIES, type Service } from '../data/services';
+
+const entries = await getCollection('software');
+
+// Map collection entries to the Service shape ServiceCard expects
+const services: Service[] = entries.map(e => ({
+  id:          e.id,
+  name:        e.data.title,
+  category:    e.data.category,
+  description: e.data.summary,
+  deviceName:  e.data.deviceName ?? 'Unbekannt',
+  deviceSlug:  e.data.runsOn,
+  tags:        e.data.tags,
+}));
 
 const grouped = CATEGORIES.map((cat, i) => ({
-  num: String(i + 1).padStart(2, '0'),
+  num:      String(i + 1).padStart(2, '0'),
   category: cat,
-  items: services.filter(s => s.category === cat),
+  items:    services.filter(s => s.category === cat),
 })).filter(g => g.items.length > 0);
 ---
 

@@ -1,0 +1,9 @@
+{
+  "title": "Uptime Kuma",
+  "category": "Home Automation",
+  "summary": "Überwacht alle Services und sendet Push-Benachrichtigungen bei Ausfällen.",
+  "deviceName": "Raspberry Pi 5",
+  "runsOn": "rpi5-portainer",
+  "tags": ["Docker", "Monitoring"],
+  "status": "active"
+}

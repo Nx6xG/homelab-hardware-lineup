@@ -1,0 +1,38 @@
+---
+import Layout from '../components/Layout.astro';
+---
+
+<Layout
+  title="404 — Seite nicht gefunden"
+  description="Diese Seite existiert nicht."
+>
+
+  <section class="min-h-[70vh] flex items-center">
+    <div class="container-content max-w-[560px] text-center mx-auto py-32">
+
+      <!-- Error code -->
+      <p class="font-mono text-[0.68rem] font-semibold tracking-[0.22em] uppercase text-[var(--color-ink-4)] mb-6">
+        404
+      </p>
+
+      <!-- Headline -->
+      <h1 class="text-display-lg text-ink-1 leading-[0.94] mb-6 tracking-[-0.03em]">
+        Nicht gefunden.
+      </h1>
+
+      <!-- Description -->
+      <p class="text-body-md text-ink-3 leading-[1.7] mb-12 max-w-[40ch] mx-auto">
+        Diese Seite existiert nicht oder wurde verschoben.
+        Vielleicht ist der gesuchte Inhalt noch in Vorbereitung.
+      </p>
+
+      <!-- CTAs -->
+      <div class="flex items-center justify-center gap-3 flex-wrap">
+        <a href="/" class="btn-primary">Zur Startseite</a>
+        <a href="/lab" class="btn-secondary">Lab ansehen</a>
+      </div>
+
+    </div>
+  </section>
+
+</Layout>

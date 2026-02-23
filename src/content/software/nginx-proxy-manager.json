@@ -1,0 +1,9 @@
+{
+  "title": "Nginx Proxy Manager",
+  "category": "Infrastruktur",
+  "summary": "Reverse Proxy mit automatischem HTTPS und einfacher Web-Oberfläche.",
+  "deviceName": "Raspberry Pi 5",
+  "runsOn": "rpi5-portainer",
+  "tags": ["Docker", "Proxy"],
+  "status": "active"
+}

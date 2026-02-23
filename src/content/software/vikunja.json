@@ -1,0 +1,9 @@
+{
+  "title": "Vikunja",
+  "category": "Organisation",
+  "summary": "Self-hosted Aufgaben- und Projektmanagement als Todoist-Alternative.",
+  "deviceName": "Raspberry Pi 5",
+  "runsOn": "rpi5-portainer",
+  "tags": ["Docker", "Tasks"],
+  "status": "active"
+}

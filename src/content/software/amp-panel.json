@@ -1,0 +1,9 @@
+{
+  "title": "AMP Panel",
+  "category": "Infrastruktur",
+  "summary": "Game-Server-Management für Minecraft und weitere Gameserver-Instanzen.",
+  "deviceName": "Mini-PC Server",
+  "runsOn": "mini-pc-game-server",
+  "tags": ["Web", "Gaming"],
+  "status": "active"
+}

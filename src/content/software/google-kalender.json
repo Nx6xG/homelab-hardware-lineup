@@ -1,0 +1,8 @@
+{
+  "title": "Google Kalender",
+  "category": "Organisation",
+  "summary": "Kalender via Home Assistant integriert — Events können Automationen auslösen.",
+  "deviceName": "Cloud",
+  "tags": ["Cloud", "Kalender"],
+  "status": "active"
+}

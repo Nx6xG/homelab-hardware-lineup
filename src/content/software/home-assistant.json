@@ -1,0 +1,9 @@
+{
+  "title": "Home Assistant",
+  "category": "Home Automation",
+  "summary": "Zentrale Heimautomatisierung — vollständig lokal, ohne Cloud-Abhängigkeit.",
+  "deviceName": "Raspberry Pi 4",
+  "runsOn": "rpi4-home-assistant",
+  "tags": ["HAOS", "IoT", "Zigbee"],
+  "status": "active"
+}

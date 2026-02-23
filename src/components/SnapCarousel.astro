@@ -23,7 +23,7 @@ const { items, id = `carousel-${Math.random().toString(36).slice(2, 7)}` } = Ast
     class="snap-carousel flex overflow-x-auto gap-4 pb-1"
     data-carousel-track
     role="region"
-    aria-label="Feature carousel"
+    aria-label="Funktions-Karussell"
     style="scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch;"
   >
     {items.map((item, i) => (
@@ -56,12 +56,12 @@ const { items, id = `carousel-${Math.random().toString(36).slice(2, 7)}` } = Ast
   <div class="flex items-center justify-between mt-5">
 
     <!-- Dot indicators -->
-    <div class="flex items-center gap-2" role="tablist" aria-label="Carousel position">
+    <div class="flex items-center gap-2" role="tablist" aria-label="Karussell-Position">
       {items.map((_, i) => (
         <button
           role="tab"
           aria-selected={i === 0 ? 'true' : 'false'}
-          aria-label={`Slide ${i + 1}`}
+          aria-label={`Folie ${i + 1}`}
           data-carousel-dot={i}
           class:list={[
             'rounded-full transition-all duration-300',
@@ -78,7 +78,7 @@ const { items, id = `carousel-${Math.random().toString(36).slice(2, 7)}` } = Ast
       <button
         data-carousel-prev
         class="w-8 h-8 rounded-full border border-[rgba(255,255,255,0.09)] bg-[var(--color-surface-2)] flex items-center justify-center text-[var(--color-ink-3)] hover:text-[var(--color-ink-1)] hover:border-[rgba(255,255,255,0.14)] transition-all duration-200 disabled:opacity-30"
-        aria-label="Previous slide"
+        aria-label="Vorherige Folie"
         disabled
       >
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
@@ -88,7 +88,7 @@ const { items, id = `carousel-${Math.random().toString(36).slice(2, 7)}` } = Ast
       <button
         data-carousel-next
         class="w-8 h-8 rounded-full border border-[rgba(255,255,255,0.09)] bg-[var(--color-surface-2)] flex items-center justify-center text-[var(--color-ink-3)] hover:text-[var(--color-ink-1)] hover:border-[rgba(255,255,255,0.14)] transition-all duration-200 disabled:opacity-30"
-        aria-label="Next slide"
+        aria-label="Nächste Folie"
       >
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
           <path d="M5 2l4.5 5L5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

@@ -97,6 +97,22 @@ const devicesCollection = defineCollection({
   }),
 });
 
+// ─── Software collection ─────────────────────────────────────────────────
+
+const softwareCollection = defineCollection({
+  type: 'data',
+  schema: z.object({
+    title:      z.string(),
+    category:   z.enum(['Media & Web', 'Infrastruktur', 'Home Automation', 'Organisation']),
+    summary:    z.string(),
+    tags:       z.array(z.string()).default([]),
+    runsOn:     z.string().optional(),
+    deviceName: z.string().optional(),
+    status:     z.enum(['active', 'planned', 'retired']).default('active'),
+  }),
+});
+
 export const collections = {
-  devices: devicesCollection,
+  devices:  devicesCollection,
+  software: softwareCollection,
 };

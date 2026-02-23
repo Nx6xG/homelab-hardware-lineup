@@ -1,0 +1,373 @@
+---
+// ServiceMap — groups software services by the device they run on.
+// Shows a collapsible row per device, filterable by category.
+// Pure CSS expand/collapse (grid-rows trick), minimal JS for filter + toggle.
+
+import { getCollection } from 'astro:content';
+
+const allSoftware = await getCollection('software');
+const allDevices  = await getCollection('devices');
+
+// Map device slug → device name
+const deviceNames: Record<string, string> = {};
+for (const d of allDevices) deviceNames[d.id] = d.data.name;
+
+type SoftwareEntry = {
+  id:         string;
+  title:      string;
+  category:   string;
+  summary:    string;
+  tags:       string[];
+  runsOn?:    string;
+  deviceName: string;
+};
+
+const items: SoftwareEntry[] = allSoftware.map(e => ({
+  id:         e.id,
+  title:      e.data.title,
+  category:   e.data.category,
+  summary:    e.data.summary,
+  tags:       e.data.tags,
+  runsOn:     e.data.runsOn,
+  deviceName: e.data.runsOn
+    ? (deviceNames[e.data.runsOn] ?? e.data.deviceName ?? e.data.runsOn)
+    : (e.data.deviceName ?? 'Cloud'),
+}));
+
+// Group by device (runsOn slug or 'cloud' for entries without one)
+const groupMap = new Map<string, { deviceName: string; slug?: string; services: SoftwareEntry[] }>();
+
+for (const item of items) {
+  const key = item.runsOn ?? '__cloud__';
+  if (!groupMap.has(key)) {
+    groupMap.set(key, { deviceName: item.deviceName, slug: item.runsOn, services: [] });
+  }
+  groupMap.get(key)!.services.push(item);
+}
+
+// Sort: real devices first (alphabetical), then cloud
+const groups = [...groupMap.entries()]
+  .sort(([a], [b]) => {
+    if (a === '__cloud__') return 1;
+    if (b === '__cloud__') return -1;
+    return a.localeCompare(b);
+  })
+  .map(([key, val]) => ({ key, ...val }));
+
+const categories = ['Media & Web', 'Infrastruktur', 'Home Automation', 'Organisation'] as const;
+---
+
+<div class="sm-root" data-sm>
+
+  <!-- ── Filter bar ───────────────────────────────────────────── -->
+  <div class="sm-filters" role="group" aria-label="Nach Kategorie filtern">
+    <button class="sm-pill sm-pill--active" data-sm-filter="all">Alle</button>
+    {categories.map(cat => (
+      <button class="sm-pill" data-sm-filter={cat}>{cat}</button>
+    ))}
+  </div>
+
+  <!-- ── Device groups ────────────────────────────────────────── -->
+  <div class="sm-groups" role="list">
+    {groups.map((group, gi) => (
+      <div
+        class="sm-group"
+        data-sm-group
+        data-categories={[...new Set(group.services.map(s => s.category))].join(',')}
+        role="listitem"
+      >
+        <!-- Group header (toggle) -->
+        <button
+          class="sm-header"
+          data-sm-toggle
+          aria-expanded={gi === 0 ? 'true' : 'false'}
+          aria-controls={`sm-body-${gi}`}
+          id={`sm-hdr-${gi}`}
+        >
+          <div class="sm-header-left">
+            <!-- Device icon dot -->
+            <span class="sm-dot" aria-hidden="true"></span>
+
+            <div class="sm-header-text">
+              {group.slug
+                ? <a href={`/device/${group.slug}`} class="sm-device-name" onclick="event.stopPropagation()">{group.deviceName}</a>
+                : <span class="sm-device-name">{group.deviceName}</span>
+              }
+              <span class="sm-count">{group.services.length} {group.services.length === 1 ? 'Dienst' : 'Dienste'}</span>
+            </div>
+          </div>
+
+          <!-- Chevron -->
+          <svg class="sm-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <!-- Expandable body -->
+        <div
+          class:list={['sm-body', gi === 0 ? 'sm-body--open' : '']}
+          id={`sm-body-${gi}`}
+          role="region"
+          aria-labelledby={`sm-hdr-${gi}`}
+        >
+          <ul class="sm-service-list" role="list">
+            {group.services.map(svc => (
+              <li class="sm-service" data-category={svc.category} role="listitem">
+                <div class="sm-service-top">
+                  <span class="sm-service-name">{svc.title}</span>
+                  <span class="sm-service-cat">{svc.category}</span>
+                </div>
+                <p class="sm-service-desc">{svc.summary}</p>
+                {svc.tags.length > 0 && (
+                  <ul class="sm-tag-list" role="list" aria-label="Tags">
+                    {svc.tags.map(t => <li class="sm-tag">{t}</li>)}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    ))}
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-sm]').forEach(root => {
+
+    // ── Filter ──────────────────────────────────────────────────
+    const pills  = root.querySelectorAll<HTMLButtonElement>('[data-sm-filter]');
+    const groups = root.querySelectorAll<HTMLElement>('[data-sm-group]');
+
+    let activeFilter = 'all';
+
+    function applyFilter(filter: string) {
+      activeFilter = filter;
+      pills.forEach(p => {
+        const isActive = p.dataset.smFilter === filter;
+        p.classList.toggle('sm-pill--active', isActive);
+        p.setAttribute('aria-pressed', String(isActive));
+      });
+
+      groups.forEach(g => {
+        const cats = (g.dataset.categories ?? '').split(',');
+        const visible = filter === 'all' || cats.includes(filter);
+        g.style.display = visible ? '' : 'none';
+
+        // Within a visible group, show/hide individual services
+        g.querySelectorAll<HTMLElement>('[data-category]').forEach(svc => {
+          const show = filter === 'all' || svc.dataset.category === filter;
+          svc.style.display = show ? '' : 'none';
+        });
+      });
+    }
+
+    pills.forEach(p => {
+      p.setAttribute('aria-pressed', p.dataset.smFilter === 'all' ? 'true' : 'false');
+      p.addEventListener('click', () => applyFilter(p.dataset.smFilter ?? 'all'));
+    });
+
+    // ── Accordion toggle ────────────────────────────────────────
+    root.querySelectorAll<HTMLButtonElement>('[data-sm-toggle]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const expanded = btn.getAttribute('aria-expanded') === 'true';
+        const bodyId   = btn.getAttribute('aria-controls');
+        const body     = bodyId ? root.querySelector<HTMLElement>(`#${bodyId}`) : null;
+        if (!body) return;
+
+        btn.setAttribute('aria-expanded', String(!expanded));
+        body.classList.toggle('sm-body--open', !expanded);
+      });
+    });
+  });
+</script>
+
+<style>
+  /* ── Root ─────────────────────────────────────────────────────── */
+  .sm-root { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  /* ── Filter pills ────────────────────────────────────────────── */
+  .sm-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .sm-pill {
+    padding: 0.3rem 0.875rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--color-ink-3);
+    transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+  }
+  .sm-pill:hover {
+    color: var(--color-ink-1);
+    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.055);
+  }
+  .sm-pill--active {
+    background: rgba(79, 142, 247, 0.12);
+    border-color: rgba(79, 142, 247, 0.28);
+    color: var(--color-accent);
+  }
+  .sm-pill--active:hover { background: rgba(79, 142, 247, 0.18); }
+
+  /* ── Groups ──────────────────────────────────────────────────── */
+  .sm-groups { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .sm-group {
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.065);
+    background: rgba(9, 13, 24, 0.72);
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    overflow: hidden;
+  }
+
+  /* ── Group header ────────────────────────────────────────────── */
+  .sm-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    text-align: left;
+    transition: background 180ms ease;
+  }
+  .sm-header:hover { background: rgba(255, 255, 255, 0.025); }
+
+  .sm-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+  }
+
+  .sm-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: rgba(79, 142, 247, 0.5);
+    box-shadow: 0 0 8px rgba(79, 142, 247, 0.3);
+  }
+
+  .sm-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .sm-device-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink-1);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    transition: color 180ms ease;
+  }
+  a.sm-device-name:hover { color: var(--color-accent); }
+
+  .sm-count {
+    font-size: 0.7rem;
+    color: var(--color-ink-4);
+  }
+
+  .sm-chevron {
+    color: var(--color-ink-4);
+    flex-shrink: 0;
+    transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  [aria-expanded="true"] .sm-chevron { transform: rotate(180deg); }
+
+  /* ── Expand / collapse ───────────────────────────────────────── */
+  .sm-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 280ms cubic-bezier(0.16, 1, 0.3, 1);
+    border-top: 0px solid rgba(255, 255, 255, 0.055);
+  }
+  .sm-body--open {
+    grid-template-rows: 1fr;
+    border-top-width: 1px;
+  }
+  .sm-body > .sm-service-list {
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  .sm-body--open > .sm-service-list { padding: 0.75rem 1.25rem 1rem; }
+
+  /* ── Service rows ────────────────────────────────────────────── */
+  .sm-service {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .sm-service:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .sm-service-top {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .sm-service-name {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-ink-1);
+    letter-spacing: -0.01em;
+  }
+
+  .sm-service-cat {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--color-ink-4);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    border-radius: 9999px;
+    padding: 0.1rem 0.45rem;
+  }
+
+  .sm-service-desc {
+    font-size: 0.79rem;
+    color: var(--color-ink-3);
+    line-height: 1.55;
+  }
+
+  /* ── Tags ────────────────────────────────────────────────────── */
+  .sm-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0.1rem 0 0;
+    padding: 0;
+  }
+  .sm-tag {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--color-ink-4);
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.045);
+    border-radius: 9999px;
+    padding: 0.12rem 0.45rem;
+  }
+
+  /* ── Reduced motion ──────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .sm-body, .sm-chevron, .sm-pill, .sm-header { transition: none; }
+  }
+</style>

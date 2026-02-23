@@ -1,0 +1,9 @@
+{
+  "title": "HomeLab Wiki",
+  "category": "Organisation",
+  "summary": "Interne Dokumentation aller Services, Konfigurationen und Entscheidungen.",
+  "deviceName": "Raspberry Pi 5",
+  "runsOn": "rpi5-portainer",
+  "tags": ["Docker", "Wiki"],
+  "status": "active"
+}

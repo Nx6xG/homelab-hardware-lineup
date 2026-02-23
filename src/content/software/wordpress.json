@@ -1,0 +1,9 @@
+{
+  "title": "WordPress",
+  "category": "Media & Web",
+  "summary": "Persönliche Website und Blog, self-hosted auf dem Pi 5.",
+  "deviceName": "Raspberry Pi 5",
+  "runsOn": "rpi5-portainer",
+  "tags": ["Docker", "Web"],
+  "status": "active"
+}

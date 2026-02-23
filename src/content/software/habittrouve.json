@@ -1,0 +1,9 @@
+{
+  "title": "HabitTrove",
+  "category": "Organisation",
+  "summary": "Self-hosted Habit Tracker für tägliche Gewohnheiten und Streaks.",
+  "deviceName": "Raspberry Pi 5",
+  "runsOn": "rpi5-portainer",
+  "tags": ["Docker", "Produktivität"],
+  "status": "active"
+}

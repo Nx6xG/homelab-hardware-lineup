@@ -1,0 +1,9 @@
+{
+  "title": "QNAP NAS",
+  "category": "Media & Web",
+  "summary": "Zentraler Netzwerkspeicher mit SMB-Shares, RAID-5 und automatischen Backups.",
+  "deviceName": "QNAP NAS",
+  "runsOn": "qnap-nas",
+  "tags": ["NAS", "SMB", "RAID"],
+  "status": "active"
+}
