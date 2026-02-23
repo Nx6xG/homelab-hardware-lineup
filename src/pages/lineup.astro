@@ -35,6 +35,13 @@ const statuses = ['online', 'offline', 'maintenance', 'retired'] as const;
 const statusCounts = Object.fromEntries(
   statuses.map(s => [s, sorted.filter(d => d.data.status === s).length])
 );
+
+const statusLabels: Record<string, string> = {
+  online:      'Online',
+  offline:     'Offline',
+  maintenance: 'Wartung',
+  retired:     'Ausgemustert',
+};
 ---
 
 <Layout
@@ -64,7 +71,7 @@ const statusCounts = Object.fromEntries(
           return (
             <span class:list={['inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.75rem] font-medium border', statusColors[status]]}>
               <span class="w-1.5 h-1.5 rounded-full bg-current" aria-hidden="true"></span>
-              {count} {status}
+              {count} {statusLabels[status] ?? status}
             </span>
           );
         })}

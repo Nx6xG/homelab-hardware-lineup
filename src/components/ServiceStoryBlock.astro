@@ -37,7 +37,7 @@ const { services } = Astro.props;
           )}
           <div class="ssb-live">
             <span class="ssb-live-dot"></span>
-            {svc.uptime ?? 'online'}
+            {svc.uptime ?? 'aktiv'}
           </div>
         </div>
 
@@ -70,7 +70,7 @@ const { services } = Astro.props;
           )}
           {svc.uptime && (
             <span class="ssb-meta-item">
-              <span class="ssb-meta-label">Uptime</span>
+              <span class="ssb-meta-label">Laufzeit</span>
               <span class="ssb-meta-val ssb-uptime">{svc.uptime}</span>
             </span>
           )}

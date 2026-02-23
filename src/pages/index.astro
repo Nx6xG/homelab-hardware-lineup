@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../components/Layout.astro';
-import Badge from '../components/Badge.astro';
 import Reveal from '../components/Reveal.astro';
 import DevicePlaceholder from '../components/DevicePlaceholder.astro';
 
@@ -13,29 +12,35 @@ const sorted   = [...devices].sort(
 
 const lineup = sorted.slice(0, 6);
 
-// Per device-type: gradient bg + geometric dot color + dot border-radius
+// Per type: panel gradient + centered bloom + icon tint
 const getAccent = (type: string) => {
-  const map: Record<string, { bg: string; dot: string; r: string }> = {
-    'raspberry-pi': { bg: 'rgba(79,142,247,0.09)',  dot: 'rgba(79,142,247,0.38)',  r: '50%' },
-    'nas':          { bg: 'rgba(245,158,11,0.08)',  dot: 'rgba(245,158,11,0.32)',  r: '5px' },
-    'server':       { bg: 'rgba(99,102,241,0.09)',  dot: 'rgba(99,102,241,0.38)',  r: '4px' },
-    'pc':           { bg: 'rgba(99,102,241,0.08)',  dot: 'rgba(99,102,241,0.32)',  r: '4px' },
-    'network':      { bg: 'rgba(34,197,94,0.08)',   dot: 'rgba(34,197,94,0.32)',   r: '50%' },
-    'console':      { bg: 'rgba(236,72,153,0.07)',  dot: 'rgba(236,72,153,0.28)',  r: '7px' },
-    'smart-home':   { bg: 'rgba(168,85,247,0.08)',  dot: 'rgba(168,85,247,0.32)',  r: '50%' },
-    'display':      { bg: 'rgba(148,163,184,0.07)', dot: 'rgba(148,163,184,0.28)', r: '3px' },
+  const map: Record<string, { bg: string; bloom: string; icon: string }> = {
+    'raspberry-pi': { bg: 'rgba(79,142,247,0.09)',  bloom: 'rgba(79,142,247,0.18)',  icon: 'rgba(79,142,247,0.32)'  },
+    'nas':          { bg: 'rgba(245,158,11,0.08)',  bloom: 'rgba(245,158,11,0.15)',  icon: 'rgba(245,158,11,0.30)'  },
+    'server':       { bg: 'rgba(99,102,241,0.09)',  bloom: 'rgba(99,102,241,0.16)',  icon: 'rgba(99,102,241,0.32)'  },
+    'pc':           { bg: 'rgba(99,102,241,0.08)',  bloom: 'rgba(99,102,241,0.14)',  icon: 'rgba(99,102,241,0.30)'  },
+    'network':      { bg: 'rgba(34,197,94,0.07)',   bloom: 'rgba(34,197,94,0.13)',   icon: 'rgba(34,197,94,0.28)'   },
+    'console':      { bg: 'rgba(236,72,153,0.07)',  bloom: 'rgba(236,72,153,0.13)',  icon: 'rgba(236,72,153,0.28)'  },
+    'smart-home':   { bg: 'rgba(168,85,247,0.07)',  bloom: 'rgba(168,85,247,0.13)',  icon: 'rgba(168,85,247,0.28)'  },
+    'display':      { bg: 'rgba(148,163,184,0.06)', bloom: 'rgba(148,163,184,0.10)', icon: 'rgba(148,163,184,0.24)' },
   };
-  return map[type] ?? { bg: 'rgba(79,142,247,0.07)', dot: 'rgba(79,142,247,0.28)', r: '6px' };
+  return map[type] ?? { bg: 'rgba(79,142,247,0.07)', bloom: 'rgba(79,142,247,0.13)', icon: 'rgba(79,142,247,0.28)' };
 };
 
-// Hero title — word-by-word entrance animation
+const statusLabels: Record<string, string> = {
+  online:      'Online',
+  offline:     'Offline',
+  maintenance: 'Wartung',
+  retired:     'Ausgemustert',
+};
+
 const heroLines = ['HomeLab.'];
 
 const sysMetrics = [
-  { value: String(devices.length),  label: 'Geräte'      },
-  { value: String(software.length), label: 'Dienste'      },
-  { value: '100%',                  label: 'Self-hosted'  },
-  { value: '0€',                    label: 'Cloud-Kosten' },
+  { value: String(devices.length),  label: 'Geräte'          },
+  { value: String(software.length), label: 'Dienste'          },
+  { value: '100%',                  label: 'Selbst gehostet'  },
+  { value: '0€',                    label: 'Cloud-Kosten'     },
 ];
 
 const docItems = [
@@ -60,12 +65,10 @@ const docItems = [
     class="hero-ambient bg-grid relative min-h-screen flex flex-col items-center justify-center pt-24 pb-28 lg:pb-40 overflow-hidden"
     aria-label="Introduction"
   >
-    <!-- Soft radial glow behind headline -->
     <div
       aria-hidden="true"
       style="position:absolute; pointer-events:none; top:30%; left:50%; transform:translate(-50%,-50%); width:clamp(500px,110vw,1100px); height:clamp(400px,80vw,800px); background:radial-gradient(ellipse at center, rgba(79,142,247,0.10) 0%, rgba(99,102,241,0.04) 45%, transparent 68%); filter:blur(110px);"
     ></div>
-    <!-- Drifting accent orb -->
     <div
       aria-hidden="true"
       class="drift"
@@ -73,8 +76,6 @@ const docItems = [
     ></div>
 
     <div class="container-content relative z-10 text-center">
-
-      <!-- Eyebrow -->
       <p
         class="text-[0.68rem] font-semibold tracking-[0.26em] uppercase text-[var(--color-ink-4)] mb-10 sm:mb-12"
         style="animation:hero-fade-up 600ms 80ms cubic-bezier(0.16,1,0.3,1) both"
@@ -82,7 +83,6 @@ const docItems = [
         Persönliches Homelab
       </p>
 
-      <!-- "HomeLab." — word-by-word entrance animation -->
       <h1 class="mb-8 sm:mb-12" aria-label="HomeLab.">
         {heroLines.map((line, i) => (
           <div
@@ -94,7 +94,6 @@ const docItems = [
         ))}
       </h1>
 
-      <!-- Subhead -->
       <p
         class="text-[clamp(1rem,1.8vw,1.2rem)] font-light text-[var(--color-ink-3)] max-w-[38ch] mx-auto leading-[1.65] mb-10 sm:mb-14"
         style="animation:hero-fade-up 700ms 570ms cubic-bezier(0.16,1,0.3,1) both"
@@ -103,7 +102,6 @@ const docItems = [
         dokumentiert wie ein Produkt.
       </p>
 
-      <!-- CTAs — stacked on mobile, side by side on sm+ -->
       <div
         class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
         style="animation:hero-fade-up 700ms 700ms cubic-bezier(0.16,1,0.3,1) both"
@@ -118,10 +116,8 @@ const docItems = [
           Hardware ansehen
         </a>
       </div>
-
     </div>
 
-    <!-- Fade into next section — taller for more breathing room -->
     <div
       aria-hidden="true"
       class="absolute inset-x-0 bottom-0 h-64 pointer-events-none"
@@ -171,18 +167,26 @@ const docItems = [
 
 
   <!-- ═══════════════════════════════════════════════════════
-       HARDWARE LINEUP TEASER
+       HARDWARE LINEUP
   ════════════════════════════════════════════════════════════ -->
-  <section class="py-20 lg:py-32 section-divider" aria-labelledby="lineup-h">
-    <div class="container-wide">
+  <section class="py-24 lg:py-36 section-divider relative overflow-hidden" aria-labelledby="lineup-h">
 
-      <Reveal class="flex items-end justify-between mb-12 sm:mb-16 gap-4">
+    <!-- Ambient glow behind the whole section -->
+    <div
+      aria-hidden="true"
+      style="position:absolute; pointer-events:none; top:-10%; left:50%; transform:translateX(-50%); width:clamp(800px,120vw,1400px); height:700px; background:radial-gradient(ellipse at 50% 30%, rgba(79,142,247,0.038) 0%, transparent 58%); filter:blur(90px);"
+    ></div>
+
+    <div class="container-wide relative">
+
+      <!-- Section header -->
+      <Reveal class="flex items-end justify-between mb-14 lg:mb-18 gap-4">
         <div>
           <p class="text-[0.68rem] font-semibold tracking-[0.22em] uppercase text-[var(--color-ink-4)] mb-3">
             Hardware
           </p>
           <h2 id="lineup-h" class="text-display-sm text-[var(--color-ink-1)]">
-            Hardware
+            Die Geräte.
           </h2>
         </div>
         <a href="/lineup" class="btn-secondary hidden sm:inline-flex flex-shrink-0">
@@ -193,53 +197,59 @@ const docItems = [
         </a>
       </Reveal>
 
-      <!-- 2-col on mobile → 3-col on sm+ -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 stagger-children">
-        {lineup.map(device => {
+      <!-- Cards -->
+      <div class="lc-grid">
+        {lineup.map((device, idx) => {
           const accent = getAccent(device.data.type);
           return (
-            <a
-              href={`/device/${device.slug}`}
-              class="lineup-card group relative block p-4 sm:p-5 rounded-[14px] sm:rounded-[16px] border border-[rgba(255,255,255,0.065)] bg-[var(--color-surface-1)] overflow-hidden"
-              aria-label={`${device.data.name} — ${device.data.role}`}
-            >
-              <!-- Ambient corner accent gradient -->
-              <div
-                aria-hidden="true"
-                style={`position:absolute; top:0; right:0; width:100px; height:100px; background:radial-gradient(ellipse at top right, ${accent.bg}, transparent 70%); pointer-events:none;`}
-              ></div>
-
-              <!-- Device type placeholder -->
-              <div
-                aria-hidden="true"
-                class="relative w-full h-20 sm:h-24 rounded-[8px] sm:rounded-[10px] mb-3 sm:mb-4 flex items-center justify-center overflow-hidden"
-                style={`background: radial-gradient(ellipse at 50% 40%, ${accent.bg} 0%, transparent 65%), linear-gradient(160deg, var(--color-surface-2) 0%, var(--color-surface-3) 100%); border:1px solid rgba(255,255,255,0.05);`}
+            <Reveal delay={idx * 55} class="h-full">
+              <a
+                href={`/device/${device.slug}`}
+                class="lc-card group"
+                aria-label={`${device.data.name} — ${device.data.role}`}
               >
-                <DevicePlaceholder type={device.data.type} size={28} />
-              </div>
+                <!-- Visual panel -->
+                <div
+                  class="lc-panel"
+                  style={`background: radial-gradient(ellipse 120% 130% at 50% 80%, ${accent.bg} 0%, transparent 62%), linear-gradient(175deg, var(--color-surface-2) 0%, var(--color-surface-3) 100%);`}
+                >
+                  <!-- Centered soft bloom -->
+                  <div
+                    class="lc-bloom"
+                    style={`background: radial-gradient(ellipse 58% 58% at 50% 58%, ${accent.bloom} 0%, transparent 65%);`}
+                  ></div>
 
-              <!-- Name + role -->
-              <p class="text-[0.84rem] sm:text-[0.9rem] font-semibold text-[var(--color-ink-1)] mb-0.5 truncate relative z-10 leading-snug">
-                {device.data.name}
-              </p>
-              <p class="text-[0.75rem] sm:text-[0.8rem] text-[var(--color-ink-3)] truncate relative z-10 mb-3 sm:mb-4 leading-snug">
-                {device.data.role}
-              </p>
+                  <!-- Line-art icon — larger, floats in gradient field -->
+                  <div class="lc-icon" style={`color: ${accent.icon};`}>
+                    <DevicePlaceholder type={device.data.type} size={56} />
+                  </div>
+                </div>
 
-              <!-- Status + explore -->
-              <div class="flex items-center justify-between relative z-10">
-                <Badge status={device.data.status} size="sm" />
-                <span class="text-[0.68rem] sm:text-[0.72rem] text-[var(--color-ink-4)] group-hover:text-[var(--color-accent)] transition-colors duration-200">
-                  Ansehen →
-                </span>
-              </div>
-            </a>
+                <!-- Content -->
+                <div class="lc-body">
+                  <div class="lc-text">
+                    <p class="lc-name">{device.data.name}</p>
+                    <p class="lc-role">{device.data.role}</p>
+                  </div>
+
+                  <div class="lc-foot">
+                    <!-- Minimal status indicator -->
+                    <div class="lc-status" aria-label={`Status: ${statusLabels[device.data.status] ?? device.data.status}`}>
+                      <span class={`lc-status-dot lc-status-dot--${device.data.status}`} aria-hidden="true"></span>
+                      <span class="lc-status-label">{statusLabels[device.data.status] ?? device.data.status}</span>
+                    </div>
+
+                    <span class="lc-cta" aria-hidden="true">Ansehen →</span>
+                  </div>
+                </div>
+              </a>
+            </Reveal>
           );
         })}
       </div>
 
-      <!-- Mobile-only CTA -->
-      <Reveal class="mt-6 sm:hidden text-center">
+      <!-- Mobile CTA -->
+      <Reveal class="mt-8 sm:hidden text-center">
         <a href="/lineup" class="btn-secondary w-full justify-center">Alle Geräte ansehen</a>
       </Reveal>
 
@@ -251,13 +261,11 @@ const docItems = [
        PHILOSOPHY
   ════════════════════════════════════════════════════════════ -->
   <section class="py-32 lg:py-48 section-divider text-center relative overflow-hidden" aria-labelledby="phil-h">
-    <!-- Darker overlay for cinematic chapter-break feel -->
     <div
       aria-hidden="true"
       class="absolute inset-0 pointer-events-none"
       style="background:rgba(2,4,11,0.32);"
     ></div>
-    <!-- Radial accent glow -->
     <div
       aria-hidden="true"
       class="absolute inset-0 pointer-events-none"
@@ -328,3 +336,169 @@ const docItems = [
   </section>
 
 </Layout>
+
+<style>
+  /* ── Grid ──────────────────────────────────────────────────── */
+  .lc-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.125rem;
+  }
+  @media (min-width: 768px) {
+    .lc-grid { grid-template-columns: repeat(3, 1fr); gap: 1.375rem; }
+  }
+
+  /* ── Card ──────────────────────────────────────────────────── */
+  .lc-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    background: var(--color-surface-1);
+    overflow: hidden;
+    text-decoration: none;
+    height: 100%;
+    transition:
+      transform      320ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow     320ms ease,
+      border-color   320ms ease;
+  }
+  .lc-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 255, 255, 0.09);
+    box-shadow:
+      0 28px 56px rgba(0, 0, 0, 0.38),
+      0 8px  20px rgba(0, 0, 0, 0.22),
+      0 0   0 1px rgba(255, 255, 255, 0.06);
+  }
+  .lc-card:focus-visible {
+    outline: 2px solid rgba(79, 142, 247, 0.6);
+    outline-offset: 3px;
+  }
+
+  /* ── Visual panel ──────────────────────────────────────────── */
+  .lc-panel {
+    position: relative;
+    height: 148px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  @media (min-width: 640px)  { .lc-panel { height: 168px; } }
+  @media (min-width: 1024px) { .lc-panel { height: 180px; } }
+
+  /* Centered radial bloom (accent-tinted) */
+  .lc-bloom {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    transition: opacity 320ms ease;
+    opacity: 0.85;
+  }
+  .lc-card:hover .lc-bloom { opacity: 1; }
+
+  /* Icon wrapper — holds the SVG, tints it via `color` */
+  .lc-icon {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .lc-card:hover .lc-icon { transform: translateY(-3px) scale(1.04); }
+
+  /* DevicePlaceholder renders with opacity-[0.22]; boost on hover via filter */
+  .lc-icon svg {
+    filter: drop-shadow(0 0 0px transparent);
+    transition: filter 320ms ease, opacity 320ms ease;
+    opacity: 0.26;
+  }
+  .lc-card:hover .lc-icon svg {
+    opacity: 0.38;
+    filter: drop-shadow(0 2px 12px currentColor);
+  }
+
+  /* ── Content body ──────────────────────────────────────────── */
+  .lc-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    padding: 1.125rem 1.25rem 1.25rem;
+    flex: 1;
+  }
+
+  .lc-text { display: flex; flex-direction: column; gap: 0.2rem; flex: 1; }
+
+  .lc-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-ink-1);
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  @media (min-width: 640px) { .lc-name { font-size: 0.9375rem; } }
+
+  .lc-role {
+    font-size: 0.75rem;
+    color: var(--color-ink-3);
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── Footer row ────────────────────────────────────────────── */
+  .lc-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  /* Minimal status badge */
+  .lc-status {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .lc-status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .lc-status-dot--online      { background: rgba(34,  197, 94,  0.60); }
+  .lc-status-dot--offline     { background: rgba(239, 68,  68,  0.55); }
+  .lc-status-dot--maintenance { background: rgba(245, 158, 11,  0.55); }
+  .lc-status-dot--retired     { background: rgba(107, 114, 128, 0.45); }
+
+  .lc-status-label {
+    font-size: 0.67rem;
+    color: var(--color-ink-4);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+
+  /* CTA arrow */
+  .lc-cta {
+    font-size: 0.7rem;
+    color: var(--color-ink-4);
+    white-space: nowrap;
+    transition: color 200ms ease;
+    flex-shrink: 0;
+  }
+  .lc-card:hover .lc-cta { color: var(--color-accent); }
+
+  /* ── Reduced motion ────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .lc-card, .lc-bloom, .lc-icon, .lc-icon svg, .lc-cta { transition: none; }
+    .lc-card:hover { transform: none; }
+  }
+</style>

@@ -1,14 +1,9 @@
 ---
-// ServiceMap — groups software services by the device they run on.
-// Shows a collapsible row per device, filterable by category.
-// Pure CSS expand/collapse (grid-rows trick), minimal JS for filter + toggle.
-
 import { getCollection } from 'astro:content';
 
 const allSoftware = await getCollection('software');
 const allDevices  = await getCollection('devices');
 
-// Map device slug → device name
 const deviceNames: Record<string, string> = {};
 for (const d of allDevices) deviceNames[d.id] = d.data.name;
 
@@ -34,7 +29,6 @@ const items: SoftwareEntry[] = allSoftware.map(e => ({
     : (e.data.deviceName ?? 'Cloud'),
 }));
 
-// Group by device (runsOn slug or 'cloud' for entries without one)
 const groupMap = new Map<string, { deviceName: string; slug?: string; services: SoftwareEntry[] }>();
 
 for (const item of items) {
@@ -45,7 +39,6 @@ for (const item of items) {
   groupMap.get(key)!.services.push(item);
 }
 
-// Sort: real devices first (alphabetical), then cloud
 const groups = [...groupMap.entries()]
   .sort(([a], [b]) => {
     if (a === '__cloud__') return 1;
@@ -59,15 +52,18 @@ const categories = ['Media & Web', 'Infrastruktur', 'Home Automation', 'Organisa
 
 <div class="sm-root" data-sm>
 
-  <!-- ── Filter bar ───────────────────────────────────────────── -->
-  <div class="sm-filters" role="group" aria-label="Nach Kategorie filtern">
-    <button class="sm-pill sm-pill--active" data-sm-filter="all">Alle</button>
+  <!-- Sentinel: zero-height marker used by IntersectionObserver to detect sticky state -->
+  <div class="sm-sentinel" aria-hidden="true"></div>
+
+  <!-- Filter bar (sticky) -->
+  <div class="sm-filters" data-sm-filters role="group" aria-label="Nach Kategorie filtern">
+    <button class="sm-pill sm-pill--active" data-sm-filter="all" aria-pressed="true">Alle</button>
     {categories.map(cat => (
-      <button class="sm-pill" data-sm-filter={cat}>{cat}</button>
+      <button class="sm-pill" data-sm-filter={cat} aria-pressed="false">{cat}</button>
     ))}
   </div>
 
-  <!-- ── Device groups ────────────────────────────────────────── -->
+  <!-- Device groups -->
   <div class="sm-groups" role="list">
     {groups.map((group, gi) => (
       <div
@@ -76,7 +72,7 @@ const categories = ['Media & Web', 'Infrastruktur', 'Home Automation', 'Organisa
         data-categories={[...new Set(group.services.map(s => s.category))].join(',')}
         role="listitem"
       >
-        <!-- Group header (toggle) -->
+        <!-- Header -->
         <button
           class="sm-header"
           data-sm-toggle
@@ -85,21 +81,17 @@ const categories = ['Media & Web', 'Infrastruktur', 'Home Automation', 'Organisa
           id={`sm-hdr-${gi}`}
         >
           <div class="sm-header-left">
-            <!-- Device icon dot -->
             <span class="sm-dot" aria-hidden="true"></span>
-
             <div class="sm-header-text">
               {group.slug
                 ? <a href={`/device/${group.slug}`} class="sm-device-name" onclick="event.stopPropagation()">{group.deviceName}</a>
-                : <span class="sm-device-name">{group.deviceName}</span>
+                : <span class="sm-device-name sm-device-name--muted">{group.deviceName}</span>
               }
               <span class="sm-count">{group.services.length} {group.services.length === 1 ? 'Dienst' : 'Dienste'}</span>
             </div>
           </div>
-
-          <!-- Chevron -->
-          <svg class="sm-chevron" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg class="sm-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </button>
 
@@ -113,16 +105,20 @@ const categories = ['Media & Web', 'Infrastruktur', 'Home Automation', 'Organisa
           <ul class="sm-service-list" role="list">
             {group.services.map(svc => (
               <li class="sm-service" data-category={svc.category} role="listitem">
-                <div class="sm-service-top">
-                  <span class="sm-service-name">{svc.title}</span>
-                  <span class="sm-service-cat">{svc.category}</span>
+                <div class="sm-service-main">
+                  <p class="sm-service-name-text">{svc.title}</p>
+                  <p class="sm-service-desc">{svc.summary}</p>
                 </div>
-                <p class="sm-service-desc">{svc.summary}</p>
-                {svc.tags.length > 0 && (
-                  <ul class="sm-tag-list" role="list" aria-label="Tags">
-                    {svc.tags.map(t => <li class="sm-tag">{t}</li>)}
-                  </ul>
-                )}
+                <div class="sm-service-foot">
+                  {svc.tags.length > 0 && (
+                    <ul class="sm-tag-list" role="list" aria-label="Tags">
+                      {svc.tags.map(t => <li class="sm-tag">{t}</li>)}
+                    </ul>
+                  )}
+                  {svc.runsOn && (
+                    <a href={`/device/${svc.runsOn}`} class="sm-service-link">Gerät →</a>
+                  )}
+                </div>
               </li>
             ))}
           </ul>
@@ -135,239 +131,308 @@ const categories = ['Media & Web', 'Infrastruktur', 'Home Automation', 'Organisa
 
 <script>
   document.querySelectorAll<HTMLElement>('[data-sm]').forEach(root => {
+    const pills    = root.querySelectorAll<HTMLButtonElement>('[data-sm-filter]');
+    const groups   = root.querySelectorAll<HTMLElement>('[data-sm-group]');
+    const toggles  = root.querySelectorAll<HTMLButtonElement>('[data-sm-toggle]');
+    const filtersEl = root.querySelector<HTMLElement>('[data-sm-filters]');
+    const sentinel  = root.querySelector<HTMLElement>('.sm-sentinel');
 
-    // ── Filter ──────────────────────────────────────────────────
-    const pills  = root.querySelectorAll<HTMLButtonElement>('[data-sm-filter]');
-    const groups = root.querySelectorAll<HTMLElement>('[data-sm-group]');
+    // ── Sticky glass ──────────────────────────────────────────
+    if (sentinel && filtersEl) {
+      const io = new IntersectionObserver(
+        ([e]) => filtersEl.toggleAttribute('data-stuck', !e.isIntersecting),
+        { rootMargin: '-57px 0px 0px 0px', threshold: 0 }
+      );
+      io.observe(sentinel);
+    }
 
-    let activeFilter = 'all';
-
+    // ── Filter ────────────────────────────────────────────────
     function applyFilter(filter: string) {
-      activeFilter = filter;
       pills.forEach(p => {
-        const isActive = p.dataset.smFilter === filter;
-        p.classList.toggle('sm-pill--active', isActive);
-        p.setAttribute('aria-pressed', String(isActive));
+        const active = p.dataset.smFilter === filter;
+        p.classList.toggle('sm-pill--active', active);
+        p.setAttribute('aria-pressed', String(active));
       });
-
       groups.forEach(g => {
         const cats = (g.dataset.categories ?? '').split(',');
-        const visible = filter === 'all' || cats.includes(filter);
-        g.style.display = visible ? '' : 'none';
-
-        // Within a visible group, show/hide individual services
+        const show = filter === 'all' || cats.includes(filter);
+        g.style.display = show ? '' : 'none';
         g.querySelectorAll<HTMLElement>('[data-category]').forEach(svc => {
-          const show = filter === 'all' || svc.dataset.category === filter;
-          svc.style.display = show ? '' : 'none';
+          svc.style.display = filter === 'all' || svc.dataset.category === filter ? '' : 'none';
         });
       });
     }
 
-    pills.forEach(p => {
-      p.setAttribute('aria-pressed', p.dataset.smFilter === 'all' ? 'true' : 'false');
-      p.addEventListener('click', () => applyFilter(p.dataset.smFilter ?? 'all'));
-    });
+    pills.forEach(p => p.addEventListener('click', () => applyFilter(p.dataset.smFilter ?? 'all')));
 
-    // ── Accordion toggle ────────────────────────────────────────
-    root.querySelectorAll<HTMLButtonElement>('[data-sm-toggle]').forEach(btn => {
+    // ── Accordion — one open at a time ────────────────────────
+    function setPanel(btn: HTMLButtonElement, open: boolean) {
+      const bodyId = btn.getAttribute('aria-controls');
+      const body   = bodyId ? root.querySelector<HTMLElement>(`#${bodyId}`) : null;
+      if (!body) return;
+      btn.setAttribute('aria-expanded', String(open));
+      body.classList.toggle('sm-body--open', open);
+    }
+
+    toggles.forEach(btn => {
       btn.addEventListener('click', () => {
-        const expanded = btn.getAttribute('aria-expanded') === 'true';
-        const bodyId   = btn.getAttribute('aria-controls');
-        const body     = bodyId ? root.querySelector<HTMLElement>(`#${bodyId}`) : null;
-        if (!body) return;
-
-        btn.setAttribute('aria-expanded', String(!expanded));
-        body.classList.toggle('sm-body--open', !expanded);
+        const willOpen = btn.getAttribute('aria-expanded') !== 'true';
+        toggles.forEach(other => other !== btn && setPanel(other, false));
+        setPanel(btn, willOpen);
       });
     });
   });
 </script>
 
 <style>
-  /* ── Root ─────────────────────────────────────────────────────── */
-  .sm-root { display: flex; flex-direction: column; gap: 1.25rem; }
+  /* ── Root ───────────────────────────────────────────────────── */
+  .sm-root { display: flex; flex-direction: column; }
 
-  /* ── Filter pills ────────────────────────────────────────────── */
+  /* ── Sentinel ───────────────────────────────────────────────── */
+  .sm-sentinel { height: 0; }
+
+  /* ── Filter bar ─────────────────────────────────────────────── */
   .sm-filters {
+    position: sticky;
+    top: 56px;
+    z-index: 20;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: 0.375rem;
+    padding: 1rem 0 1.25rem;
+    background: transparent;
+    transition: background 220ms ease, box-shadow 220ms ease;
+  }
+  .sm-filters[data-stuck] {
+    background: rgba(5, 7, 15, 0.85);
+    backdrop-filter: blur(24px) saturate(1.6);
+    -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05), 0 8px 32px rgba(0, 0, 0, 0.35);
   }
 
+  /* ── Filter pills ───────────────────────────────────────────── */
   .sm-pill {
-    padding: 0.3rem 0.875rem;
+    padding: 0.35rem 1rem;
     border-radius: 9999px;
     font-size: 0.75rem;
     font-weight: 500;
     cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.025);
     color: var(--color-ink-3);
-    transition: background 180ms ease, color 180ms ease, border-color 180ms ease;
+    white-space: nowrap;
+    transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
   }
   .sm-pill:hover {
     color: var(--color-ink-1);
-    border-color: rgba(255, 255, 255, 0.14);
-    background: rgba(255, 255, 255, 0.055);
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
   }
   .sm-pill--active {
     background: rgba(79, 142, 247, 0.12);
-    border-color: rgba(79, 142, 247, 0.28);
+    border-color: rgba(79, 142, 247, 0.25);
     color: var(--color-accent);
   }
-  .sm-pill--active:hover { background: rgba(79, 142, 247, 0.18); }
-
-  /* ── Groups ──────────────────────────────────────────────────── */
-  .sm-groups { display: flex; flex-direction: column; gap: 0.5rem; }
-
-  .sm-group {
-    border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.065);
-    background: rgba(9, 13, 24, 0.72);
-    backdrop-filter: blur(12px) saturate(1.2);
-    -webkit-backdrop-filter: blur(12px) saturate(1.2);
-    overflow: hidden;
+  .sm-pill--active:hover { background: rgba(79, 142, 247, 0.17); }
+  .sm-pill:focus-visible {
+    outline: 2px solid rgba(79, 142, 247, 0.55);
+    outline-offset: 2px;
   }
 
-  /* ── Group header ────────────────────────────────────────────── */
+  /* ── Groups ─────────────────────────────────────────────────── */
+  .sm-groups { display: flex; flex-direction: column; gap: 0.625rem; }
+
+  .sm-group {
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.018);
+    backdrop-filter: blur(24px) saturate(1.3);
+    -webkit-backdrop-filter: blur(24px) saturate(1.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    overflow: hidden;
+    transition: border-color 220ms ease, box-shadow 220ms ease;
+  }
+  .sm-group:has([aria-expanded="true"]) {
+    border-color: rgba(255, 255, 255, 0.085);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  /* ── Header ─────────────────────────────────────────────────── */
   .sm-header {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 1rem 1.25rem;
-    cursor: pointer;
+    padding: 1.125rem 1.375rem;
     background: transparent;
     border: none;
+    cursor: pointer;
     text-align: left;
-    transition: background 180ms ease;
+    transition: background 160ms ease;
   }
-  .sm-header:hover { background: rgba(255, 255, 255, 0.025); }
+  .sm-header:hover  { background: rgba(255, 255, 255, 0.02); }
+  .sm-header:focus-visible {
+    outline: 2px solid rgba(79, 142, 247, 0.5);
+    outline-offset: -2px;
+    border-radius: 14px;
+  }
 
   .sm-header-left {
     display: flex;
     align-items: center;
     gap: 0.875rem;
+    min-width: 0;
   }
 
+  /* ── Status dot ─────────────────────────────────────────────── */
   .sm-dot {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     flex-shrink: 0;
-    background: rgba(79, 142, 247, 0.5);
-    box-shadow: 0 0 8px rgba(79, 142, 247, 0.3);
+    background: rgba(79, 142, 247, 0.55);
+    box-shadow: 0 0 6px rgba(79, 142, 247, 0.22);
   }
 
   .sm-header-text {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
+    gap: 0.1rem;
+    min-width: 0;
   }
 
   .sm-device-name {
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--color-ink-1);
+    letter-spacing: -0.015em;
+    line-height: 1.25;
     text-decoration: none;
-    letter-spacing: -0.01em;
-    transition: color 180ms ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 160ms ease;
   }
+  .sm-device-name--muted { color: var(--color-ink-2); }
   a.sm-device-name:hover { color: var(--color-accent); }
 
   .sm-count {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     color: var(--color-ink-4);
+    letter-spacing: 0.01em;
   }
 
+  /* ── Chevron ────────────────────────────────────────────────── */
   .sm-chevron {
     color: var(--color-ink-4);
     flex-shrink: 0;
-    transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1), color 160ms ease;
   }
-  [aria-expanded="true"] .sm-chevron { transform: rotate(180deg); }
+  [aria-expanded="true"] .sm-chevron {
+    transform: rotate(180deg);
+    color: var(--color-ink-2);
+  }
 
-  /* ── Expand / collapse ───────────────────────────────────────── */
+  /* ── Body expand / collapse ─────────────────────────────────── */
   .sm-body {
     display: grid;
     grid-template-rows: 0fr;
     transition: grid-template-rows 280ms cubic-bezier(0.16, 1, 0.3, 1);
-    border-top: 0px solid rgba(255, 255, 255, 0.055);
   }
-  .sm-body--open {
-    grid-template-rows: 1fr;
-    border-top-width: 1px;
-  }
+  .sm-body--open { grid-template-rows: 1fr; }
+
   .sm-body > .sm-service-list {
     overflow: hidden;
-    padding: 0;
-    margin: 0;
     list-style: none;
+    margin: 0;
+    padding: 0;
   }
-  .sm-body--open > .sm-service-list { padding: 0.75rem 1.25rem 1rem; }
+  .sm-body--open > .sm-service-list {
+    border-top: 1px solid rgba(255, 255, 255, 0.045);
+    padding-bottom: 0.375rem;
+  }
 
-  /* ── Service rows ────────────────────────────────────────────── */
+  /* ── Service rows ───────────────────────────────────────────── */
   .sm-service {
-    padding: 0.75rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    gap: 0.35rem;
+    padding: 0.875rem 1.375rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.032);
+    transition: background 140ms ease;
   }
-  .sm-service:last-child { border-bottom: none; padding-bottom: 0; }
+  .sm-service:last-child { border-bottom: none; }
+  .sm-service:hover      { background: rgba(255, 255, 255, 0.016); }
 
-  .sm-service-top {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
+  .sm-service-main { display: flex; flex-direction: column; gap: 0.2rem; }
 
-  .sm-service-name {
-    font-size: 0.8125rem;
+  .sm-service-name-text {
+    font-size: 0.84rem;
     font-weight: 600;
     color: var(--color-ink-1);
     letter-spacing: -0.01em;
-  }
-
-  .sm-service-cat {
-    font-size: 0.65rem;
-    font-weight: 500;
-    color: var(--color-ink-4);
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.055);
-    border-radius: 9999px;
-    padding: 0.1rem 0.45rem;
+    line-height: 1.25;
   }
 
   .sm-service-desc {
-    font-size: 0.79rem;
+    font-size: 0.775rem;
     color: var(--color-ink-3);
     line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
-  /* ── Tags ────────────────────────────────────────────────────── */
+  /* ── Service footer ─────────────────────────────────────────── */
+  .sm-service-foot {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.15rem;
+  }
+
   .sm-tag-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.25rem;
+    gap: 0.22rem;
     list-style: none;
-    margin: 0.1rem 0 0;
+    margin: 0;
     padding: 0;
+    flex: 1;
+    min-width: 0;
   }
   .sm-tag {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 500;
     color: var(--color-ink-4);
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid rgba(255, 255, 255, 0.045);
+    background: rgba(255, 255, 255, 0.028);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 9999px;
-    padding: 0.12rem 0.45rem;
+    padding: 0.1rem 0.45rem;
+    white-space: nowrap;
   }
 
-  /* ── Reduced motion ──────────────────────────────────────────── */
+  .sm-service-link {
+    font-size: 0.71rem;
+    color: var(--color-ink-4);
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: auto;
+    transition: color 140ms ease;
+  }
+  .sm-service-link:hover { color: var(--color-accent); }
+  .sm-service-link:focus-visible {
+    outline: 2px solid rgba(79, 142, 247, 0.5);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  /* ── Reduced motion ─────────────────────────────────────────── */
   @media (prefers-reduced-motion: reduce) {
-    .sm-body, .sm-chevron, .sm-pill, .sm-header { transition: none; }
+    .sm-body, .sm-chevron, .sm-pill, .sm-header,
+    .sm-group, .sm-filters, .sm-service, .sm-service-link { transition: none; }
   }
 </style>

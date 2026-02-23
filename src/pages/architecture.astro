@@ -83,17 +83,20 @@ const planned = [
     </div>
   </section>
 
-  <!-- ── Service Map ──────────────────────────────────────── -->
-  <section class="py-16 section-divider">
-    <div class="container-wide">
-      <Reveal class="mb-8">
-        <div class="flex items-baseline gap-4 flex-wrap">
-          <p class="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-[var(--color-ink-4)]">
-            03 — Service Map
-          </p>
-        </div>
+  <!-- ── Dienstübersicht ──────────────────────────────────── -->
+  <section class="py-20 section-divider relative overflow-hidden">
+    <div
+      aria-hidden="true"
+      style="position:absolute;pointer-events:none;top:0;left:50%;transform:translateX(-50%);width:clamp(600px,90vw,900px);height:480px;background:radial-gradient(ellipse at 50% 0%,rgba(79,142,247,0.055) 0%,transparent 65%);filter:blur(60px);"
+    ></div>
+
+    <div class="container-wide relative">
+      <Reveal class="mb-10">
+        <p class="text-[0.68rem] font-semibold tracking-[0.18em] uppercase text-[var(--color-ink-4)]">
+          03 — Dienstübersicht
+        </p>
         <h2 class="text-display-sm text-ink-1 mt-3">
-          Service Map.
+          Dienstübersicht.
         </h2>
         <p class="text-body-sm text-ink-3 mt-2 max-w-[52ch]">
           Welche Dienste laufen auf welchem Gerät — gefiltert nach Kategorie.
