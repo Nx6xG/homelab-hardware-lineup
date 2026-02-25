@@ -1,0 +1,298 @@
+---
+/**
+ * InfraDiagram.astro — QNAP NAS full flow diagram (flagship).
+ * Left: client devices  →  Center: QNAP NAS  →  Right: running services.
+ * Animated SMIL dots travel along cubic-bezier paths.
+ */
+
+const clients = [
+  { label: 'MacBook',  sub: 'M4 Pro',      color: '#94a3b8', y: 30  },
+  { label: 'iPhone',   sub: '15 Pro',       color: '#a78bfa', y: 90  },
+  { label: 'iPad Air', sub: 'WiFi 6E',      color: '#60a5fa', y: 150 },
+  { label: 'Pi 5',     sub: 'Docker Host',  color: '#34d399', y: 210 },
+  { label: 'Win Srv',  sub: 'Game Server',  color: '#fb923c', y: 270 },
+];
+
+const services = [
+  { label: 'Plex',     sub: ':32400',       color: '#4f8ef7', y: 30  },
+  { label: 'Backup',   sub: 'nightly',      color: '#f59e0b', y: 90  },
+  { label: 'Sync',     sub: 'bidir.',       color: '#a855f7', y: 150 },
+  { label: 'SMB/NFS',  sub: 'shares',       color: '#34d399', y: 210 },
+  { label: 'Archive',  sub: 'RAID-5',       color: '#ef4444', y: 270 },
+];
+
+// SVG geometry
+// Client box: x=20, w=88, h=28  → center (64, y), right edge (108, y)
+// NAS center: cx=400, cy=150, r=44 → left edge 356, right edge 444
+// Service box: x=652, w=88, h=28  → center (696, y), left edge (652, y)
+const nasX = 400; const nasY = 150; const nasR = 44;
+
+function pathToNas(y: number) {
+  // cubic bezier: client right edge → NAS left edge
+  return `M 108 ${y} C 230 ${y} 300 ${nasY} 356 ${nasY}`;
+}
+function pathFromNas(y: number) {
+  // cubic bezier: NAS right edge → service left edge
+  return `M 444 ${nasY} C 510 ${nasY} 580 ${y} 652 ${y}`;
+}
+
+const durations = [2.5, 2.8, 2.3, 3.0, 2.7, 2.4, 3.2, 2.9, 2.6, 3.5];
+const begins    = [0.0, 0.6, 1.2, 0.3, 1.8, 0.1, 0.8, 1.5, 0.4, 2.1];
+---
+
+<div class="id-wrap" aria-hidden="true">
+
+  <!-- Mobile fallback: simple grid of labels -->
+  <div class="id-mobile">
+    <div class="id-m-col">
+      {clients.map(c => (
+        <div class="id-m-chip" style={`border-color: ${c.color}40; color: ${c.color}`}>
+          {c.label}
+        </div>
+      ))}
+    </div>
+    <div class="id-m-center">
+      <div class="id-m-nas">QNAP<br/>NAS</div>
+    </div>
+    <div class="id-m-col">
+      {services.map(s => (
+        <div class="id-m-chip" style={`border-color: ${s.color}40; color: ${s.color}`}>
+          {s.label}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Desktop SVG diagram -->
+  <svg
+    viewBox="0 0 760 300"
+    class="id-svg"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    aria-label="QNAP NAS Infrastruktur-Diagramm"
+  >
+    <!-- ── subtle background grid ── -->
+    <defs>
+      <pattern id="id-grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+      </pattern>
+      <!-- glow filter for NAS -->
+      <filter id="id-glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="8" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+      </filter>
+    </defs>
+    <rect width="760" height="300" fill="url(#id-grid)" rx="16"/>
+
+    <!-- ── connection paths ── -->
+    {clients.map((c, i) => (
+      <path class="id-path" d={pathToNas(c.y)} style={`stroke: ${c.color}20`} />
+    ))}
+    {services.map((s, i) => (
+      <path class="id-path" d={pathFromNas(s.y)} style={`stroke: ${s.color}20`} />
+    ))}
+
+    <!-- ── animated dots (client → NAS) ── -->
+    {clients.map((c, i) => (
+      <circle class="id-dot" r="3.5" cx="0" cy="0" style={`fill: ${c.color}`}>
+        <animateMotion
+          dur={`${durations[i]}s`}
+          repeatCount="indefinite"
+          begin={`${begins[i]}s`}
+          calcMode="spline"
+          keySplines="0.4 0 0.2 1"
+          keyTimes="0;1"
+          path={pathToNas(c.y)}
+        />
+      </circle>
+    ))}
+
+    <!-- ── animated dots (NAS → service) ── -->
+    {services.map((s, i) => (
+      <circle class="id-dot" r="3.5" cx="0" cy="0" style={`fill: ${s.color}`}>
+        <animateMotion
+          dur={`${durations[i + 5]}s`}
+          repeatCount="indefinite"
+          begin={`${begins[i + 5]}s`}
+          calcMode="spline"
+          keySplines="0.4 0 0.2 1"
+          keyTimes="0;1"
+          path={pathFromNas(s.y)}
+        />
+      </circle>
+    ))}
+
+    <!-- ── NAS center glow rings ── -->
+    <circle cx={nasX} cy={nasY} r="64" class="id-nas-glow-2" />
+    <circle cx={nasX} cy={nasY} r="54" class="id-nas-glow-1" />
+
+    <!-- ── NAS center node ── -->
+    <circle cx={nasX} cy={nasY} r={nasR} class="id-nas-ring" />
+    <circle cx={nasX} cy={nasY} r={nasR} class="id-nas-fill" />
+    <text x={nasX} y={nasY - 8}  class="id-nas-label-main" text-anchor="middle" dominant-baseline="middle">QNAP</text>
+    <text x={nasX} y={nasY + 10} class="id-nas-label-sub"  text-anchor="middle" dominant-baseline="middle">NAS</text>
+
+    <!-- ── client boxes ── -->
+    {clients.map(c => (
+      <>
+        <rect
+          x="20" y={c.y - 14} width="88" height="28" rx="7"
+          class="id-box"
+          style={`fill: ${c.color}0d; stroke: ${c.color}35`}
+        />
+        <text x="64" y={c.y - 3}  class="id-box-label" text-anchor="middle" dominant-baseline="middle" style={`fill: ${c.color}cc`}>
+          {c.label}
+        </text>
+        <text x="64" y={c.y + 9}  class="id-box-sub"   text-anchor="middle" dominant-baseline="middle">
+          {c.sub}
+        </text>
+        <!-- connector dot on right edge -->
+        <circle cx="108" cy={c.y} r="3" style={`fill: ${c.color}60`} />
+      </>
+    ))}
+
+    <!-- ── service boxes ── -->
+    {services.map(s => (
+      <>
+        <rect
+          x="652" y={s.y - 14} width="88" height="28" rx="7"
+          class="id-box"
+          style={`fill: ${s.color}0d; stroke: ${s.color}35`}
+        />
+        <text x="696" y={s.y - 3}  class="id-box-label" text-anchor="middle" dominant-baseline="middle" style={`fill: ${s.color}cc`}>
+          {s.label}
+        </text>
+        <text x="696" y={s.y + 9}  class="id-box-sub"   text-anchor="middle" dominant-baseline="middle">
+          {s.sub}
+        </text>
+        <!-- connector dot on left edge -->
+        <circle cx="652" cy={s.y} r="3" style={`fill: ${s.color}60`} />
+      </>
+    ))}
+
+    <!-- ── section labels ── -->
+    <text x="64"  y="296" class="id-section-label" text-anchor="middle">Clients</text>
+    <text x={nasX} y="296" class="id-section-label" text-anchor="middle">NAS Core</text>
+    <text x="696" y="296" class="id-section-label" text-anchor="middle">Services</text>
+  </svg>
+</div>
+
+<style>
+  .id-wrap { width: 100%; max-width: 760px; margin: 0 auto; }
+
+  /* Mobile */
+  .id-mobile {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+  @media (min-width: 640px) { .id-mobile { display: none; } }
+
+  .id-m-col { display: flex; flex-direction: column; gap: 0.35rem; flex: 1; }
+  .id-m-chip {
+    font-size: 0.65rem;
+    font-weight: 600;
+    border: 1px solid;
+    border-radius: 6px;
+    padding: 4px 8px;
+    text-align: center;
+    letter-spacing: 0.03em;
+  }
+  .id-m-center { flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+  .id-m-nas {
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    background: rgba(79,142,247,0.12);
+    border: 1.5px solid rgba(79,142,247,0.5);
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #eef0f8;
+    line-height: 1.3;
+  }
+
+  /* Desktop SVG */
+  .id-svg { width: 100%; height: auto; overflow: visible; }
+  @media (max-width: 639px) { .id-svg { display: none; } }
+
+  .id-path {
+    stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+    fill: none;
+  }
+
+  /* NAS glow */
+  .id-nas-glow-1 {
+    fill: rgba(79,142,247,0.06);
+    stroke: rgba(79,142,247,0.12);
+    stroke-width: 1;
+    animation: id-pulse 3s ease-in-out infinite;
+  }
+  .id-nas-glow-2 {
+    fill: rgba(79,142,247,0.03);
+    stroke: rgba(79,142,247,0.07);
+    stroke-width: 1;
+    animation: id-pulse 3s ease-in-out infinite 0.8s;
+  }
+  @keyframes id-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+  }
+
+  .id-nas-fill {
+    fill: rgba(79,142,247,0.13);
+    stroke: none;
+  }
+  .id-nas-ring {
+    fill: none;
+    stroke: rgba(79,142,247,0.55);
+    stroke-width: 1.5;
+  }
+  .id-nas-label-main {
+    fill: #eef0f8;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: system-ui, sans-serif;
+    letter-spacing: -0.01em;
+  }
+  .id-nas-label-sub {
+    fill: #7e8baa;
+    font-size: 9px;
+    font-family: system-ui, sans-serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* Boxes */
+  .id-box { stroke-width: 1; }
+  .id-box-label {
+    font-size: 10px;
+    font-weight: 600;
+    font-family: system-ui, sans-serif;
+  }
+  .id-box-sub {
+    fill: #46536a;
+    font-size: 8px;
+    font-family: system-ui, sans-serif;
+  }
+
+  /* Dots */
+  .id-dot { opacity: 0.85; }
+
+  /* Section labels */
+  .id-section-label {
+    fill: #2b3248;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: system-ui, sans-serif;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .id-nas-glow-1, .id-nas-glow-2 { animation: none; }
+  }
+</style>

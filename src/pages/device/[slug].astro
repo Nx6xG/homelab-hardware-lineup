@@ -6,11 +6,11 @@ export async function getStaticPaths() {
   const devices = await getCollection('devices');
   return devices.map(device => ({
     params: { slug: device.slug },
-    props:  { device, allDevices: devices },
+    props:  { device },
   }));
 }
 
-const { device, allDevices } = Astro.props;
+const { device } = Astro.props;
 ---
 
-<DeviceLayout device={device} allDevices={allDevices} />
+<DeviceLayout entry={device} />

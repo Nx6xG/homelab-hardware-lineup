@@ -1,0 +1,54 @@
+---
+/**
+ * Section.astro — consistent section wrapper for device MDX pages.
+ * Provides the standard eyebrow / heading pattern + slot for content.
+ */
+interface Props {
+  eyebrow?: string;
+  heading?: string;
+  id?: string;
+  centered?: boolean;
+  wide?: boolean;
+  /** Extra classes on the outer <section> */
+  class?: string;
+}
+
+const {
+  eyebrow,
+  heading,
+  id,
+  centered = false,
+  wide = false,
+  class: extraClass = '',
+} = Astro.props;
+---
+
+<section
+  {id}
+  class={`py-20 section-divider ${extraClass}`}
+  aria-labelledby={heading ? `${id ?? 'section'}-h` : undefined}
+>
+  <div class={wide ? 'container-wide' : 'container-content'}>
+
+    {(eyebrow || heading) && (
+      <div class={`mb-10 reveal ${centered ? 'text-center' : ''}`}>
+        {eyebrow && (
+          <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] mb-3">
+            {eyebrow}
+          </p>
+        )}
+        {heading && (
+          <h2
+            id={`${id ?? 'section'}-h`}
+            class="text-display-sm text-[var(--color-ink-1)]"
+          >
+            {heading}
+          </h2>
+        )}
+      </div>
+    )}
+
+    <slot />
+
+  </div>
+</section>

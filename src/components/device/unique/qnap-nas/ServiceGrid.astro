@@ -1,0 +1,194 @@
+---
+/**
+ * ServiceGrid.astro — QNAP NAS flagship service cards (2×2 grid).
+ * Each card: colored accent stripe, service name, story, animated preview,
+ * and meta row. No props — NAS data hardcoded for flagship treatment.
+ */
+import PlexPreview     from '../../../previews/PlexPreview.astro';
+import BackupPreview   from '../../../previews/BackupPreview.astro';
+import FileSyncPreview from '../../../previews/FileSyncPreview.astro';
+import ArchivePreview  from '../../../previews/ArchivePreview.astro';
+
+const cards = [
+  {
+    name:     'Plex Media Server',
+    category: 'Media Streaming',
+    story:    'Die gesamte Medienbibliothek — Filme, Serien, Musik — auf jedem Bildschirm im Haus. Direct Play für lokale Clients bedeutet kein Transcoding: volle Qualität ohne CPU-Last.',
+    port:     '32400',
+    uptime:   '99.8%',
+    accent:   '#4f8ef7',
+    preview:  'plex',
+  },
+  {
+    name:     'Hyper Backup',
+    category: 'Datensicherung',
+    story:    'Nightly automatische Backups mit Versionierung. Läuft lautlos um 2 Uhr, speichert mehrere Wiederherstellungspunkte — und sendet bei Fehler eine Benachrichtigung.',
+    port:     '—',
+    uptime:   '99.9%',
+    accent:   '#f59e0b',
+    preview:  'backup',
+  },
+  {
+    name:     'Sync Station',
+    category: 'Synchronisation',
+    story:    'Bidirektionale Sync-Jobs zwischen lokalen Shares und Geräten. Medien, Dokumente und Backups immer auf dem neuesten Stand — vollautomatisch, ohne manuelles Eingreifen.',
+    port:     '—',
+    uptime:   '99.9%',
+    accent:   '#a855f7',
+    preview:  'filesync',
+  },
+  {
+    name:     'Storage Archiv',
+    category: 'Archivierung',
+    story:    'Strukturiertes Archiv für Medien, Backups, Dokumente und Fotos. 8 TB im RAID-5-Verbund — Ausfallsicherheit bei einem Laufwerksfehler, ohne Datenverlust.',
+    port:     '—',
+    uptime:   '99.9%',
+    accent:   '#34d399',
+    preview:  'archive',
+  },
+] as const;
+---
+
+<div class="sg-grid">
+  {cards.map((card, i) => (
+    <div
+      class="sg-card reveal"
+      style={`transition-delay: ${i * 80}ms; --accent: ${card.accent}`}
+    >
+      <!-- Colored top accent bar -->
+      <div class="sg-accent-bar" style={`background: ${card.accent}`}></div>
+
+      <!-- Header row -->
+      <div class="sg-header">
+        <span class="sg-category">{card.category}</span>
+        <span class="sg-live">
+          <span class="sg-live-dot"></span>
+          {card.uptime}
+        </span>
+      </div>
+
+      <!-- Service name -->
+      <h3 class="sg-name">{card.name}</h3>
+
+      <!-- Story -->
+      <p class="sg-story">{card.story}</p>
+
+      <!-- Animated preview -->
+      <div class="sg-preview">
+        {card.preview === 'plex'     && <PlexPreview />}
+        {card.preview === 'backup'   && <BackupPreview />}
+        {card.preview === 'filesync' && <FileSyncPreview />}
+        {card.preview === 'archive'  && <ArchivePreview />}
+      </div>
+
+      <!-- Meta row -->
+      <div class="sg-meta">
+        {card.port !== '—' && (
+          <span class="sg-meta-item">
+            <span class="sg-meta-lbl">Port</span>
+            <code class="sg-meta-val">{card.port}</code>
+          </span>
+        )}
+        <span class="sg-meta-item">
+          <span class="sg-meta-lbl">Laufzeit</span>
+          <span class="sg-meta-val sg-meta-up">{card.uptime}</span>
+        </span>
+        <span class="sg-meta-item">
+          <span class="sg-meta-lbl">Kategorie</span>
+          <span class="sg-meta-val">{card.category}</span>
+        </span>
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .sg-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  @media (min-width: 640px)  { .sg-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  /* Card */
+  .sg-card {
+    position: relative;
+    background: var(--color-surface-1);
+    border: 1px solid rgba(255,255,255,0.065);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 0 0 20px 0;
+    transition:
+      border-color 300ms ease,
+      box-shadow   300ms ease,
+      transform    300ms cubic-bezier(0.16,1,0.3,1);
+  }
+  .sg-card:hover {
+    border-color: rgba(255,255,255,0.12);
+    box-shadow:
+      0 12px 40px rgba(0,0,0,0.4),
+      0 0 0 1px rgba(255,255,255,0.05),
+      0 0 30px -8px color-mix(in srgb, var(--accent) 25%, transparent);
+    transform: translateY(-2px);
+  }
+
+  /* Top accent stripe */
+  .sg-accent-bar {
+    height: 3px;
+    width: 100%;
+    opacity: 0.75;
+    flex-shrink: 0;
+  }
+
+  /* Inner padding for everything below the bar */
+  .sg-header  { padding: 16px 20px 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .sg-name    { padding: 0 20px; font-size: 1.2rem; font-weight: 700; letter-spacing: -0.02em; color: var(--color-ink-1); line-height: 1.2; }
+  .sg-story   { padding: 0 20px; font-size: 0.9rem; line-height: 1.65; color: var(--color-ink-3); flex-grow: 1; }
+  .sg-preview { padding: 0 20px; border-radius: 10px; overflow: hidden; }
+  .sg-preview > * { border-radius: 10px; border: 1px solid rgba(255,255,255,0.055); overflow: hidden; }
+  .sg-meta    { padding: 14px 20px 0; display: flex; flex-wrap: wrap; gap: 12px; border-top: 1px solid rgba(255,255,255,0.055); margin: 0 20px; }
+
+  .sg-category {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.10em;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+    padding: 3px 8px;
+    border-radius: 9999px;
+  }
+  .sg-live {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 0.75rem; color: var(--color-ink-4);
+  }
+  .sg-live-dot {
+    width: 5px; height: 5px; border-radius: 50%; background: #22c55e;
+    animation: sg-pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes sg-pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+    50%       { opacity: 0.7; box-shadow: 0 0 0 3px rgba(34,197,94,0); }
+  }
+
+  .sg-meta-item { display: flex; align-items: center; gap: 5px; }
+  .sg-meta-lbl  { font-size: 0.7rem; color: var(--color-ink-4); text-transform: uppercase; letter-spacing: 0.06em; }
+  .sg-meta-val  { font-size: 0.8rem; color: var(--color-ink-2); font-weight: 500; }
+  code.sg-meta-val {
+    font-family: 'SF Mono','Fira Code',monospace;
+    font-size: 0.75rem;
+    background: rgba(255,255,255,0.05);
+    padding: 1px 6px; border-radius: 4px;
+    color: rgba(147,197,253,0.8);
+  }
+  .sg-meta-up { color: #22c55e; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sg-card:hover { transform: none; }
+    .sg-live-dot   { animation: none; }
+  }
+</style>

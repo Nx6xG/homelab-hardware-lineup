@@ -59,13 +59,36 @@ updated: "2025-01-10"
 featured: false
 productUrl: "https://www.raspberrypi.com/products/raspberry-pi-4-model-b/"
 year: 2022
+showcase:
+  heroEyebrow: "Home Automation"
+  heroTagline: "Lokal. Ohne Cloud. Ohne Kompromisse."
+  bigStatement:
+    value: "100%"
+    label: "Lokal ausgeführt — kein Cloud-Server nötig."
+    eyebrow: "Lokale Kontrolle"
+    facts:
+      - value: "100%"
+        subtext: "Alle Automationen lokal — kein Internet nötig"
+      - value: "Zigbee"
+        subtext: "Lokaler Koordinator statt Cloud-abhängiger Bridge"
+      - value: "24/7"
+        subtext: "Dedizierte Hardware — kein Mischbetrieb"
 ---
 
-## Übersicht
+import Section from '../../components/device/common/Section.astro'
+import HomeDiagram from '../../components/device/unique/rpi4-home-assistant/HomeDiagram.astro'
+
+<Section eyebrow="IoT-Netzwerk" heading="Geräte-Übersicht" id="diagram" wide centered>
+
+<HomeDiagram />
+
+</Section>
+
+<Section eyebrow="Einblick" heading="Architektur & Hinweise" id="notes">
 
 Der Pi 4 läuft dediziert mit Home Assistant OS und übernimmt die komplette Hausautomatisierung. Das Ziel: alles lokal, kein Single Point of Failure durch Cloud-Services.
 
-## Automationen
+**Automationen**
 
 Die wichtigsten laufenden Automationen:
 
@@ -73,7 +96,7 @@ Die wichtigsten laufenden Automationen:
 - **Tageszeit-abhängige Szenen**: Warmweiß abends, Tageslicht tagsüber
 - **Benachrichtigungen**: Wassermelder, Türsensoren → Push auf iPhone
 
-## Backup-Strategie
+**Backup-Strategie**
 
 Tägliche automatische Backups werden direkt auf den QNAP NAS geschrieben, 7 Tage Rotation.
 
@@ -87,3 +110,5 @@ automation:
     action:
       service: backup.create
 ```
+
+</Section>

@@ -80,70 +80,43 @@ showcase:
         subtext: "Bidirectional sync keeps all devices current"
       - value: "Archive"
         subtext: "Documents, photos, projects — structured and safe"
-  headline: "Alle Daten. Überall."
-  subheadline: "Ein Gerät als zentrales Nervensystem für Medien, Backups und Netzwerkspeicher."
-  features:
-    - title: "Plex Media Server — Heimkino ohne Abo"
-      description: "Die gesamte Medienbibliothek auf jedem Bildschirm. Direct Play für lokale Clients bedeutet kein Transcoding — volle Qualität, minimale CPU-Last."
-      scene: "plex"
-    - title: "Hyper Backup — Nightly ohne Aufwand"
-      description: "Automatische Backups aller Geräte landen hier. Versioniert, verschlüsselbar, konfigurierbar. Läuft um 2 Uhr morgens, ohne dass jemand daran denken muss."
-      scene: "backup"
-    - title: "Sync Station — Alles in Sync"
-      description: "Bidirektionale Sync-Jobs für Medien, Dokumente und Backups. Einmal konfiguriert, läuft dauerhaft im Hintergrund. Kein manuelles Kopieren mehr."
-      scene: "filesync"
-    - title: "8 TB Storage — Alles hat seinen Platz"
-      description: "Strukturiertes Archiv mit klarer Share-Struktur. Media, Backups, Dokumente, Fotos — RAID-5 schützt gegen Laufwerksausfall ohne Datenverlust."
-      scene: "archive"
-  serviceStories:
-    - name: "Plex Media Server"
-      story: "Die gesamte Medienbibliothek — Filme, Serien, Musik — auf jedem Bildschirm im Haus. Direct Play für lokale Clients bedeutet kein Transcoding — volle Qualität ohne CPU-Last."
-      preview: "plex"
-      port: "32400"
-      uptime: "99.8%"
-      category: "Media Streaming"
-    - name: "Hyper Backup"
-      story: "Nightly automatische Backups mit Versionierung. Läuft lautlos um 2 Uhr, speichert mehrere Wiederherstellungspunkte und sendet bei Fehler eine Benachrichtigung."
-      preview: "backup"
-      port: "—"
-      uptime: "99.9%"
-      category: "Datensicherung"
-    - name: "Sync Station"
-      story: "Bidirektionale Sync-Jobs zwischen lokalen Shares und Geräten. Medien, Dokumente und Backups immer auf dem neuesten Stand — vollautomatisch, ohne manuelles Eingreifen."
-      preview: "filesync"
-      port: "—"
-      uptime: "99.9%"
-      category: "Synchronisation"
-    - name: "Storage Archiv"
-      story: "Strukturiertes Archiv für Medien, Backups, Dokumente und Fotos. 8 TB im RAID-5-Verbund — Ausfallsicherheit bei einem Laufwerksfehler, ohne Datenverlust."
-      preview: "archive"
-      port: "—"
-      uptime: "99.9%"
-      category: "Archivierung"
 ---
 
-## Übersicht
+import Section              from '../../components/device/common/Section.astro'
+import InfraDiagram         from '../../components/device/unique/qnap-nas/InfraDiagram.astro'
+import NasScrollStage       from '../../components/device/unique/qnap-nas/NasScrollStage.astro'
+import ServiceGrid          from '../../components/device/unique/qnap-nas/ServiceGrid.astro'
+import StorageViz           from '../../components/device/unique/qnap-nas/StorageViz.astro'
+import ArchitectureShowcase from '../../components/device/unique/qnap-nas/ArchitectureShowcase.astro'
 
-Die QNAP NAS ist das zentrale Nervensystem für alle Daten im Homelab. Alle anderen Geräte — Raspberry Pis, Windows Server, MacBook — sichern ihre Daten hierher.
+{/* ── 1. INFRA FLOW DIAGRAM ── */}
 
-## Share-Struktur
+<Section eyebrow="Infrastruktur" heading="Wie alles verbunden ist" id="infra" wide centered>
 
-| Share | Zweck |
-|-------|-------|
-| `media` | Plex-Bibliothek (Filme, Serien, Musik) |
-| `backups` | Automatische Backups aller Geräte |
-| `dokumente` | Persönliche Dokumente |
-| `photos` | Foto-Archiv |
-| `timemachine` | macOS Time Machine für MacBook |
+<InfraDiagram />
 
-## Backup-Eingang
+</Section>
 
-Die NAS ist das Ziel für Backups von:
-- **Home Assistant**: Tägliche HA-Snapshots
-- **Raspberry Pi 5**: Portainer-Volume-Backups (via Script)
-- **Windows Server**: Game-Server-Worlds via Robocopy
-- **MacBook Pro**: Time Machine über SMB
+{/* ── 2. SCROLL STAGE — sticky 4-step feature walkthrough ── */}
 
-## Plex-Setup
+<NasScrollStage />
 
-Plex läuft nativ auf der NAS. Für lokale Clients (Apple TV, iPhone, iPad) funktioniert **Direct Play** ohne Transcoding. Für unterwegs wird auf dem MacBook oder direkt über die Plex-App gestreamt.
+{/* ── 3. SERVICE GRID — 4 cards with animated previews ── */}
+
+<Section eyebrow="Dienste" heading="Was auf der NAS läuft" id="services" wide>
+
+<ServiceGrid />
+
+</Section>
+
+{/* ── 4. STORAGE VIZ — RAID array + allocation breakdown ── */}
+
+<Section eyebrow="Storage" heading="8 TB RAID-5 Array" id="storage" wide centered>
+
+<StorageViz />
+
+</Section>
+
+{/* ── 5. ARCHITECTURE SHOWCASE — premium visual section ── */}
+
+<ArchitectureShowcase />

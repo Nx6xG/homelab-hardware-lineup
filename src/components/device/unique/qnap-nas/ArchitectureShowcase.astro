@@ -1,0 +1,537 @@
+---
+/**
+ * ArchitectureShowcase.astro
+ * Premium replacement for the plain "Architektur & Hinweise" prose block
+ * on the QNAP NAS flagship page.
+ *
+ * A) Eyebrow + heading + one-liner
+ * B) Animated SVG flow: Client → Traefik → QNAP NAS → RAID-5
+ * C) 3-column glass cards: Shares · Backup-Eingang · Plex & Zugriff
+ */
+
+// SVG flow diagram — node geometry
+// ViewBox 760 × 90, 4 nodes × 110px wide, 3 × ~101px gap
+const nodes = [
+  { label: 'Client',   sub: 'Heimnetz',    cx: 63,  color: '#94a3b8', fill: 'rgba(148,163,184,0.08)',  stroke: 'rgba(148,163,184,0.30)' },
+  { label: 'Traefik',  sub: 'HTTPS / TLS', cx: 274, color: '#4f8ef7', fill: 'rgba(79,142,247,0.09)',   stroke: 'rgba(79,142,247,0.40)'  },
+  { label: 'QNAP NAS', sub: 'QTS Core',    cx: 485, color: '#f59e0b', fill: 'rgba(245,158,11,0.11)',   stroke: 'rgba(245,158,11,0.55)'  },
+  { label: 'RAID-5',   sub: '8 TB Array',  cx: 696, color: '#34d399', fill: 'rgba(52,211,153,0.09)',   stroke: 'rgba(52,211,153,0.35)'  },
+] as const;
+
+const segments = [
+  { x1: 118, x2: 219, color: '#4f8ef7', dur: '2.0s', begin: '0s'   },
+  { x1: 329, x2: 430, color: '#f59e0b', dur: '2.3s', begin: '0.4s' },
+  { x1: 540, x2: 641, color: '#34d399', dur: '1.9s', begin: '0.9s' },
+] as const;
+
+// Cards
+const shares = [
+  { path: '/media',       desc: 'Plex-Bibliothek'       },
+  { path: '/backups',     desc: 'Alle Geräte'            },
+  { path: '/dokumente',   desc: 'Pers. Dateien'          },
+  { path: '/photos',      desc: 'Foto-Archiv'            },
+  { path: '/timemachine', desc: 'macOS Time Machine'     },
+];
+
+const backupSources = [
+  { label: 'Home Assistant',  detail: 'Nightly HA Snapshots',           color: '#4f8ef7' },
+  { label: 'Raspberry Pi 5',  detail: 'Portainer Volumes · Script',     color: '#34d399' },
+  { label: 'Windows Server',  detail: 'Robocopy · Game Worlds',         color: '#f59e0b' },
+  { label: 'MacBook Pro',     detail: 'Time Machine · SMB',             color: '#a855f7' },
+];
+---
+
+<section
+  id="notes"
+  class="py-20 section-divider"
+  aria-labelledby="arch-h"
+>
+  <div class="container-wide">
+
+    <!-- ── A: Header ────────────────────────────────────────────────── -->
+    <div class="as-header reveal">
+      <p class="as-eyebrow">Einblick</p>
+      <h2 id="arch-h" class="as-heading">Architektur &amp; Hinweise</h2>
+      <p class="as-subtitle">
+        Das QNAP NAS als zentrales Nervensystem des Homelabs — alle Geräte sichern hierher,
+        Plex streamt von hier, Traefik routet den Zugriff.
+      </p>
+    </div>
+
+    <!-- ── B: Animated flow diagram ─────────────────────────────────── -->
+    <div class="as-diagram reveal" style="transition-delay:60ms" aria-hidden="true">
+      <svg
+        viewBox="0 0 760 90"
+        class="as-svg"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <!-- Arrowhead marker per segment color (reuse single marker) -->
+          <marker id="arr-blue"   markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+            <polygon points="0 1,5 3,0 5" fill="rgba(79,142,247,0.7)" />
+          </marker>
+          <marker id="arr-amber"  markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+            <polygon points="0 1,5 3,0 5" fill="rgba(245,158,11,0.7)" />
+          </marker>
+          <marker id="arr-green"  markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+            <polygon points="0 1,5 3,0 5" fill="rgba(52,211,153,0.7)" />
+          </marker>
+          <!-- Glow filter for QNAP node -->
+          <filter id="nas-glow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+          </filter>
+        </defs>
+
+        <!-- Segment lines -->
+        <line x1="118" y1="44" x2="219" y2="44" class="as-seg-line"
+          style="stroke: rgba(79,142,247,0.22)"
+          marker-end="url(#arr-blue)" />
+        <line x1="329" y1="44" x2="430" y2="44" class="as-seg-line"
+          style="stroke: rgba(245,158,11,0.22)"
+          marker-end="url(#arr-amber)" />
+        <line x1="540" y1="44" x2="641" y2="44" class="as-seg-line"
+          style="stroke: rgba(52,211,153,0.22)"
+          marker-end="url(#arr-green)" />
+
+        <!-- Animated dots -->
+        {segments.map(seg => (
+          <circle class="as-dot" r="3.5" cx="0" cy="0"
+            style={`fill: ${seg.color}`}>
+            <animateMotion
+              dur={seg.dur}
+              repeatCount="indefinite"
+              begin={seg.begin}
+              calcMode="spline"
+              keySplines="0.4 0 0.2 1"
+              keyTimes="0;1"
+              path={`M ${seg.x1} 44 L ${seg.x2} 44`}
+            />
+          </circle>
+        ))}
+
+        <!-- QNAP NAS glow pulse ring (node 3, cx=485) -->
+        <rect x="421" y="16" width="128" height="56" rx="11"
+          class="as-nas-glow" />
+
+        <!-- Node boxes -->
+        {nodes.map((n, i) => {
+          const x = n.cx - 55; // half of 110
+          return (
+            <>
+              <rect
+                x={x} y="26" width="110" height="36" rx="9"
+                style={`fill: ${n.fill}; stroke: ${n.stroke}; stroke-width: 1.5`}
+                class={i === 2 ? 'as-node as-node--active' : 'as-node'}
+              />
+              <text x={n.cx} y="42" class="as-node-label" text-anchor="middle" dominant-baseline="middle"
+                style={`fill: ${n.color}`}>
+                {n.label}
+              </text>
+              <text x={n.cx} y="76" class="as-node-sub" text-anchor="middle" dominant-baseline="middle">
+                {n.sub}
+              </text>
+            </>
+          );
+        })}
+      </svg>
+    </div>
+
+    <!-- ── C: Three cards ────────────────────────────────────────────── -->
+    <div class="as-cards">
+
+      <!-- Card 1: Shares -->
+      <div class="as-card reveal" style="--glow: rgba(245,158,11,0.18); transition-delay:100ms">
+        <div class="as-card-head">
+          <!-- Folder icon -->
+          <span class="as-icon" style="color:#f59e0b; background:rgba(245,158,11,0.1); border-color:rgba(245,158,11,0.2)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M3 8a2 2 0 012-2h3.586a1 1 0 01.707.293L10.707 7.7A1 1 0 0011.414 8H19a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"
+                stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div>
+            <p class="as-card-title">SMB-Shares</p>
+            <p class="as-card-sub">5 Netzwerkfreigaben · QTS</p>
+          </div>
+        </div>
+
+        <div class="as-chips">
+          {shares.map(s => (
+            <div class="as-chip">
+              <code class="as-chip-path">{s.path}</code>
+              <span class="as-chip-desc">{s.desc}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Card 2: Backup-Eingang -->
+      <div class="as-card reveal" style="--glow: rgba(79,142,247,0.18); transition-delay:180ms">
+        <div class="as-card-head">
+          <!-- Database icon -->
+          <span class="as-icon" style="color:#4f8ef7; background:rgba(79,142,247,0.1); border-color:rgba(79,142,247,0.2)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <ellipse cx="12" cy="5" rx="9" ry="3" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M3 5v5.5M21 5v5.5M3 10.5a9 3 0 0018 0M3 10.5V17a9 3 0 0018 0v-6.5"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <div>
+            <p class="as-card-title">Backup-Eingang</p>
+            <p class="as-card-sub">4 Quellen · Nightly 02:00</p>
+          </div>
+        </div>
+
+        <ul class="as-sources">
+          {backupSources.map(src => (
+            <li class="as-source-row">
+              <span class="as-source-dot" style={`background:${src.color}`}></span>
+              <div class="as-source-text">
+                <span class="as-source-label">{src.label}</span>
+                <span class="as-source-detail">{src.detail}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Card 3: Plex & Zugriff -->
+      <div class="as-card reveal" style="--glow: rgba(168,85,247,0.18); transition-delay:260ms">
+        <div class="as-card-head">
+          <!-- Play icon -->
+          <span class="as-icon" style="color:#a855f7; background:rgba(168,85,247,0.1); border-color:rgba(168,85,247,0.2)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 4.5l14 7.5-14 7.5V4.5z"
+                stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div>
+            <p class="as-card-title">Plex &amp; Zugriff</p>
+            <p class="as-card-sub">Lokal &amp; Remote · Port 32400</p>
+          </div>
+        </div>
+
+        <div class="as-access">
+          <!-- Local panel -->
+          <div class="as-access-panel">
+            <p class="as-access-badge" style="color:#22c55e; background:rgba(34,197,94,0.08); border-color:rgba(34,197,94,0.2)">
+              LOCAL
+            </p>
+            <ul class="as-access-list">
+              <li>Direct Play</li>
+              <li>WiFi · 1080p / 4K</li>
+              <li>Kein Transcoding</li>
+              <li class="as-access-muted">iPhone · iPad · TV</li>
+            </ul>
+          </div>
+          <!-- Divider -->
+          <div class="as-access-divider"></div>
+          <!-- Remote panel -->
+          <div class="as-access-panel">
+            <p class="as-access-badge" style="color:#a855f7; background:rgba(168,85,247,0.08); border-color:rgba(168,85,247,0.2)">
+              REMOTE
+            </p>
+            <ul class="as-access-list">
+              <li>Tailscale VPN</li>
+              <li>WireGuard-Tunnel</li>
+              <li>Port 32400</li>
+              <li class="as-access-muted">Unterwegs überall</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ── Header ────────────────────────────────────────────────────────── */
+  .as-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  .as-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink-4);
+    margin-bottom: 0.75rem;
+  }
+  .as-heading {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--color-ink-1);
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+  }
+  .as-subtitle {
+    font-size: 1rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: var(--color-ink-3);
+    max-width: 52ch;
+    margin: 0 auto;
+  }
+
+  /* ── Flow diagram ──────────────────────────────────────────────────── */
+  .as-diagram {
+    background: var(--color-surface-1);
+    border: 1px solid rgba(255,255,255,0.065);
+    border-radius: 16px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+  .as-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+
+  .as-seg-line {
+    stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+  }
+  .as-dot { opacity: 0.9; }
+
+  /* QNAP NAS pulse glow */
+  .as-nas-glow {
+    fill: rgba(245,158,11,0.06);
+    stroke: rgba(245,158,11,0.18);
+    stroke-width: 1;
+    animation: as-nas-pulse 2.8s ease-in-out infinite;
+  }
+  @keyframes as-nas-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+
+  .as-node { stroke-width: 1.5; }
+  .as-node--active {
+    /* subtle extra inner shadow for prominence */
+    filter: drop-shadow(0 0 6px rgba(245,158,11,0.25));
+  }
+  .as-node-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    font-family: system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.01em;
+  }
+  .as-node-sub {
+    fill: #2b3248;
+    font-size: 8.5px;
+    font-family: system-ui, -apple-system, sans-serif;
+    letter-spacing: 0.04em;
+  }
+
+  /* ── Cards grid ────────────────────────────────────────────────────── */
+  .as-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 640px)  { .as-cards { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .as-cards { grid-template-columns: repeat(3, 1fr); } }
+
+  /* ── Card base ─────────────────────────────────────────────────────── */
+  .as-card {
+    background: var(--color-surface-1);
+    border: 1px solid rgba(255,255,255,0.065);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    /* Hover: lift + glow using CSS custom property set inline */
+    transition:
+      transform    400ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 300ms ease,
+      box-shadow   300ms ease;
+    will-change: transform;
+  }
+  .as-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255,255,255,0.10);
+    box-shadow:
+      0 4px 6px rgba(0,0,0,0.3),
+      0 12px 40px rgba(0,0,0,0.35),
+      0 0 0 1px rgba(255,255,255,0.04),
+      0 0 40px -8px var(--glow, rgba(79,142,247,0.2));
+  }
+
+  /* ── Card head ─────────────────────────────────────────────────────── */
+  .as-card-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+  }
+  .as-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    border: 1px solid;
+    flex-shrink: 0;
+  }
+  .as-card-title {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: var(--color-ink-1);
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+  .as-card-sub {
+    font-size: 0.7rem;
+    color: var(--color-ink-4);
+    margin-top: 2px;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Card 1: Chips ─────────────────────────────────────────────────── */
+  .as-chips {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+  .as-chip {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 0.5rem 0.625rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    transition: border-color 200ms ease, background 200ms ease;
+  }
+  .as-chip:hover {
+    border-color: rgba(245,158,11,0.25);
+    background: rgba(245,158,11,0.04);
+  }
+  .as-chip-path {
+    font-family: 'SF Mono', 'Fira Code', ui-monospace, monospace;
+    font-size: 0.7rem;
+    color: rgba(147,197,253,0.75);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .as-chip-desc {
+    font-size: 0.65rem;
+    color: var(--color-ink-4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── Card 2: Sources ───────────────────────────────────────────────── */
+  .as-sources {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .as-source-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .as-source-row:last-child { border-bottom: none; }
+  .as-source-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: as-dot-pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes as-dot-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+  }
+  .as-source-text { flex: 1; min-width: 0; }
+  .as-source-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-ink-2);
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .as-source-detail {
+    display: block;
+    font-size: 0.675rem;
+    color: var(--color-ink-4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 1px;
+    font-family: 'SF Mono', ui-monospace, monospace;
+  }
+
+  /* ── Card 3: Access panels ─────────────────────────────────────────── */
+  .as-access {
+    display: flex;
+    gap: 0.75rem;
+    flex: 1;
+  }
+  .as-access-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+  .as-access-badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 2px 7px;
+    align-self: flex-start;
+  }
+  .as-access-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .as-access-list li {
+    font-size: 0.8rem;
+    color: var(--color-ink-2);
+    line-height: 1.4;
+  }
+  .as-access-muted {
+    color: var(--color-ink-4) !important;
+    font-size: 0.7rem !important;
+    margin-top: 2px;
+  }
+  .as-access-divider {
+    width: 1px;
+    background: rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+
+  /* ── Reduced motion ────────────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .as-card:hover    { transform: none; }
+    .as-nas-glow      { animation: none; }
+    .as-source-dot    { animation: none; }
+  }
+</style>

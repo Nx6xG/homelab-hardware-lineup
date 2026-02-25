@@ -54,13 +54,36 @@ updated: "2025-01-10"
 featured: false
 productUrl: "https://www.apple.com/ipad-air/"
 year: 2024
+showcase:
+  heroEyebrow: "Universal Control"
+  heroTagline: "Ein Cursor. Zwei Bildschirme. Nahtlos."
+  bigStatement:
+    value: "2"
+    label: "Geräte. Ein Cursor. Null Reibung."
+    eyebrow: "Universal Control"
+    facts:
+      - value: "2"
+        subtext: "Geräte mit einer Maus und einer Tastatur gesteuert"
+      - value: "Drag & Drop"
+        subtext: "Dateien direkt zwischen MacBook und iPad übertragen"
+      - value: "HA"
+        subtext: "Home Assistant Dashboard immer griffbereit"
 ---
 
-## Übersicht
+import Section from '../../components/device/common/Section.astro'
+import UniversalControlViz from '../../components/device/unique/ipad-air/UniversalControlViz.astro'
+
+<Section eyebrow="Universal Control" heading="Zwei Geräte. Ein Cursor." id="uc" wide centered>
+
+<UniversalControlViz />
+
+</Section>
+
+<Section eyebrow="Einblick" heading="Architektur & Hinweise" id="notes">
 
 Das iPad Air ist mehr als ein Tablet — es ist ein verlängerter Arm des MacBook Pro. Universal Control macht den Übergang zwischen den Geräten unsichtbar.
 
-## Universal Control im Alltag
+**Universal Control im Alltag**
 
 Mit Universal Control bewegt sich der Cursor einfach vom MacBook-Bildschirm rüber aufs iPad. Dateien per Drag & Drop zwischen den Geräten, gleiches Clipboard, eine Tastatur für beide.
 
@@ -72,10 +95,12 @@ MacBook Pro ←──── Maus/Cursor ────→ iPad Air
      └───── Drag & Drop Dateien ────────┘
 ```
 
-## Home Assistant auf dem iPad
+**Home Assistant auf dem iPad**
 
 Die HA Companion App läuft auf dem iPad als vollwertiges Dashboard — Lichter, Klimaanlage, Kameras und Automationen per Touch steuerbar.
 
-## Plex auf dem iPad
+**Plex auf dem iPad**
 
 Das iPad ist der bevorzugte Plex-Client für längere Filmabende unterwegs. Direct Play vom QNAP NAS funktioniert über WLAN ohne Transcoding flüssig.
+
+</Section>

@@ -55,20 +55,43 @@ updated: "2025-01-10"
 featured: false
 productUrl: "https://www.apple.com/iphone-15-pro/"
 year: 2023
+showcase:
+  heroEyebrow: "Mobiler Client"
+  heroTagline: "Jedes Homelab-Service. Aus der Tasche."
+  bigStatement:
+    value: "5"
+    label: "Homelab-Apps. Immer dabei. Überall."
+    eyebrow: "Remote Control"
+    facts:
+      - value: "5"
+        subtext: "Homelab-Dienste direkt auf dem iPhone erreichbar"
+      - value: "Tailscale"
+        subtext: "Sicherer WireGuard-Tunnel ins Heimnetz — überall"
+      - value: "Widgets"
+        subtext: "HA-Schnellaktionen direkt vom Homescreen"
 ---
 
-## Übersicht
+import Section from '../../components/device/common/Section.astro'
+import TailscaleViz from '../../components/device/unique/iphone-15-pro-max/TailscaleViz.astro'
+
+<Section eyebrow="Tailscale" heading="WireGuard-Tunnel ins Heimnetz" id="tailscale" wide centered>
+
+<TailscaleViz />
+
+</Section>
+
+<Section eyebrow="Einblick" heading="Architektur & Hinweise" id="notes">
 
 Das iPhone ist der mobile Arm des Homelabs. Egal wo — über Tailscale ist der Zugriff auf alle Services möglich, als wäre man im eigenen Netz.
 
-## Home Assistant Companion
+**Home Assistant Companion**
 
 Die HA Companion App ist das tägliche Interface für alle Automationen:
 - **Widgets** auf dem Homescreen für häufige Aktionen
 - **Push-Notifications** bei wichtigen Ereignissen (Türsensor, Wassersensor)
 - **Anwesenheitserkennung** via GPS-Geofencing für automatische Szenen
 
-## Tailscale — Remote-Zugriff
+**Tailscale — Remote-Zugriff**
 
 Mit Tailscale im Hintergrund ist das iPhone immer im Heimnetz, auch im Mobilfunknetz:
 
@@ -80,9 +103,11 @@ iPhone (Tailscale) ──WireGuard Tunnel──→ Heimnetz
                                         └── Portainer (Pi 5)
 ```
 
-## iOS Shortcuts
+**iOS Shortcuts**
 
 Schnellzugriff via Shortcuts und Siri:
 - "Guten Morgen" → Rollladen hoch, Kaffeemaschine an (via HA)
 - "Gute Nacht" → Alle Lichter aus, Türen prüfen
 - "Lab Status" → Uptime Kuma Dashboard öffnen
+
+</Section>

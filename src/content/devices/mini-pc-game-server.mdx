@@ -56,17 +56,40 @@ updated: "2025-01-05"
 featured: false
 productUrl: "https://cubecoders.com/AMP"
 year: 2023
+showcase:
+  heroEyebrow: "Game Server"
+  heroTagline: "Multiplayer. Immer an. Web-verwaltet."
+  bigStatement:
+    value: "4+"
+    label: "Server-Instanzen. Web-verwaltet. Nonstop."
+    eyebrow: "Game Server"
+    facts:
+      - value: "4+"
+        subtext: "Server-Instanzen über AMP Web-UI verwaltet"
+      - value: "Nightly"
+        subtext: "Automatische World-Backups auf den QNAP NAS"
+      - value: "Discord"
+        subtext: "Benachrichtigungen bei Start, Stop und Absturz"
 ---
 
-## Übersicht
+import Section from '../../components/device/common/Section.astro'
+import ServerPanel from '../../components/device/unique/mini-pc-game-server/ServerPanel.astro'
+
+<Section eyebrow="AMP Panel" heading="Server-Dashboard" id="servers" wide centered>
+
+<ServerPanel />
+
+</Section>
+
+<Section eyebrow="Einblick" heading="Architektur & Hinweise" id="notes">
 
 Der Windows Server ist dediziert fürs Gaming. Das Ziel: Freunde können ihre Game-Server selbst verwalten, ohne SSH oder Terminal-Kenntnisse.
 
-## AMP — Application Management Panel
+**AMP — Application Management Panel**
 
 AMP stellt für jede Game-Server-Instanz eine eigene Web-UI bereit. Start, Stop, Konsole, Backup, Mod-Updates — alles per Browser.
 
-## Backup-Strategie
+**Backup-Strategie**
 
 Jede Nacht um 03:00 Uhr kopiert ein Robocopy-Script alle World-Saves auf den QNAP NAS:
 
@@ -75,3 +98,9 @@ Robocopy "D:\AMP\Instances\*\Saves" "\\qnap\backups\gameservers" /MIR /R:3 /W:10
 ```
 
 30 Tage Retention, wöchentliche Snapshots für 90 Tage.
+
+**Virtual Desktop — PCVR**
+
+Der Server streamt via Virtual Desktop auch an die Meta Quest — GPU-Power kabellos ins Headset.
+
+</Section>

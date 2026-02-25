@@ -52,13 +52,36 @@ updated: "2025-01-05"
 featured: false
 productUrl: "https://www.meta.com/quest/"
 year: 2023
+showcase:
+  heroEyebrow: "Standalone VR"
+  heroTagline: "Aufsetzen. Spielen. Fertig."
+  bigStatement:
+    value: "~12ms"
+    label: "PCVR-Latenz via WiFi 6. Kaum spürbar."
+    eyebrow: "Virtual Desktop"
+    facts:
+      - value: "~12ms"
+        subtext: "Latenz beim PCVR-Streaming über WiFi 6 (5 GHz)"
+      - value: "Standalone"
+        subtext: "Kein PC, kein Kabel — sofort einsatzbereit"
+      - value: "Plex VR"
+        subtext: "Medienbibliothek im virtuellen Kino"
 ---
 
-## Übersicht
+import Section from '../../components/device/common/Section.astro'
+import StreamDiagram from '../../components/device/unique/meta-quest/StreamDiagram.astro'
+
+<Section eyebrow="Virtual Desktop" heading="PCVR-Streaming-Pfad" id="stream" wide centered>
+
+<StreamDiagram />
+
+</Section>
+
+<Section eyebrow="Einblick" heading="Architektur & Hinweise" id="notes">
 
 Die Meta Quest ist die einfachste Art, VR zu erleben — einfach aufsetzen, spielen. Keine Kabel, keine externe Hardware nötig. Für anspruchsvollere PCVR-Titel kommt Virtual Desktop zum Einsatz.
 
-## Virtual Desktop — PCVR übers Netz
+**Virtual Desktop — PCVR übers Netz**
 
 Virtual Desktop streamt den PC-Desktop (Windows Server im Heimnetz) drahtlos ins Headset. Mit WiFi 6 und aktiviertem Game-Streaming-Modus ist die Latenz kaum spürbar.
 
@@ -67,10 +90,12 @@ Meta Quest ──WiFi 6──→ Router ──LAN──→ Windows Server
                Latenz ~10-15ms (5GHz, kurze Distanz)
 ```
 
-## Plex VR
+**Plex VR**
 
 Über die Plex-App auf der Quest können Filme und Serien vom QNAP NAS in einem virtuellen Kino angeschaut werden — ideal für lange Flüge oder wenn der TV belegt ist.
 
-## Play Space
+**Play Space**
 
 Das Guardian-System merkt sich die Raumgrenzen im Wohnzimmer. Einmal eingerichtet, erscheint das virtuelle Gitter automatisch sobald man sich einer Wand nähert.
+
+</Section>

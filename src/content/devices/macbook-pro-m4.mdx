@@ -59,13 +59,36 @@ updated: "2025-01-18"
 featured: false
 productUrl: "https://www.apple.com/macbook-pro/"
 year: 2024
+showcase:
+  heroEyebrow: "Apple Silicon"
+  heroTagline: "Entwicklung. Homelab-Kontrolle. Alles."
+  bigStatement:
+    value: "12"
+    label: "CPU-Kerne. Nativ. Kein Overhead."
+    eyebrow: "Apple M4 Pro"
+    facts:
+      - value: "12"
+        subtext: "CPU-Kerne — 8 Performance + 4 Effizienz-Kerne"
+      - value: "Arm64"
+        subtext: "Native Docker-Images — kein Emulations-Overhead"
+      - value: "5 Hosts"
+        subtext: "SSH-Zugriff auf alle Lab-Geräte per Alias"
 ---
 
-## Übersicht
+import Section from '../../components/device/common/Section.astro'
+import SSHNetwork from '../../components/device/unique/macbook-pro-m4/SSHNetwork.astro'
+
+<Section eyebrow="SSH-Kontrolle" heading="Netzwerk-Verbindungen" id="ssh" wide centered>
+
+<SSHNetwork />
+
+</Section>
+
+<Section eyebrow="Einblick" heading="Architektur & Hinweise" id="notes">
 
 Das MacBook Pro M4 Pro ist das primäre Arbeitsgerät und gleichzeitig die Kommandozentrale für das gesamte Homelab. Alle Konfigurations-Änderungen, SSH-Sessions und Browser-UIs laufen von hier.
 
-## Homelab-Verwaltung vom Mac
+**Homelab-Verwaltung vom Mac**
 
 Von hier aus werden gesteuert:
 - **Portainer** (Pi 5) via Browser
@@ -89,10 +112,12 @@ Host qnap
   User admin
 ```
 
-## Backups
+**Backups**
 
 Time Machine läuft automatisch auf den QNAP-SMB-Share `timemachine` sobald das MacBook im Heimnetz ist. Stündliche Snapshots, 14-tägige Retention.
 
-## Apple-Ökosystem-Integration
+**Apple-Ökosystem-Integration**
 
 Durch Handoff, AirDrop und Universal Control arbeiten MacBook und iPad Air nahtlos zusammen. Clipboard, Dateien und Fenster wechseln ohne Reibung zwischen den Geräten.
+
+</Section>

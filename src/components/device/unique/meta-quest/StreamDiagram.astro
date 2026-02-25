@@ -1,0 +1,248 @@
+---
+/**
+ * StreamDiagram.astro — Meta Quest Virtual Desktop streaming path.
+ * Quest → WiFi 6 → Router → LAN → Windows Server with ~12ms latency badge.
+ */
+---
+
+<div class="sd-wrapper" aria-hidden="true">
+  <svg
+    viewBox="0 0 680 200"
+    class="sd-svg"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <!-- ── Quest Headset (left) ── -->
+    <g class="sd-node">
+      <rect x="8" y="60" width="92" height="80" rx="12" class="sd-box sd-box--quest" />
+      <!-- Headset icon — simplified oval -->
+      <ellipse cx="54" cy="90" rx="26" ry="16" class="sd-icon-shape sd-icon-quest" />
+      <rect x="28" y="84" width="8" height="12" rx="3" class="sd-icon-strap" />
+      <rect x="70" y="84" width="8" height="12" rx="3" class="sd-icon-strap" />
+      <text x="54" y="114" class="sd-box-label" text-anchor="middle">Meta Quest</text>
+    </g>
+
+    <!-- ── WiFi arrow ── -->
+    <path d="M 104 100 L 178 100" class="sd-line" />
+    <text x="141" y="88" class="sd-line-label" text-anchor="middle">WiFi 6</text>
+    <text x="141" y="118" class="sd-line-sub" text-anchor="middle">5 GHz</text>
+    <!-- Animated WiFi packet -->
+    <circle class="sd-pkt sd-pkt--1" r="4" cx="0" cy="0">
+      <animateMotion dur="1.8s" repeatCount="indefinite" path="M 104 100 L 178 100" />
+    </circle>
+
+    <!-- ── Router ── -->
+    <g class="sd-node">
+      <rect x="180" y="68" width="80" height="64" rx="10" class="sd-box sd-box--router" />
+      <text x="220" y="97" class="sd-box-icon" text-anchor="middle">⇆</text>
+      <text x="220" y="116" class="sd-box-label" text-anchor="middle">Router</text>
+    </g>
+
+    <!-- ── LAN arrow ── -->
+    <path d="M 264 100 L 338 100" class="sd-line" />
+    <text x="301" y="88" class="sd-line-label" text-anchor="middle">LAN</text>
+    <text x="301" y="118" class="sd-line-sub" text-anchor="middle">1 Gbit/s</text>
+    <circle class="sd-pkt sd-pkt--2" r="4" cx="0" cy="0">
+      <animateMotion dur="1.4s" repeatCount="indefinite" begin="0.6s" path="M 264 100 L 338 100" />
+    </circle>
+
+    <!-- ── Windows Server ── -->
+    <g class="sd-node">
+      <rect x="340" y="60" width="92" height="80" rx="12" class="sd-box sd-box--server" />
+      <text x="386" y="92" class="sd-box-icon" text-anchor="middle">▣</text>
+      <text x="386" y="108" class="sd-box-label" text-anchor="middle">Windows</text>
+      <text x="386" y="120" class="sd-box-label" text-anchor="middle">Server</text>
+    </g>
+
+    <!-- ── Virtual Desktop label ── -->
+    <rect x="440" y="68" width="136" height="28" rx="7" class="sd-vd-badge" />
+    <text x="508" y="84" class="sd-vd-text" text-anchor="middle">Virtual Desktop</text>
+    <path d="M 432 82 L 440 82" class="sd-vd-line" />
+
+    <!-- ── Latency badge (hovering above center) ── -->
+    <rect x="260" y="16" width="120" height="36" rx="8" class="sd-latency-badge" />
+    <text x="320" y="29" class="sd-latency-val" text-anchor="middle">~12ms</text>
+    <text x="320" y="43" class="sd-latency-label" text-anchor="middle">Round-trip</text>
+    <!-- Arrow down to path -->
+    <line x1="320" y1="52" x2="320" y2="92" class="sd-latency-arrow" />
+    <polygon points="316,88 320,96 324,88" class="sd-latency-tip" />
+
+    <!-- ── SteamVR tag ── -->
+    <rect x="460" y="120" width="104" height="24" rx="6" class="sd-steam-badge" />
+    <text x="512" y="132" class="sd-steam-text" text-anchor="middle">SteamVR via Virtual Desktop</text>
+  </svg>
+
+  <!-- Stat pills -->
+  <div class="sd-pills">
+    <div class="sd-pill">
+      <span class="sd-pill-val">~12ms</span>
+      <span class="sd-pill-key">PCVR-Latenz</span>
+    </div>
+    <div class="sd-pill">
+      <span class="sd-pill-val">WiFi 6</span>
+      <span class="sd-pill-key">802.11ax / 5 GHz</span>
+    </div>
+    <div class="sd-pill">
+      <span class="sd-pill-val">Standalone</span>
+      <span class="sd-pill-key">Kein Kabel</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .sd-wrapper {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .sd-svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  /* Boxes */
+  .sd-box {
+    stroke-width: 1.5;
+  }
+  .sd-box--quest  { fill: rgba(236,72,153,0.08);  stroke: rgba(236,72,153,0.35); }
+  .sd-box--router { fill: rgba(79,142,247,0.08);   stroke: rgba(79,142,247,0.3); }
+  .sd-box--server { fill: rgba(99,102,241,0.08);   stroke: rgba(99,102,241,0.35); }
+
+  /* Icons inside boxes */
+  .sd-icon-shape { fill: rgba(236,72,153,0.15); stroke: rgba(236,72,153,0.4); stroke-width: 1; }
+  .sd-icon-strap { fill: rgba(236,72,153,0.25); }
+  .sd-box-icon {
+    fill: #7e8baa;
+    font-size: 20px;
+    dominant-baseline: middle;
+    font-family: system-ui, sans-serif;
+  }
+  .sd-box-label {
+    fill: #7e8baa;
+    font-size: 10px;
+    font-family: system-ui, sans-serif;
+    dominant-baseline: middle;
+  }
+
+  /* Lines */
+  .sd-line {
+    stroke: rgba(79,142,247,0.25);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 3;
+  }
+  .sd-line-label {
+    fill: #46536a;
+    font-size: 9px;
+    font-weight: 600;
+    font-family: system-ui, sans-serif;
+    dominant-baseline: middle;
+  }
+  .sd-line-sub {
+    fill: #2b3248;
+    font-size: 8px;
+    font-family: system-ui, sans-serif;
+    dominant-baseline: middle;
+  }
+
+  /* Packets */
+  .sd-pkt--1 { fill: rgba(236,72,153,0.8); }
+  .sd-pkt--2 { fill: rgba(79,142,247,0.8); }
+
+  /* Virtual Desktop badge */
+  .sd-vd-badge {
+    fill: rgba(99,102,241,0.1);
+    stroke: rgba(99,102,241,0.3);
+    stroke-width: 1;
+  }
+  .sd-vd-text {
+    fill: rgba(99,102,241,0.8);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    font-family: system-ui, sans-serif;
+    dominant-baseline: middle;
+  }
+  .sd-vd-line {
+    stroke: rgba(99,102,241,0.3);
+    stroke-width: 1;
+    stroke-dasharray: 3 2;
+  }
+
+  /* Latency badge */
+  .sd-latency-badge {
+    fill: rgba(79,142,247,0.12);
+    stroke: rgba(79,142,247,0.4);
+    stroke-width: 1.5;
+    filter: drop-shadow(0 0 8px rgba(79,142,247,0.2));
+  }
+  .sd-latency-val {
+    fill: #4f8ef7;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: system-ui, sans-serif;
+    dominant-baseline: middle;
+  }
+  .sd-latency-label {
+    fill: #7e8baa;
+    font-size: 8px;
+    letter-spacing: 0.04em;
+    font-family: system-ui, sans-serif;
+    dominant-baseline: middle;
+  }
+  .sd-latency-arrow {
+    stroke: rgba(79,142,247,0.25);
+    stroke-width: 1;
+    stroke-dasharray: 3 2;
+  }
+  .sd-latency-tip {
+    fill: rgba(79,142,247,0.4);
+  }
+
+  /* SteamVR badge */
+  .sd-steam-badge {
+    fill: rgba(23,30,45,0.8);
+    stroke: rgba(79,142,247,0.2);
+    stroke-width: 1;
+  }
+  .sd-steam-text {
+    fill: #46536a;
+    font-size: 8px;
+    font-family: system-ui, sans-serif;
+    dominant-baseline: middle;
+  }
+
+  /* Pill stats */
+  .sd-pills {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+  }
+  .sd-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    background: var(--color-surface-1);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    min-width: 90px;
+  }
+  .sd-pill-val {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink-1);
+  }
+  .sd-pill-key {
+    font-size: 0.625rem;
+    color: var(--color-ink-4);
+    letter-spacing: 0.05em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sd-pkt--1 animateMotion, .sd-pkt--2 animateMotion { display: none; }
+  }
+</style>

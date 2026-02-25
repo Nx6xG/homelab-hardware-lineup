@@ -1,0 +1,228 @@
+---
+/**
+ * TailscaleViz.astro — iPhone Tailscale WireGuard tunnel visualization.
+ * Shows iPhone → internet → tunnel → home network topology with service icons.
+ */
+
+const services = [
+  { name: 'Home Assistant', port: '8123', color: '#4f8ef7' },
+  { name: 'Plex',           port: '32400', color: '#e5a00d' },
+  { name: 'Portainer',      port: '9000',  color: '#34d399' },
+];
+---
+
+<div class="ts-wrapper" aria-hidden="true">
+  <svg
+    viewBox="0 0 640 240"
+    class="ts-svg"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <!-- iPhone -->
+    <rect x="16" y="60" width="60" height="110" rx="10" class="ts-phone" />
+    <rect x="21" y="72" width="50" height="86" rx="6" class="ts-phone-screen" />
+    <circle cx="46" cy="167" r="5" class="ts-phone-btn" />
+
+    <!-- Tailscale logo on phone -->
+    <text x="46" y="117" class="ts-phone-label" text-anchor="middle">TS</text>
+
+    <!-- Curved tunnel path -->
+    <path
+      d="M 80 115 C 150 115, 150 30, 310 30 C 470 30, 470 115, 540 115"
+      class="ts-tunnel-path ts-tunnel-outer"
+    />
+    <path
+      d="M 80 115 C 150 115, 150 200, 310 200 C 470 200, 470 115, 540 115"
+      class="ts-tunnel-path ts-tunnel-outer"
+    />
+
+    <!-- WireGuard label at top of tunnel -->
+    <rect x="248" y="14" width="124" height="24" rx="5" class="ts-wg-badge" />
+    <text x="310" y="27" class="ts-wg-text" text-anchor="middle">WireGuard Tunnel</text>
+
+    <!-- Animated packets through tunnel -->
+    <circle class="ts-packet" r="4" cx="0" cy="0">
+      <animateMotion
+        dur="2.8s"
+        repeatCount="indefinite"
+        path="M 80 115 C 150 115, 150 30, 310 30 C 470 30, 470 115, 540 115"
+      />
+    </circle>
+    <circle class="ts-packet ts-packet-2" r="4" cx="0" cy="0">
+      <animateMotion
+        dur="3.2s"
+        repeatCount="indefinite"
+        begin="1.5s"
+        path="M 540 115 C 470 115, 470 200, 310 200 C 150 200, 150 115, 80 115"
+      />
+    </circle>
+
+    <!-- Home network cloud / box -->
+    <rect x="520" y="60" width="106" height="110" rx="12" class="ts-home-box" />
+    <text x="573" y="82" class="ts-home-label" text-anchor="middle">Heimnetz</text>
+
+    <!-- Service list in home box -->
+    {services.map((svc, i) => (
+      <>
+        <circle cx="535" cy={100 + i * 22} r="4" style={`fill: ${svc.color}`} />
+        <text x="545" y={100 + i * 22} class="ts-svc-name" dominant-baseline="middle">{svc.name}</text>
+      </>
+    ))}
+
+    <!-- Internet cloud text -->
+    <text x="310" y="120" class="ts-internet-label" text-anchor="middle">Internet</text>
+    <text x="310" y="136" class="ts-internet-sub" text-anchor="middle">5G / WiFi</text>
+  </svg>
+
+  <!-- Stats row -->
+  <div class="ts-stats">
+    <div class="ts-stat">
+      <span class="ts-stat-val">Zero-Config</span>
+      <span class="ts-stat-key">Setup</span>
+    </div>
+    <div class="ts-divider"></div>
+    <div class="ts-stat">
+      <span class="ts-stat-val">WireGuard</span>
+      <span class="ts-stat-key">Protokoll</span>
+    </div>
+    <div class="ts-divider"></div>
+    <div class="ts-stat">
+      <span class="ts-stat-val">Immer aktiv</span>
+      <span class="ts-stat-key">Verbindung</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .ts-wrapper {
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .ts-svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  /* Phone */
+  .ts-phone {
+    fill: var(--color-surface-2);
+    stroke: rgba(255,255,255,0.15);
+    stroke-width: 1.5;
+  }
+  .ts-phone-screen {
+    fill: rgba(79,142,247,0.08);
+    stroke: rgba(79,142,247,0.2);
+    stroke-width: 1;
+  }
+  .ts-phone-btn {
+    fill: rgba(255,255,255,0.08);
+    stroke: rgba(255,255,255,0.12);
+    stroke-width: 1;
+  }
+  .ts-phone-label {
+    fill: #4f8ef7;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: system-ui, sans-serif;
+    dominant-baseline: middle;
+  }
+
+  /* Tunnel */
+  .ts-tunnel-path {
+    stroke-width: 1;
+    fill: none;
+  }
+  .ts-tunnel-outer {
+    stroke: rgba(79,142,247,0.12);
+    stroke-dasharray: 6 4;
+  }
+
+  .ts-wg-badge {
+    fill: rgba(79,142,247,0.12);
+    stroke: rgba(79,142,247,0.3);
+    stroke-width: 1;
+  }
+  .ts-wg-text {
+    fill: rgba(79,142,247,0.8);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    font-family: system-ui, sans-serif;
+    dominant-baseline: middle;
+  }
+
+  /* Packets */
+  .ts-packet   { fill: #4f8ef7; }
+  .ts-packet-2 { fill: rgba(79,142,247,0.5); }
+
+  /* Internet label */
+  .ts-internet-label {
+    fill: #46536a;
+    font-size: 11px;
+    font-family: system-ui, sans-serif;
+    dominant-baseline: middle;
+  }
+  .ts-internet-sub {
+    fill: #2b3248;
+    font-size: 9px;
+    font-family: system-ui, sans-serif;
+    dominant-baseline: middle;
+  }
+
+  /* Home box */
+  .ts-home-box {
+    fill: rgba(52,211,153,0.06);
+    stroke: rgba(52,211,153,0.25);
+    stroke-width: 1;
+  }
+  .ts-home-label {
+    fill: rgba(52,211,153,0.7);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-family: system-ui, sans-serif;
+    dominant-baseline: middle;
+  }
+  .ts-svc-name {
+    fill: #7e8baa;
+    font-size: 9px;
+    font-family: system-ui, sans-serif;
+  }
+
+  /* Stats row */
+  .ts-stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+  }
+  .ts-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .ts-stat-val {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-ink-1);
+  }
+  .ts-stat-key {
+    font-size: 0.65rem;
+    color: var(--color-ink-4);
+    letter-spacing: 0.05em;
+  }
+  .ts-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255,255,255,0.06);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ts-packet animateMotion { display: none; }
+  }
+</style>

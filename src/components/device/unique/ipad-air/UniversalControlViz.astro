@@ -1,0 +1,241 @@
+---
+/**
+ * UniversalControlViz.astro — iPad Air Universal Control visualization.
+ * Animated cursor bridge between MacBook and iPad with shared clipboard flow.
+ */
+---
+
+<div class="uc-wrapper" aria-hidden="true">
+  <div class="uc-scene">
+
+    <!-- MacBook -->
+    <div class="uc-device uc-mac">
+      <div class="uc-screen uc-screen--mac">
+        <div class="uc-screen-content">
+          <div class="uc-window-bar">
+            <span class="uc-wb-dot uc-wb-dot--r"></span>
+            <span class="uc-wb-dot uc-wb-dot--y"></span>
+            <span class="uc-wb-dot uc-wb-dot--g"></span>
+          </div>
+          <div class="uc-screen-lines">
+            <div class="uc-line uc-line--long"></div>
+            <div class="uc-line uc-line--med"></div>
+            <div class="uc-line uc-line--short"></div>
+            <div class="uc-line uc-line--long" style="margin-top: 0.5rem"></div>
+            <div class="uc-line uc-line--med"></div>
+          </div>
+        </div>
+      </div>
+      <div class="uc-chin">MacBook Pro</div>
+    </div>
+
+    <!-- Bridge / cursor area -->
+    <div class="uc-bridge">
+      <div class="uc-bridge-line"></div>
+      <div class="uc-cursor"></div>
+      <div class="uc-transfer-label">Universal Control</div>
+    </div>
+
+    <!-- iPad -->
+    <div class="uc-device uc-ipad">
+      <div class="uc-screen uc-screen--ipad">
+        <div class="uc-screen-content">
+          <!-- Home grid mockup -->
+          <div class="uc-ha-grid">
+            <div class="uc-ha-cell uc-ha-cell--on">
+              <span class="uc-ha-icon">☀</span>
+              <span class="uc-ha-label">Wohnzimmer</span>
+            </div>
+            <div class="uc-ha-cell">
+              <span class="uc-ha-icon">🌡</span>
+              <span class="uc-ha-label">22.4°</span>
+            </div>
+            <div class="uc-ha-cell uc-ha-cell--on">
+              <span class="uc-ha-icon">🔒</span>
+              <span class="uc-ha-label">Haustür</span>
+            </div>
+            <div class="uc-ha-cell">
+              <span class="uc-ha-icon">⚡</span>
+              <span class="uc-ha-label">210W</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="uc-chin">iPad Air</div>
+    </div>
+
+  </div>
+
+  <!-- Clipboard flow tags -->
+  <div class="uc-tags">
+    <span class="uc-tag">⌨ Gemeinsame Tastatur</span>
+    <span class="uc-tag">⧉ Clipboard sync</span>
+    <span class="uc-tag">⤢ Drag & Drop</span>
+  </div>
+</div>
+
+<style>
+  .uc-wrapper {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+    user-select: none;
+  }
+
+  .uc-scene {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 1.5rem 0;
+  }
+
+  /* Devices */
+  .uc-device { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+
+  /* MacBook screen */
+  .uc-screen--mac {
+    width: clamp(160px, 28vw, 240px);
+    aspect-ratio: 16/10;
+    background: var(--color-surface-2);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 0.5rem;
+    overflow: hidden;
+  }
+
+  /* iPad screen */
+  .uc-screen--ipad {
+    width: clamp(100px, 18vw, 150px);
+    aspect-ratio: 3/4;
+    background: var(--color-surface-2);
+    border: 1.5px solid rgba(79,142,247,0.35);
+    border-radius: 10px;
+    padding: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(79,142,247,0.08);
+  }
+
+  .uc-screen-content { height: 100%; display: flex; flex-direction: column; gap: 0.4rem; }
+
+  .uc-window-bar {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 0.3rem;
+  }
+  .uc-wb-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+  }
+  .uc-wb-dot--r { background: #ff5f57; }
+  .uc-wb-dot--y { background: #ffbd2e; }
+  .uc-wb-dot--g { background: #28c840; }
+
+  .uc-screen-lines { display: flex; flex-direction: column; gap: 5px; }
+  .uc-line {
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+  }
+  .uc-line--long  { width: 90%; }
+  .uc-line--med   { width: 65%; }
+  .uc-line--short { width: 40%; }
+
+  /* HA grid on iPad */
+  .uc-ha-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    height: 100%;
+  }
+  .uc-ha-cell {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    padding: 4px;
+  }
+  .uc-ha-cell--on {
+    background: rgba(79,142,247,0.1);
+    border-color: rgba(79,142,247,0.25);
+  }
+  .uc-ha-icon { font-size: 0.75rem; }
+  .uc-ha-label { font-size: 0.5rem; color: var(--color-ink-4); text-align: center; }
+
+  .uc-chin {
+    font-size: 0.65rem;
+    color: var(--color-ink-4);
+    letter-spacing: 0.03em;
+  }
+
+  /* Bridge / cursor */
+  .uc-bridge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: clamp(60px, 12vw, 100px);
+    position: relative;
+    flex-shrink: 0;
+    padding-bottom: 1.5rem;
+  }
+  .uc-bridge-line {
+    width: 100%;
+    height: 1.5px;
+    background: linear-gradient(90deg,
+      rgba(79,142,247,0.1) 0%,
+      rgba(79,142,247,0.5) 50%,
+      rgba(79,142,247,0.1) 100%
+    );
+  }
+  .uc-cursor {
+    position: absolute;
+    top: calc(50% - 12px);
+    left: 50%;
+    width: 14px;
+    height: 20px;
+    background: white;
+    clip-path: polygon(0 0, 60% 45%, 35% 50%, 55% 100%, 40% 100%, 22% 52%, 0 65%);
+    filter: drop-shadow(0 0 4px rgba(79,142,247,0.6));
+    animation: uc-cursor-travel 3s ease-in-out infinite;
+  }
+  @keyframes uc-cursor-travel {
+    0%   { left: 10%; }
+    50%  { left: 75%; }
+    100% { left: 10%; }
+  }
+
+  .uc-transfer-label {
+    position: absolute;
+    bottom: 0;
+    font-size: 0.55rem;
+    color: rgba(79,142,247,0.6);
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+  }
+
+  /* Tags */
+  .uc-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+  .uc-tag {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: var(--color-ink-3);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 3px 10px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .uc-cursor { animation: none; left: 40%; }
+  }
+</style>

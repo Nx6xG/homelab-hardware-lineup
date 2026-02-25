@@ -1,0 +1,40 @@
+---
+/**
+ * NasScrollStage.astro — Self-contained sticky scroll walkthrough for the
+ * QNAP NAS flagship page. Wraps the shared ScrollStage component with
+ * hardcoded 4-step NAS feature data. No props needed.
+ */
+import ScrollStage from '../../../ScrollStage.astro';
+
+const features = [
+  {
+    title:       'Plex Media Server — Heimkino ohne Abo',
+    description: 'Die gesamte Medienbibliothek auf jedem Bildschirm. Direct Play für lokale Clients bedeutet kein Transcoding — volle Qualität, minimale CPU-Last auf der NAS.',
+    scene:       'plex'     as const,
+  },
+  {
+    title:       'Hyper Backup — Nächte automatisch gesichert',
+    description: 'Alle Geräte im Homelab sichern hierher. Versioniert, verschlüsselbar, konfigurierbar. Läuft um 2 Uhr morgens — kein manuelles Eingreifen nötig.',
+    scene:       'backup'   as const,
+  },
+  {
+    title:       'Sync Station — Bidirektional und lautlos',
+    description: 'Sync-Jobs zwischen lokalen Shares und externen Zielen. Medien, Dokumente und Backups immer auf dem neuesten Stand. Einmal eingerichtet, läuft für immer.',
+    scene:       'filesync' as const,
+  },
+  {
+    title:       '8 TB RAID-5 — Strukturiertes Archiv',
+    description: 'Media, Backups, Dokumente, Fotos — mit klarer Share-Struktur. RAID-5 schützt gegen einen Laufwerksausfall ohne Datenverlust. Keine Cloud, keine Kompromisse.',
+    scene:       'archive'  as const,
+  },
+] satisfies Parameters<typeof ScrollStage>[0]['features'];
+---
+
+<div class="nss-wrapper">
+  <div class="container-wide pt-10 pb-0">
+    <p class="text-[0.7rem] font-semibold tracking-[0.12em] uppercase text-[var(--color-ink-4)] reveal">
+      Funktionen im Detail
+    </p>
+  </div>
+  <ScrollStage features={features} sectionLabel="NAS Funktionen im Detail" />
+</div>

@@ -1,0 +1,183 @@
+---
+/**
+ * ContainerGrid.astro — Raspberry Pi 5 container fleet visualization.
+ * Shows all running Docker containers grouped by category with live status dots.
+ */
+
+const groups = [
+  {
+    label: 'Infrastruktur',
+    color: '#4f8ef7',
+    containers: ['Traefik', 'Portainer', 'Watchtower', 'Nginx'],
+  },
+  {
+    label: 'Datenbanken',
+    color: '#34d399',
+    containers: ['MariaDB', 'PostgreSQL', 'Redis', 'SQLite'],
+  },
+  {
+    label: 'Dienste',
+    color: '#a855f7',
+    containers: ['Paperless-ngx', 'n8n', 'Vikunja', 'WordPress'],
+  },
+  {
+    label: 'Monitoring',
+    color: '#f59e0b',
+    containers: ['Uptime Kuma', 'Grafana', '+ 7 weitere'],
+  },
+];
+---
+
+<div class="cg-wrapper">
+  <div class="cg-header">
+    <span class="cg-badge">Docker Host</span>
+    <span class="cg-title">19 Container — aktiv</span>
+    <span class="cg-pulse"></span>
+  </div>
+
+  <div class="cg-grid">
+    {groups.map(group => (
+      <div class="cg-group">
+        <div class="cg-group-label" style={`color: ${group.color}`}>
+          {group.label}
+        </div>
+        <div class="cg-chips">
+          {group.containers.map(name => (
+            <div class="cg-chip">
+              <span class="cg-dot" style={`background: ${group.color}`}></span>
+              <span class="cg-chip-name">{name}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="cg-footer">
+    <span class="cg-stat">~8W</span>
+    <span class="cg-stat-label">Stromverbrauch</span>
+    <span class="cg-sep">·</span>
+    <span class="cg-stat">8 GB</span>
+    <span class="cg-stat-label">RAM verfügbar</span>
+    <span class="cg-sep">·</span>
+    <span class="cg-stat">100%</span>
+    <span class="cg-stat-label">Uptime</span>
+  </div>
+</div>
+
+<style>
+  .cg-wrapper {
+    background: var(--color-surface-1);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 1.5rem;
+    overflow: hidden;
+  }
+
+  .cg-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  .cg-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    background: rgba(79,142,247,0.1);
+    border: 1px solid rgba(79,142,247,0.25);
+    border-radius: 4px;
+    padding: 2px 8px;
+  }
+  .cg-title {
+    font-size: 0.8rem;
+    color: var(--color-ink-2);
+    font-weight: 500;
+  }
+  .cg-pulse {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background: #34d399;
+    border-radius: 50%;
+    animation: cg-blink 2s ease-in-out infinite;
+    margin-left: auto;
+  }
+  @keyframes cg-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+  }
+
+  .cg-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  @media (min-width: 640px) {
+    .cg-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  .cg-group {}
+  .cg-group-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+    opacity: 0.85;
+  }
+  .cg-chips {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .cg-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 6px;
+    padding: 5px 8px;
+    font-size: 0.725rem;
+    color: var(--color-ink-2);
+    font-family: ui-monospace, monospace;
+  }
+  .cg-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: cg-blink 2s ease-in-out infinite;
+  }
+  .cg-chip-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .cg-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .cg-stat {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink-1);
+    font-variant-numeric: tabular-nums;
+  }
+  .cg-stat-label {
+    font-size: 0.725rem;
+    color: var(--color-ink-4);
+  }
+  .cg-sep {
+    color: var(--color-ink-4);
+    margin: 0 0.25rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cg-pulse, .cg-dot { animation: none; }
+  }
+</style>

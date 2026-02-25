@@ -1,0 +1,173 @@
+---
+/**
+ * SSHNetwork.astro — MacBook Pro M4 SSH connection diagram.
+ * Terminal-style visualization of SSH connections to all homelab hosts.
+ */
+
+const hosts = [
+  { alias: 'rpi5',          host: '192.168.1.xx', user: 'admin',  color: '#4f8ef7', y: 50  },
+  { alias: 'homeassistant', host: '192.168.1.xx', user: 'root',   color: '#34d399', y: 120 },
+  { alias: 'qnap',          host: '192.168.1.xx', user: 'admin',  color: '#f59e0b', y: 190 },
+  { alias: 'gameserver',    host: '192.168.1.xx', user: 'admin',  color: '#a855f7', y: 260 },
+  { alias: 'router',        host: '192.168.1.1',  user: 'root',   color: '#64748b', y: 330 },
+];
+---
+
+<div class="ssh-wrapper">
+  <div class="ssh-terminal">
+    <div class="ssh-terminal-bar">
+      <span class="ssh-dot ssh-dot--red"></span>
+      <span class="ssh-dot ssh-dot--yellow"></span>
+      <span class="ssh-dot ssh-dot--green"></span>
+      <span class="ssh-title">~/.ssh/config</span>
+    </div>
+
+    <svg
+      viewBox="0 0 620 410"
+      class="ssh-svg"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <!-- MacBook label -->
+      <rect x="8" y="155" width="110" height="80" rx="10" class="ssh-source" />
+      <text x="63" y="186" class="ssh-source-label" text-anchor="middle">MacBook</text>
+      <text x="63" y="202" class="ssh-source-sub" text-anchor="middle">M4 Pro</text>
+      <text x="63" y="218" class="ssh-source-sub2" text-anchor="middle">ssh ›</text>
+
+      <!-- Connection lines and host boxes -->
+      {hosts.map((h, i) => (
+        <>
+          {/* Line */}
+          <path
+            class="ssh-line"
+            d={`M 118 195 C 240 195, 240 ${h.y + 20}, 310 ${h.y + 20}`}
+            style={`stroke: ${h.color}40`}
+          />
+          {/* Animated packet */}
+          <circle class="ssh-packet" r="3.5" cx="0" cy="0" style={`fill: ${h.color}; animation-delay: ${i * 0.5}s`}>
+            <animateMotion
+              dur={`${2 + i * 0.3}s`}
+              repeatCount="indefinite"
+              begin={`${i * 0.5}s`}
+              calcMode="spline"
+              keySplines="0.4 0 0.6 1"
+              keyTimes="0;1"
+              path={`M 118 195 C 240 195, 240 ${h.y + 20}, 310 ${h.y + 20}`}
+            />
+          </circle>
+          {/* Host box */}
+          <rect x="310" y={h.y} width="302" height="40" rx="8" class="ssh-host-box" style={`--hc: ${h.color}`} />
+          <text x="322" y={h.y + 15} class="ssh-host-alias" style={`fill: ${h.color}`}>{h.alias}</text>
+          <text x="322" y={h.y + 29} class="ssh-host-meta">{h.user}@{h.host}</text>
+          <text x="602" y={h.y + 22} class="ssh-host-badge" text-anchor="end">SSH</text>
+        </>
+      ))}
+    </svg>
+  </div>
+</div>
+
+<style>
+  .ssh-wrapper {
+    width: 100%;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .ssh-terminal {
+    background: #090d18;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .ssh-terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.65rem 1rem;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .ssh-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .ssh-dot--red    { background: #ff5f57; }
+  .ssh-dot--yellow { background: #ffbd2e; }
+  .ssh-dot--green  { background: #28c840; }
+  .ssh-title {
+    font-size: 0.7rem;
+    font-family: ui-monospace, monospace;
+    color: var(--color-ink-4);
+    margin-left: 0.5rem;
+  }
+
+  .ssh-svg {
+    width: 100%;
+    height: auto;
+    padding: 0 0.5rem 0.5rem;
+    box-sizing: border-box;
+  }
+
+  .ssh-source {
+    fill: rgba(79,142,247,0.10);
+    stroke: rgba(79,142,247,0.35);
+    stroke-width: 1.5;
+  }
+  .ssh-source-label {
+    fill: #eef0f8;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: system-ui, sans-serif;
+    dominant-baseline: middle;
+  }
+  .ssh-source-sub {
+    fill: #7e8baa;
+    font-size: 9px;
+    font-family: system-ui, sans-serif;
+    dominant-baseline: middle;
+  }
+  .ssh-source-sub2 {
+    fill: rgba(79,142,247,0.7);
+    font-size: 9px;
+    font-family: ui-monospace, monospace;
+    dominant-baseline: middle;
+  }
+
+  .ssh-line {
+    stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+    fill: none;
+  }
+
+  .ssh-host-box {
+    fill: color-mix(in srgb, var(--hc) 8%, var(--color-surface-2));
+    stroke: color-mix(in srgb, var(--hc) 30%, transparent);
+    stroke-width: 1;
+  }
+  .ssh-host-alias {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: ui-monospace, monospace;
+    dominant-baseline: middle;
+  }
+  .ssh-host-meta {
+    fill: #46536a;
+    font-size: 9px;
+    font-family: ui-monospace, monospace;
+    dominant-baseline: middle;
+  }
+  .ssh-host-badge {
+    fill: #2b3248;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    font-family: system-ui, sans-serif;
+    dominant-baseline: middle;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ssh-packet animateMotion { display: none; }
+  }
+</style>
