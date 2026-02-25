@@ -1,0 +1,828 @@
+---
+/**
+ * PortainerShowcase.astro — Raspberry Pi 5 signature architecture section.
+ *
+ * A) Header + Infra Badges row
+ * B) Layer Stack Architecture — 6 stacked layers with scanning beam animation
+ * C) Service Map — 4 category groups with CSS group-hover chip highlight
+ * D) 4 upgraded glass cards — chip groups, per-card icons, hover glow
+ */
+
+const layers = [
+  {
+    num: '01',
+    label: 'Access Layer',
+    accent: '#2dd4bf',
+    desc: 'Tailscale-Mesh · WireGuard · verschlüsselter Fernzugriff von überall',
+    nodes: ['Client', 'Tailscale VPN', 'WireGuard'],
+    isMain: false,
+  },
+  {
+    num: '02',
+    label: 'Host Layer',
+    accent: '#e2496a',
+    desc: 'Raspberry Pi 5 · ARM Cortex-A76 · 8 GB LPDDR4X · always-on · ~8W',
+    nodes: ['RPi 5', '2.4 GHz', '8 GB RAM', 'SSD Kit'],
+    isMain: true,
+  },
+  {
+    num: '03',
+    label: 'Orchestration Layer',
+    accent: '#4f8ef7',
+    desc: 'Docker Compose · reproduzierbar · versioniert · 19 Container aktiv',
+    nodes: ['Docker', 'Compose', 'Portainer CE'],
+    isMain: false,
+  },
+  {
+    num: '04',
+    label: 'Routing Layer',
+    accent: '#a855f7',
+    desc: 'Traefik v3 · automatisches TLS via Let\'s Encrypt · Subdomain-Routing',
+    nodes: ['Traefik v3', 'Let\'s Encrypt', 'Auto-TLS'],
+    isMain: false,
+  },
+  {
+    num: '05',
+    label: 'Workload Layer',
+    accent: '#f59e0b',
+    desc: 'Apps · Datenbanken · Automation · Monitoring — alle Dienste hier oben',
+    nodes: ['Paperless', 'n8n', 'WordPress', 'Vikunja', '+15'],
+    isMain: false,
+  },
+  {
+    num: '06',
+    label: 'Storage Layer',
+    accent: '#34d399',
+    desc: 'SSD Kit · NVMe · persistente Docker Volumes · kein Thermal Throttling',
+    nodes: ['SSD Kit', 'NVMe', 'Volumes'],
+    isMain: false,
+  },
+] as const;
+
+const serviceMap = [
+  {
+    label: 'Infrastruktur',
+    count: 4,
+    color: '#4f8ef7',
+    services: ['Portainer CE', 'Traefik v3', 'Nginx', 'Watchtower'],
+  },
+  {
+    label: 'Anwendungen',
+    count: 5,
+    color: '#a855f7',
+    services: ['Paperless-ngx', 'WordPress', 'Vikunja', 'BookStack', 'HabitTrove'],
+  },
+  {
+    label: 'Datenbanken',
+    count: 3,
+    color: '#34d399',
+    services: ['MariaDB', 'PostgreSQL', 'Redis'],
+  },
+  {
+    label: 'Automation',
+    count: 4,
+    color: '#f59e0b',
+    services: ['n8n', 'Uptime Kuma', 'Cloudflare-DDNS', 'Tautulli'],
+  },
+] as const;
+
+import ScrollReveal from '../../../motion/ScrollReveal.astro';
+---
+
+<section
+  id="architecture"
+  class="py-20 section-divider"
+  aria-labelledby="ps-h"
+>
+  <div class="container-wide">
+
+    <!-- ── A: Header + Infra Badges ──────────────────────────────────────── -->
+    <div class="ps-top">
+      <div class="ps-header">
+        <ScrollReveal delay={0}>
+          <p class="ps-eyebrow">Architektur &amp; Betrieb</p>
+          <h2 id="ps-h" class="ps-heading">Layered. Always-on. Selbst gehostet.</h2>
+        </ScrollReveal>
+        <ScrollReveal delay={90}>
+          <p class="ps-subtitle">
+            Sechs Schichten, eine Maschine. Vom Tailscale-Tunnel bis zur SSD —
+            vollständig selbst gehostet, automatisch gepflegt, rund um die Uhr aktiv.
+          </p>
+        </ScrollReveal>
+      </div>
+
+      <!-- Infra status badges -->
+      <ScrollReveal delay={140}>
+      <div class="ps-badges" aria-label="System-Status">
+        <div class="ps-badge">
+          <span class="ps-badge-dot" style="background:#22c55e"></span>
+          <span class="ps-badge-key">Tailscale</span>
+          <span class="ps-badge-val" style="color:#22c55e">Connected</span>
+        </div>
+        <div class="ps-badge">
+          <span class="ps-badge-key">SSD Kit</span>
+          <span class="ps-badge-val">NVMe</span>
+        </div>
+        <div class="ps-badge">
+          <span class="ps-badge-key">Idle</span>
+          <span class="ps-badge-val">~8W</span>
+        </div>
+        <div class="ps-badge">
+          <span class="ps-badge-key">Uptime</span>
+          <span class="ps-badge-val">24/7</span>
+        </div>
+      </div>
+      </ScrollReveal>
+    </div>
+
+    <!-- ── B: Layer Stack Architecture ───────────────────────────────────── -->
+    <ScrollReveal delay={160}>
+    <div class="ps-stack">
+      <!-- Scanning beam: pure CSS, no JS -->
+      <div class="ps-beam" aria-hidden="true"></div>
+
+      {layers.map((layer, i) => (
+        <ScrollReveal delay={i * 70}>
+          <div
+            class={`ps-layer${layer.isMain ? ' ps-layer--main' : ''}`}
+            style={`--accent: ${layer.accent}`}
+          >
+            <!-- Left: number badge + label + description -->
+            <div class="ps-layer-left">
+              <span class="ps-layer-num">{layer.num}</span>
+              <div class="ps-layer-info">
+                <span class="ps-layer-label">{layer.label}</span>
+                <span class="ps-layer-desc">{layer.desc}</span>
+              </div>
+            </div>
+
+            <!-- Right: node chips -->
+            <div class="ps-layer-nodes">
+              {layer.nodes.map(n => (
+                <span class="ps-node-chip">{n}</span>
+              ))}
+            </div>
+          </div>
+        </ScrollReveal>
+      ))}
+    </div>
+    </ScrollReveal>
+
+    <!-- ── C: Service Map ─────────────────────────────────────────────────── -->
+    <ScrollReveal delay={120}>
+    <div class="ps-smap">
+      <p class="ps-smap-eyebrow">Dienste im Überblick</p>
+      <div class="ps-cat-grid">
+        {serviceMap.map(cat => (
+          <div class="ps-cat-group" style={`--cat: ${cat.color}`}>
+            <div class="ps-cat-pill">
+              <span class="ps-cat-dot"></span>
+              <span class="ps-cat-name">{cat.label}</span>
+              <span class="ps-cat-count">{cat.count}</span>
+            </div>
+            <div class="ps-cat-chips">
+              {cat.services.map(s => (
+                <span class="ps-cat-chip">{s}</span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    </ScrollReveal>
+
+    <!-- ── D: 4 Upgraded Cards ────────────────────────────────────────────── -->
+    <div class="ps-cards">
+
+      <!-- Card 1: Core Stack -->
+      <ScrollReveal delay={0}>
+      <div class="ps-card" style="--glow: rgba(79,142,247,0.22); --accent: #4f8ef7">
+        <div class="ps-card-head">
+          <span class="ps-card-icon">
+            <!-- Terminal icon -->
+            <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="1" y="3" width="18" height="14" rx="3" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M5 8l3 2-3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 12h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <div>
+            <p class="ps-card-title">Core Stack</p>
+            <p class="ps-card-sub">Management &amp; Routing</p>
+          </div>
+        </div>
+        <div class="ps-chip-group">
+          <span class="ps-service-chip">Portainer CE</span>
+          <span class="ps-service-chip">Traefik v3</span>
+          <span class="ps-service-chip">Docker Compose</span>
+          <span class="ps-service-chip">Nginx</span>
+        </div>
+        <p class="ps-card-desc">Container-Management und Reverse-Proxy-Fundament für alle Dienste auf dem Pi.</p>
+      </div>
+      </ScrollReveal>
+
+      <!-- Card 2: Applications -->
+      <ScrollReveal delay={90}>
+      <div class="ps-card" style="--glow: rgba(168,85,247,0.22); --accent: #a855f7">
+        <div class="ps-card-head">
+          <span class="ps-card-icon">
+            <!-- Layers icon -->
+            <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M10 2L18 6l-8 4-8-4 8-4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+              <path d="M2 11l8 4 8-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div>
+            <p class="ps-card-title">Anwendungen</p>
+            <p class="ps-card-sub">Produktivität &amp; Content</p>
+          </div>
+        </div>
+        <div class="ps-chip-group">
+          <span class="ps-service-chip">Paperless-ngx</span>
+          <span class="ps-service-chip">WordPress</span>
+          <span class="ps-service-chip">Vikunja</span>
+          <span class="ps-service-chip">BookStack</span>
+          <span class="ps-service-chip">HabitTrove</span>
+        </div>
+        <p class="ps-card-desc">Self-hosted Produktivitäts- und Content-Stack auf einem einzigen Gerät.</p>
+      </div>
+      </ScrollReveal>
+
+      <!-- Card 3: Automation & Ops -->
+      <ScrollReveal delay={180}>
+      <div class="ps-card" style="--glow: rgba(245,158,11,0.22); --accent: #f59e0b">
+        <div class="ps-card-head">
+          <span class="ps-card-icon">
+            <!-- Activity icon -->
+            <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M18 10h-3l-2.5 7.5L7.5 2.5 5 10H2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div>
+            <p class="ps-card-title">Automation &amp; Ops</p>
+            <p class="ps-card-sub">Observability &amp; Updates</p>
+          </div>
+        </div>
+        <div class="ps-chip-group">
+          <span class="ps-service-chip">n8n</span>
+          <span class="ps-service-chip">Uptime Kuma</span>
+          <span class="ps-service-chip">Watchtower</span>
+          <span class="ps-service-chip">Cloudflare-DDNS</span>
+          <span class="ps-service-chip">Tautulli</span>
+        </div>
+        <p class="ps-card-desc">Automatische Updates, Workflow-Automation und kontinuierliches Service-Monitoring.</p>
+      </div>
+      </ScrollReveal>
+
+      <!-- Card 4: Storage & Efficiency -->
+      <ScrollReveal delay={270}>
+      <div class="ps-card" style="--glow: rgba(52,211,153,0.22); --accent: #34d399">
+        <div class="ps-card-head">
+          <span class="ps-card-icon">
+            <!-- Server icon -->
+            <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="1" y="2" width="18" height="6" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <rect x="1" y="12" width="18" height="6" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="15.5" cy="5" r="0.75" fill="currentColor"/>
+              <circle cx="15.5" cy="15" r="0.75" fill="currentColor"/>
+            </svg>
+          </span>
+          <div>
+            <p class="ps-card-title">Storage &amp; Effizienz</p>
+            <p class="ps-card-sub">SSD · ARM · Dauerbetrieb</p>
+          </div>
+        </div>
+        <!-- 2×2 stat tiles -->
+        <div class="ps-stat-grid">
+          <div class="ps-stat-tile">
+            <span class="ps-stat-num">SSD</span>
+            <span class="ps-stat-lbl">NVMe</span>
+          </div>
+          <div class="ps-stat-tile">
+            <span class="ps-stat-num">24/7</span>
+            <span class="ps-stat-lbl">Uptime</span>
+          </div>
+          <div class="ps-stat-tile">
+            <span class="ps-stat-num">~8W</span>
+            <span class="ps-stat-lbl">Idle</span>
+          </div>
+          <div class="ps-stat-tile">
+            <span class="ps-stat-num">ARM</span>
+            <span class="ps-stat-lbl">64-bit</span>
+          </div>
+        </div>
+        <p class="ps-card-desc">Geringer Verbrauch, stabiler Dauerbetrieb — SSD statt SD-Karte, kein Throttling.</p>
+      </div>
+      </ScrollReveal>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ══════════════════════════════════════════════════════════
+     A — Header + Badges
+  ══════════════════════════════════════════════════════════ */
+
+  .ps-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem 3rem;
+    margin-bottom: 2.5rem;
+  }
+  .ps-header { max-width: 44ch; }
+
+  .ps-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink-4);
+    margin-bottom: 0.6rem;
+  }
+  .ps-heading {
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--color-ink-1);
+    line-height: 1.12;
+    margin-bottom: 0.6rem;
+  }
+  .ps-subtitle {
+    font-size: 0.9375rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: var(--color-ink-3);
+  }
+
+  /* Infra badges */
+  .ps-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    padding-top: 0.25rem;
+  }
+  .ps-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 999px;
+    padding: 4px 10px 4px 7px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+  }
+  .ps-badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: ps-badge-pulse 2s ease-in-out infinite;
+  }
+  @keyframes ps-badge-pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,0.45); }
+    50%       { opacity: 0.75; box-shadow: 0 0 0 4px rgba(34,197,94,0); }
+  }
+  .ps-badge-key {
+    font-size: 0.675rem;
+    font-weight: 600;
+    color: var(--color-ink-3);
+    letter-spacing: 0.02em;
+  }
+  .ps-badge-val {
+    font-size: 0.65rem;
+    color: var(--color-ink-4);
+    font-family: ui-monospace, monospace;
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     B — Layer Stack
+  ══════════════════════════════════════════════════════════ */
+
+  .ps-stack {
+    position: relative;
+    background: var(--color-surface-1);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+
+  /* Progress accent line — scaleY(0 → 1) as stack enters viewport */
+  .ps-stack::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(79,142,247,0.55) 25%,
+      rgba(79,142,247,0.35) 75%,
+      transparent 100%
+    );
+    transform-origin: top center;
+    transform: scaleY(0);
+    transition: transform 900ms cubic-bezier(0.16, 1, 0.3, 1) 300ms;
+    z-index: 3;
+    pointer-events: none;
+  }
+  .sr.is-in .ps-stack::before {
+    transform: scaleY(1);
+  }
+
+  /* Ambient shimmer — barely-there highlight sweeping across the stack */
+  .ps-stack::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      108deg,
+      transparent 25%,
+      rgba(255,255,255,0.016) 50%,
+      transparent 75%
+    );
+    background-size: 250% 100%;
+    background-position: 200% 0;
+    animation: ps-shimmer 6s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+    border-radius: inherit;
+  }
+  @keyframes ps-shimmer {
+    0%, 100% { background-position: 200% 0; }
+    50%       { background-position: -50% 0; }
+  }
+
+  /* Scanning beam — pure CSS animation, clips at container edges */
+  .ps-beam {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 72px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(79,142,247,0.055) 35%,
+      rgba(79,142,247,0.09)  50%,
+      rgba(79,142,247,0.055) 65%,
+      transparent
+    );
+    pointer-events: none;
+    z-index: 2;
+    animation: ps-beam-scan 3.8s ease-in-out infinite;
+  }
+  @keyframes ps-beam-scan {
+    0%   { transform: translateY(-72px); }
+    100% { transform: translateY(800px); }
+  }
+
+  /* Each layer row */
+  .ps-layer {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    border-left: 3px solid var(--accent, #4f8ef7);
+    transition: background 250ms ease;
+  }
+  .ps-layer:last-child { border-bottom: none; }
+  .ps-layer:hover { background: rgba(255,255,255,0.018); }
+
+  /* Host layer — subtle glow background */
+  .ps-layer--main {
+    background: rgba(226,73,106,0.03);
+    box-shadow:
+      inset 3px 0 12px rgba(226,73,106,0.08),
+      inset 0 0 32px rgba(226,73,106,0.04);
+  }
+  .ps-layer--main:hover {
+    background: rgba(226,73,106,0.05);
+  }
+
+  /* Layer left: number + label + desc */
+  .ps-layer-left {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    min-width: 0;
+    flex: 1;
+  }
+  .ps-layer-num {
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    font-family: ui-monospace, monospace;
+    flex-shrink: 0;
+    opacity: 0.8;
+    width: 1.6rem;
+  }
+  .ps-layer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+  .ps-layer-label {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--color-ink-1);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .ps-layer-desc {
+    font-size: 0.675rem;
+    color: var(--color-ink-4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 38ch;
+  }
+
+  /* Layer right: node chips */
+  .ps-layer-nodes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    justify-content: flex-end;
+    flex-shrink: 0;
+  }
+  .ps-node-chip {
+    font-size: 0.625rem;
+    font-family: ui-monospace, 'SF Mono', monospace;
+    font-weight: 500;
+    color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 9%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+    border-radius: 5px;
+    padding: 2px 7px;
+    white-space: nowrap;
+  }
+
+  /* Mobile: chips drop below the label row */
+  @media (max-width: 639px) {
+    .ps-layer {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .ps-layer-nodes { justify-content: flex-start; }
+    .ps-layer-desc  { white-space: normal; max-width: 100%; }
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     C — Service Map
+  ══════════════════════════════════════════════════════════ */
+
+  .ps-smap {
+    background: var(--color-surface-1);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .ps-smap-eyebrow {
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-ink-4);
+    margin-bottom: 0.875rem;
+  }
+  .ps-cat-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.625rem;
+  }
+  @media (min-width: 560px)  { .ps-cat-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .ps-cat-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  /* Category group — CSS hover highlights child chips */
+  .ps-cat-group {
+    padding: 0.75rem 0.875rem;
+    border: 1px solid rgba(255,255,255,0.055);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    cursor: default;
+    transition: border-color 200ms ease, background 200ms ease;
+  }
+  .ps-cat-group:hover {
+    border-color: color-mix(in srgb, var(--cat) 28%, transparent);
+    background: color-mix(in srgb, var(--cat) 4%, transparent);
+  }
+
+  .ps-cat-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .ps-cat-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cat);
+    flex-shrink: 0;
+  }
+  .ps-cat-name {
+    font-size: 0.675rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--cat);
+    flex: 1;
+  }
+  .ps-cat-count {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--color-ink-4);
+    background: rgba(255,255,255,0.06);
+    border-radius: 999px;
+    padding: 1px 6px;
+    font-family: ui-monospace, monospace;
+  }
+
+  .ps-cat-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  .ps-cat-chip {
+    font-size: 0.625rem;
+    color: var(--color-ink-3);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 4px;
+    padding: 2px 6px;
+    white-space: nowrap;
+    transition:
+      color       180ms ease,
+      border-color 180ms ease,
+      background   180ms ease;
+  }
+  /* CSS group-hover: parent hover highlights all child chips */
+  .ps-cat-group:hover .ps-cat-chip {
+    color: var(--cat);
+    border-color: color-mix(in srgb, var(--cat) 28%, transparent);
+    background: color-mix(in srgb, var(--cat) 6%, transparent);
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     D — 4 Cards
+  ══════════════════════════════════════════════════════════ */
+
+  .ps-cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 640px)  { .ps-cards { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .ps-cards { grid-template-columns: repeat(4, 1fr); } }
+
+  .ps-card {
+    background: var(--color-surface-1);
+    border: 1px solid rgba(255,255,255,0.065);
+    border-radius: 16px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition:
+      transform    380ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 280ms ease,
+      box-shadow   280ms ease;
+    will-change: transform;
+  }
+  .ps-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(255,255,255,0.11);
+    box-shadow:
+      0 8px 32px rgba(0,0,0,0.3),
+      0 20px 60px rgba(0,0,0,0.25),
+      0 0 0 1px rgba(255,255,255,0.04),
+      0 0 36px -6px var(--glow, rgba(79,142,247,0.2));
+  }
+
+  /* Card header: icon + title + sub */
+  .ps-card-head {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+  .ps-card-icon {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+    border-radius: 8px;
+    color: var(--accent);
+  }
+  .ps-card-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-ink-1);
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+  }
+  .ps-card-sub {
+    font-size: 0.65rem;
+    color: var(--color-ink-4);
+    margin-top: 1px;
+    letter-spacing: 0.02em;
+  }
+
+  /* Service chip group (replaces plain bullet lists) */
+  .ps-chip-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    flex: 1;
+  }
+  .ps-service-chip {
+    font-size: 0.65rem;
+    font-family: ui-monospace, 'SF Mono', monospace;
+    color: var(--color-ink-2);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 5px;
+    padding: 3px 8px;
+    white-space: nowrap;
+    transition:
+      color        200ms ease,
+      border-color 200ms ease,
+      background   200ms ease;
+  }
+  /* Chips highlight on card hover */
+  .ps-card:hover .ps-service-chip {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 28%, transparent);
+    background: color-mix(in srgb, var(--accent) 6%, transparent);
+  }
+
+  /* 2×2 stat tiles (card 4) */
+  .ps-stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+    flex: 1;
+  }
+  .ps-stat-tile {
+    background: rgba(255,255,255,0.025);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 0.5rem 0.625rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .ps-stat-num {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--accent, #34d399);
+    font-variant-numeric: tabular-nums;
+    font-family: ui-monospace, monospace;
+    letter-spacing: -0.01em;
+  }
+  .ps-stat-lbl {
+    font-size: 0.575rem;
+    color: var(--color-ink-4);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* Card description footer */
+  .ps-card-desc {
+    font-size: 0.775rem;
+    color: var(--color-ink-3);
+    line-height: 1.55;
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255,255,255,0.045);
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     Reduced motion
+  ══════════════════════════════════════════════════════════ */
+  @media (prefers-reduced-motion: reduce) {
+    .ps-beam              { animation: none; opacity: 0; }
+    .ps-badge-dot         { animation: none !important; }
+    .ps-card:hover        { transform: none; }
+    .ps-stack::after      { animation: none; }
+    .ps-stack::before     { transition: none; transform: scaleY(1); }
+  }
+</style>

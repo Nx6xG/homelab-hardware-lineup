@@ -1,0 +1,96 @@
+---
+/**
+ * ScrollReveal.astro
+ * Wraps children in an element that fades + translateY + blurs in when
+ * entering the viewport via IntersectionObserver.
+ *
+ * Props:
+ *   delay?  — animation delay in ms (sets --d CSS custom property)
+ *   once?   — unobserve after reveal, default true
+ *   class?  — additional classes on the wrapper
+ */
+interface Props {
+  delay?: number;
+  once?:  boolean;
+  class?: string;
+}
+
+const { delay, once = true, class: className } = Astro.props;
+
+const inlineStyle = delay != null ? `--d:${delay}ms` : undefined;
+---
+
+<div
+  class:list={['sr', className]}
+  style={inlineStyle}
+  data-sr-once={once ? undefined : 'false'}
+>
+  <slot />
+</div>
+
+<!-- Global CSS: one definition reused across every instance -->
+<style is:global>
+  .sr {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(6px);
+    transition:
+      opacity   700ms ease                        var(--d, 0ms),
+      transform 700ms cubic-bezier(0.16,1,0.3,1) var(--d, 0ms),
+      filter    600ms ease                        var(--d, 0ms);
+    will-change: opacity, transform, filter;
+  }
+
+  .sr.is-in {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0px);
+  }
+
+  /* Respect user preference — show immediately, no motion */
+  @media (prefers-reduced-motion: reduce) {
+    .sr {
+      opacity: 1;
+      transform: none;
+      filter: none;
+      transition: none;
+      will-change: auto;
+    }
+  }
+</style>
+
+<!--
+  Inline script: runs once (guarded by window.__srInit).
+  Uses DOMContentLoaded so ALL .sr nodes on the full page are observed,
+  even those rendered by later component instances.
+-->
+<script is:inline>
+  (function () {
+    function init() {
+      if (window.__srInit) return;
+      window.__srInit = true;
+
+      var obs = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            e.target.classList.add('is-in');
+            if (e.target.dataset.srOnce !== 'false') obs.unobserve(e.target);
+          });
+        },
+        { threshold: 0.08 }
+      );
+
+      document.querySelectorAll('.sr').forEach(function (el) {
+        obs.observe(el);
+      });
+    }
+
+    /* If DOM is still being parsed, wait; otherwise call immediately. */
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>

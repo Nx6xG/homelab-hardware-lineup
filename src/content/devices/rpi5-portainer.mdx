@@ -88,8 +88,9 @@ showcase:
         subtext: "LPDDR4X RAM für alle Container und Datenbanken"
 ---
 
-import Section from '../../components/device/common/Section.astro'
-import ContainerGrid from '../../components/device/unique/rpi5-portainer/ContainerGrid.astro'
+import Section             from '../../components/device/common/Section.astro'
+import ContainerGrid       from '../../components/device/unique/rpi5-portainer/ContainerGrid.astro'
+import PortainerShowcase   from '../../components/device/unique/rpi5/PortainerShowcase.astro'
 
 <Section eyebrow="Container Fleet" heading="Live-Übersicht" id="containers" wide centered>
 
@@ -97,46 +98,4 @@ import ContainerGrid from '../../components/device/unique/rpi5-portainer/Contain
 
 </Section>
 
-<Section eyebrow="Einblick" heading="Architektur & Hinweise" id="notes">
-
-Der Pi 5 ist das Workpferd des Homelabs. 19 Container, eine Maschine, ~8W Stromverbrauch. Das Verhältnis von Leistung zu Verbrauch ist kaum zu schlagen.
-
-**Container-Übersicht**
-
-| Container | Zweck | Port |
-|-----------|-------|------|
-| **Paperless-ngx** | Dokumentenarchiv mit OCR | intern |
-| **WordPress** | Persönliche Website/Blog | 80/443 |
-| **Vikunja** | Aufgaben & Projektmanagement | intern |
-| **n8n** | Workflow-Automatisierung | intern |
-| **Traefik** | Reverse Proxy + TLS | 80/443 |
-| **Uptime Kuma** | Service-Monitoring | intern |
-| **Watchtower** | Automatische Image-Updates | — |
-| **MariaDB** | Datenbank (WordPress, etc.) | intern |
-| **PostgreSQL** | Datenbank (Paperless, n8n) | intern |
-| **Redis** | Cache (Paperless) | intern |
-| + 9 weitere | Diverse Services | — |
-
-**n8n Workflows**
-
-n8n verbindet die Services miteinander:
-- Neue Dokumente in Paperless → Benachrichtigung auf iPhone via Home Assistant
-- GitHub-Commits → Aufgabe in Vikunja erstellen
-- Eigene Webhooks für benutzerdefinierte Automationen
-
-**Traefik-Setup**
-
-```yaml
-# docker-compose.yml (Traefik)
-traefik:
-  image: traefik:v3
-  command:
-    - --certificatesresolvers.le.acme.email=mail@example.com
-    - --certificatesresolvers.le.acme.storage=/acme.json
-  labels:
-    - traefik.enable=true
-```
-
-Jeder Container bekommt über Labels automatisch eine Subdomain und ein TLS-Zertifikat.
-
-</Section>
+<PortainerShowcase />

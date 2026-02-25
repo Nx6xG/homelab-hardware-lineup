@@ -148,16 +148,27 @@ const docItems = [
           aria-label="Systemkennzahlen"
         >
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8">
-            {sysMetrics.map(({ value, label }) => (
-              <div class="text-center" role="listitem">
-                <p class="text-[clamp(1.5rem,3vw,2.2rem)] font-bold text-[var(--color-ink-1)] tabular-nums leading-none mb-1.5">
-                  {value}
-                </p>
-                <p class="text-[0.65rem] font-medium tracking-[0.1em] uppercase text-[var(--color-ink-4)]">
-                  {label}
-                </p>
-              </div>
-            ))}
+            {sysMetrics.map(({ value, label }) => {
+              const m   = value.match(/^([^\d]*)(\d+)(.*)/);
+              const num = m ? parseInt(m[2]) : 0;
+              const pfx = m ? m[1] : '';
+              const sfx = m ? m[3] : value;
+              return (
+                <div class="text-center" role="listitem">
+                  <p
+                    class="sys-metric text-[clamp(1.5rem,3vw,2.2rem)] font-bold text-[var(--color-ink-1)] tabular-nums leading-none mb-1.5"
+                    data-target={String(num)}
+                    data-prefix={pfx}
+                    data-suffix={sfx}
+                  >
+                    {value}
+                  </p>
+                  <p class="text-[0.65rem] font-medium tracking-[0.1em] uppercase text-[var(--color-ink-4)]">
+                    {label}
+                  </p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </Reveal>
@@ -336,6 +347,56 @@ const docItems = [
   </section>
 
 </Layout>
+
+<script is:inline>
+  (function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
+
+    function animateCount(el) {
+      var target   = parseInt(el.dataset.target, 10);
+      var prefix   = el.dataset.prefix || '';
+      var suffix   = el.dataset.suffix || '';
+      var duration = 2200;
+      var start    = null;
+
+      if (target === 0) return;
+
+      function step(ts) {
+        if (!start) start = ts;
+        var progress = Math.min((ts - start) / duration, 1);
+        var current  = Math.round(easeOut(progress) * target);
+        el.textContent = prefix + current + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function init() {
+      if (window.__countInit) return;
+      window.__countInit = true;
+
+      var obs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          animateCount(e.target);
+          obs.unobserve(e.target);
+        });
+      }, { threshold: 0.5 });
+
+      document.querySelectorAll('.sys-metric[data-target]').forEach(function (el) {
+        obs.observe(el);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>
 
 <style>
   /* ── Grid ──────────────────────────────────────────────────── */
